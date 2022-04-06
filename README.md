@@ -27,3 +27,8 @@
 ```
    source ./.bashrc
 ```
+
+5. Creating lexer and parser - this command will automatically generate whole dist folder
+```
+antlr4 -Dlanguage=Python3 ./antlr/App.g4 -visitor -o dist
+```
