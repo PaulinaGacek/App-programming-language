@@ -1,0 +1,10 @@
+{
+    "name": "Debug ANTLR4 grammar",
+    "type": "antlr-debug",
+    "request": "launch",
+    "input": "input.txt",
+    "grammar": "App.g4",
+    "startRule": "parse",
+    "printParseTree": true,
+    "visualParseTree": true
+}
