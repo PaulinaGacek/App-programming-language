@@ -38,7 +38,7 @@ class MyVisitor(AppVisitor):
 
 
 if __name__ == "__main__":
-    while 1:
+    while True:
         data =  InputStream(input(">>> "))
         # lexer
         lexer = AppLexer(data)
