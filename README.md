@@ -34,7 +34,23 @@
 antlr4 -Dlanguage=Python3 ./antlr/App.g4 -visitor -o dist
 ```
 
-## How to run main.py
+## How to run main.py - linux
 1. Go into project folder
 2. Activate virtual env `source venv/bin/activate`
 3. `python3 main.py`
+   
+## How to open on windows
+1. git clone
+2. Create virtual environment & install packages
+   ```bash
+    cd ${project folder}
+    python -m venv venv
+    venv\Scripts\activate
+    pip install wheel
+    pip install antlr4-python3-runtime
+   ```
+
+## How to run main.py - windows
+1. Go into project folder
+2. Activate virtual env `venv\Scripts\activate`
+3. `python main.py`

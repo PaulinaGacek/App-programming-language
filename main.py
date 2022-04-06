@@ -6,9 +6,7 @@ from dist.AppParser import AppParser
 from dist.AppVisitor import AppVisitor
 
 def get_username():
-    from pwd import getpwuid
-    from os import getuid
-    return getpwuid(getuid())[ 0 ]
+    return "el padrino don fosforo"
 
 class MyVisitor(AppVisitor):
     def visitNumberExpr(self, ctx):
