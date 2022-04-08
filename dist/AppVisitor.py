@@ -1,5 +1,6 @@
 # Generated from ./antlr4/App.g4 by ANTLR 4.9.2
 from antlr4 import *
+from utils.appParseTreeVisitor import AppParseTreeVisitor
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
@@ -7,7 +8,7 @@ else:
 
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
-class AppVisitor(ParseTreeVisitor):
+class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):

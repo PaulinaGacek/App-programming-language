@@ -13,6 +13,20 @@ class MyVisitor(AppVisitor):
         value = ctx.getText()
         return int(value)
 
+    def visitNaturalNumber(self, ctx):
+        value = ctx.getText()
+        return int(value)
+
+    def visitInteger(self, ctx):
+        value = ctx.getText()
+        return int(value)
+    
+    # https://www.antlr.org/api/Java/org/antlr/v4/runtime/tree/ParseTreeVisitor.html
+    def visitDeclaration(self, ctx):
+        print("Declaration nr of children: ", self.getNrOfChildren(ctx))
+        self.visitChildren
+        return self.visitChildren(ctx)
+
 
 if __name__ == "__main__":
     while True:
