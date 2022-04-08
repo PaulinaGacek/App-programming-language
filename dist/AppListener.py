@@ -233,50 +233,5 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#NumberExpr.
-    def enterNumberExpr(self, ctx:AppParser.NumberExprContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#NumberExpr.
-    def exitNumberExpr(self, ctx:AppParser.NumberExprContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#ByeExpr.
-    def enterByeExpr(self, ctx:AppParser.ByeExprContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#ByeExpr.
-    def exitByeExpr(self, ctx:AppParser.ByeExprContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#HelloExpr.
-    def enterHelloExpr(self, ctx:AppParser.HelloExprContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#HelloExpr.
-    def exitHelloExpr(self, ctx:AppParser.HelloExprContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#ParenExpr.
-    def enterParenExpr(self, ctx:AppParser.ParenExprContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#ParenExpr.
-    def exitParenExpr(self, ctx:AppParser.ParenExprContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#InfixExpr.
-    def enterInfixExpr(self, ctx:AppParser.InfixExprContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#InfixExpr.
-    def exitInfixExpr(self, ctx:AppParser.InfixExprContext):
-        pass
-
-
 
 del AppParser

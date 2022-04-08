@@ -134,30 +134,5 @@ class AppVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#NumberExpr.
-    def visitNumberExpr(self, ctx:AppParser.NumberExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#ByeExpr.
-    def visitByeExpr(self, ctx:AppParser.ByeExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#HelloExpr.
-    def visitHelloExpr(self, ctx:AppParser.HelloExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#ParenExpr.
-    def visitParenExpr(self, ctx:AppParser.ParenExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#InfixExpr.
-    def visitInfixExpr(self, ctx:AppParser.InfixExprContext):
-        return self.visitChildren(ctx)
-
-
 
 del AppParser

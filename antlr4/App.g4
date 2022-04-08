@@ -151,14 +151,3 @@ NONZERODIGIT
 ZERO 
     : '0'
     ;
-
-expr: left=expr op=('*'|'/') right=expr        # InfixExpr
-    | left=expr op=('+'|'-') right=expr        # InfixExpr
-    | atom=NONZERODIGIT                                 # NumberExpr
-    | '(' expr ')'                             # ParenExpr 
-    | atom=HELLO                               # HelloExpr
-    | atom=BYE                                 # ByeExpr
-    ;
-
-HELLO: ('hello'|'hi')  ;
-BYE  : ('bye'| 'tata') ;
