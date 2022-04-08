@@ -52,17 +52,24 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#integer.
     def visitInteger(self, ctx:AppParser.IntegerContext):
-        return self.visitChildren(ctx)
+        value = ctx.getText()
+        print("integer: ", int(value))
+        return int(value)
 
 
     # Visit a parse tree produced by AppParser#arithmeticalExpression.
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
         return self.visitChildren(ctx)
 
-
+    '''
+    example: https://www.antlr.org/api/Java/org/antlr/v4/runtime/tree/ParseTreeVisitor.html
+    '''
     # Visit a parse tree produced by AppParser#declaration.
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
-        return self.visitChildren(ctx)
+        print("Nr of children: ", self.getNrOfChildren(ctx))
+        self.visitChild(ctx,8) # visiting only number - for debug purposes
+        # return self.visitChildren(ctx)
+        return "declaration"
 
 
     # Visit a parse tree produced by AppParser#definition.

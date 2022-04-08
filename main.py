@@ -5,33 +5,6 @@ from dist2.AppLexer import AppLexer
 from dist2.AppParser import AppParser
 from dist2.AppVisitor import AppVisitor
 
-def get_username():
-    return "el padrino don fosforo"
-
-class MyVisitor(AppVisitor):
-    def visitDigitSequence(self, ctx):
-        value = ctx.getText()
-        int(value)
-        return int(value)
-
-    def visitNaturalNumber(self, ctx):
-        value = ctx.getText()
-        int("natural: ",value)
-        return int(value)
-
-    def visitInteger(self, ctx):
-        value = ctx.getText()
-        print("integer: ", int(value))
-        return int(value)
-    
-    # https://www.antlr.org/api/Java/org/antlr/v4/runtime/tree/ParseTreeVisitor.html
-    def visitDeclaration(self, ctx):
-        print("Declaration nr of children: ", self.getNrOfChildren(ctx))
-        print("Variable type: ", self.getNodesChild(ctx, 1), self.getNodesChild(ctx, 1))
-        self.visitChild(ctx,8)
-        # return self.visitChildren(ctx)
-
-
 if __name__ == "__main__":
     while True:
         data =  InputStream(input(">>> "))
@@ -42,6 +15,6 @@ if __name__ == "__main__":
         parser = AppParser(stream)
         tree = parser.primaryExpression()
         # evaluator
-        visitor = MyVisitor()
+        visitor = AppVisitor()
         output = visitor.visit(tree)
         print(output)
