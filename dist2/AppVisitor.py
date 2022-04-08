@@ -20,21 +20,6 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#digitSequence.
-    def visitDigitSequence(self, ctx:AppParser.DigitSequenceContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#naturalNumber.
-    def visitNaturalNumber(self, ctx:AppParser.NaturalNumberContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#integer.
-    def visitInteger(self, ctx:AppParser.IntegerContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by AppParser#signSequence.
     def visitSignSequence(self, ctx:AppParser.SignSequenceContext):
         return self.visitChildren(ctx)
@@ -65,23 +50,13 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#arithmeticSymbol.
-    def visitArithmeticSymbol(self, ctx:AppParser.ArithmeticSymbolContext):
+    # Visit a parse tree produced by AppParser#integer.
+    def visitInteger(self, ctx:AppParser.IntegerContext):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by AppParser#arithmeticalExpression.
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#multiplicativeExpression.
-    def visitMultiplicativeExpression(self, ctx:AppParser.MultiplicativeExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#additiveExpression.
-    def visitAdditiveExpression(self, ctx:AppParser.AdditiveExpressionContext):
         return self.visitChildren(ctx)
 
 

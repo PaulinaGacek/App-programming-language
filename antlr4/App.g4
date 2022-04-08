@@ -15,21 +15,6 @@ instruction
 	| function
 	;
 
-
-digitSequence
-	: (NONZERODIGIT | ZERO)+
-	;
-
-naturalNumber
-	: (NONZERODIGIT | ZERO)
-	| NONZERODIGIT digitSequence
-	;
-
-integer
-	: '-' NONZERODIGIT (digitSequence)?
-	| naturalNumber
-	;
-
 signSequence
 	: (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)+
 	;
@@ -54,21 +39,16 @@ variableName
 functionName
 	: LOWERCASELETTER signSequence?
 	;
-arithmeticSymbol
-    : integer
-    | variableName
-    ;
-    
+
+integer
+	: '-'? NONZERODIGIT (NONZERODIGIT|ZERO)*
+	| ZERO
+	;
+
+
 arithmeticalExpression
-    : (multiplicativeExpression|additiveExpression)+
-    ;
-
-multiplicativeExpression
-    :   additiveExpression WS* (WS*('*'|'/') WS* additiveExpression WS*)*
-    ;
-
-additiveExpression
-    :   arithmeticSymbol WS* (WS*('+'|'-') WS* multiplicativeExpression WS*)*
+    : arithmeticalExpression WS* ('+'|'-'|'/'|'*') WS* arithmeticalExpression
+	| integer
     ;
 
 declaration

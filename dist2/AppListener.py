@@ -26,33 +26,6 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#digitSequence.
-    def enterDigitSequence(self, ctx:AppParser.DigitSequenceContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#digitSequence.
-    def exitDigitSequence(self, ctx:AppParser.DigitSequenceContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#naturalNumber.
-    def enterNaturalNumber(self, ctx:AppParser.NaturalNumberContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#naturalNumber.
-    def exitNaturalNumber(self, ctx:AppParser.NaturalNumberContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#integer.
-    def enterInteger(self, ctx:AppParser.IntegerContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#integer.
-    def exitInteger(self, ctx:AppParser.IntegerContext):
-        pass
-
-
     # Enter a parse tree produced by AppParser#signSequence.
     def enterSignSequence(self, ctx:AppParser.SignSequenceContext):
         pass
@@ -107,12 +80,12 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#arithmeticSymbol.
-    def enterArithmeticSymbol(self, ctx:AppParser.ArithmeticSymbolContext):
+    # Enter a parse tree produced by AppParser#integer.
+    def enterInteger(self, ctx:AppParser.IntegerContext):
         pass
 
-    # Exit a parse tree produced by AppParser#arithmeticSymbol.
-    def exitArithmeticSymbol(self, ctx:AppParser.ArithmeticSymbolContext):
+    # Exit a parse tree produced by AppParser#integer.
+    def exitInteger(self, ctx:AppParser.IntegerContext):
         pass
 
 
@@ -122,24 +95,6 @@ class AppListener(ParseTreeListener):
 
     # Exit a parse tree produced by AppParser#arithmeticalExpression.
     def exitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#multiplicativeExpression.
-    def enterMultiplicativeExpression(self, ctx:AppParser.MultiplicativeExpressionContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#multiplicativeExpression.
-    def exitMultiplicativeExpression(self, ctx:AppParser.MultiplicativeExpressionContext):
-        pass
-
-
-    # Enter a parse tree produced by AppParser#additiveExpression.
-    def enterAdditiveExpression(self, ctx:AppParser.AdditiveExpressionContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#additiveExpression.
-    def exitAdditiveExpression(self, ctx:AppParser.AdditiveExpressionContext):
         pass
 
 

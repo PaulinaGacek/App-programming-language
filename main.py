@@ -1,9 +1,9 @@
 import sys
 import antlr4
 from antlr4 import *
-from dist.AppLexer import AppLexer
-from dist.AppParser import AppParser
-from dist.AppVisitor import AppVisitor
+from dist2.AppLexer import AppLexer
+from dist2.AppParser import AppParser
+from dist2.AppVisitor import AppVisitor
 
 def get_username():
     return "el padrino don fosforo"
