@@ -74,5 +74,17 @@ class AppParseTreeVisitor(ParseTreeVisitor):
     
     def getNrOfChildren(self, node):
         return len(node.children)
+    
+    def getNodesChild(self, node, idx: int):
+        if idx < 0 or idx >= len(node.children):
+            return None
+        return node.children[idx]
+    
+    def visitChild(self, node, idx: int):
+        if idx < 0 or idx >= len(node.children):
+            return None
+        c = node.getChild(idx)
+        childResult = c.accept(self)
+        return self.aggregateResult(self.defaultResult(), childResult)
 
 ParserRuleContext = None

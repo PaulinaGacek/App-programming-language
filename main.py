@@ -11,21 +11,25 @@ def get_username():
 class MyVisitor(AppVisitor):
     def visitDigitSequence(self, ctx):
         value = ctx.getText()
+        int(value)
         return int(value)
 
     def visitNaturalNumber(self, ctx):
         value = ctx.getText()
+        int("natural: ",value)
         return int(value)
 
     def visitInteger(self, ctx):
         value = ctx.getText()
+        print("integer: ", int(value))
         return int(value)
     
     # https://www.antlr.org/api/Java/org/antlr/v4/runtime/tree/ParseTreeVisitor.html
     def visitDeclaration(self, ctx):
         print("Declaration nr of children: ", self.getNrOfChildren(ctx))
-        self.visitChildren
-        return self.visitChildren(ctx)
+        print("Variable type: ", self.getNodesChild(ctx, 1), self.getNodesChild(ctx, 1))
+        self.visitChild(ctx,8)
+        # return self.visitChildren(ctx)
 
 
 if __name__ == "__main__":

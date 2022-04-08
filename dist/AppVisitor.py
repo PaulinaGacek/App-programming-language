@@ -1,6 +1,6 @@
 # Generated from ./antlr4/App.g4 by ANTLR 4.9.2
 from antlr4 import *
-from utils.appParseTreeVisitor import AppParseTreeVisitor
+from utils.AppParseTreeVisitor import AppParseTreeVisitor
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
