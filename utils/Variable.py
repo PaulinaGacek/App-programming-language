@@ -20,3 +20,13 @@ class Variable:
     
     def displayDetails(self):
         return "Name:{}".format(self.name)
+    
+    def getTypeString(self):
+        if self.type == Type.TIME:
+            return "TIME" 
+        elif self.type == Type.INT:
+            return "INT"
+        elif self.type == Type.OBJECT:
+            return "OBJECT"
+        else:
+            return "FORCE"

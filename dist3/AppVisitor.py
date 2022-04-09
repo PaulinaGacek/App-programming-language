@@ -68,9 +68,6 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    '''
-    example: https://www.antlr.org/api/Java/org/antlr/v4/runtime/tree/ParseTreeVisitor.html
-    '''
     # Visit a parse tree produced by AppParser#declaration.
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
@@ -85,7 +82,7 @@ class AppVisitor(AppParseTreeVisitor):
         
         if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7:
             # DEFINE TIME t; or DEFINE TIME t ; or ComplexType
-            Programm.declareNewVariable(name, Programm.toType(type))
+            Programm.declareNewVariable(name, Programm.strToType(type))
         
         if NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11:
             # DEFINE TIME t AS 20; or DEFINE TIME t AS 20 ;
