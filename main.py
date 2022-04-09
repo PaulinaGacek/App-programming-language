@@ -8,7 +8,7 @@ from utils.Programm import Programm
 
 if __name__ == "__main__":
     while True:
-        data =  InputStream(input(">>> "))
+        data = InputStream(input(">>> "))
         # lexer
         lexer = AppLexer(data)
         stream = CommonTokenStream(lexer)
