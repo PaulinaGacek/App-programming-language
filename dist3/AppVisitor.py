@@ -1,6 +1,7 @@
 # Generated from ./antlr4/App.g4 by ANTLR 4.9.2
 from antlr4 import *
 from utils.AppParseTreeVisitor import AppParseTreeVisitor
+from utils.Programm import Programm
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
@@ -77,22 +78,21 @@ class AppVisitor(AppParseTreeVisitor):
 
         if NR_OF_CHILDREN is None:
             return
+
+        name = self.visitChild(ctx,4)
+        type = self.visitChild(ctx,2)
+        print("Type: {}  Name: {}".format(type, name))
         
         if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7:
             # DEFINE TIME t; or DEFINE TIME t ; or ComplexType
-            print("Type: ", self.visitChild(ctx,2))
-            print("Name: ", self.visitChild(ctx,4))
+            Programm.declareNewVariable(name, Programm.toType(type))
         
         if NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11:
             # DEFINE TIME t AS 20; or DEFINE TIME t AS 20 ;
-            print("Type: ", self.visitChild(ctx,2))
-            print("Name: ", self.visitChild(ctx,4))
             print("Value: ", self.visitChild(ctx,8))
         
         else:
             # DEFINITION and declaration of complex type
-            print("Type: ", self.visitChild(ctx,2))
-            print("Name: ", self.visitChild(ctx,4))
             print("Value 1: ", self.visitChild(ctx,8))
             if self.visitChild(ctx,10) is not None:
                 print("Value 2: ", self.visitChild(ctx,10))
