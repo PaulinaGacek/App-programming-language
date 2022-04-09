@@ -27,7 +27,7 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#simpleVariableType.
     def visitSimpleVariableType(self, ctx:AppParser.SimpleVariableTypeContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
 
     # Visit a parse tree produced by AppParser#complexVariableType.
@@ -42,7 +42,7 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#variableName.
     def visitVariableName(self, ctx:AppParser.VariableNameContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
 
     # Visit a parse tree produced by AppParser#functionName.
@@ -53,7 +53,7 @@ class AppVisitor(AppParseTreeVisitor):
     # Visit a parse tree produced by AppParser#integer.
     def visitInteger(self, ctx:AppParser.IntegerContext):
         value = ctx.getText()
-        print("integer: ", int(value))
+        # print("integer: ", int(value))
         return int(value)
 
 
@@ -72,9 +72,37 @@ class AppVisitor(AppParseTreeVisitor):
     '''
     # Visit a parse tree produced by AppParser#declaration.
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
-        print("Nr of children: ", self.getNrOfChildren(ctx))
-        self.visitChild(ctx,8) # visiting only number - for debug purposes
-        # return self.visitChildren(ctx)
+        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        print("Nr of children: ", NR_OF_CHILDREN)
+
+        if NR_OF_CHILDREN is None:
+            return
+        
+        if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7:
+            # DEFINE TIME t; or DEFINE TIME t ; or ComplexType
+            print("Type: ", self.visitChild(ctx,2))
+            print("Name: ", self.visitChild(ctx,4))
+        
+        if NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11:
+            # DEFINE TIME t AS 20; or DEFINE TIME t AS 20 ;
+            print("Type: ", self.visitChild(ctx,2))
+            print("Name: ", self.visitChild(ctx,4))
+            print("Value: ", self.visitChild(ctx,8))
+        
+        else:
+            # DEFINITION and declaration of complex type
+            print("Type: ", self.visitChild(ctx,2))
+            print("Name: ", self.visitChild(ctx,4))
+            print("Value 1: ", self.visitChild(ctx,8))
+            if self.visitChild(ctx,10) is not None:
+                print("Value 2: ", self.visitChild(ctx,10))
+            
+            elif self.visitChild(ctx,11) is not None:
+                print("Value 2: ", self.visitChild(ctx,11))
+            
+            else:
+                print("Value 2: ", self.visitChild(ctx,12))
+
         return "declaration"
 
 
