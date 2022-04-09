@@ -43,6 +43,7 @@ integer
 arithmeticalExpression
     : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
+	| variableName
     ;
 
 declaration
@@ -60,40 +61,40 @@ definition
 	;
 
 conditionalStatement
-    :   'IF' WS* '('WS* condition WS* ')' WS+ 'THEN' WS+ primaryExpression WS+ 'ENDIF' WS* ';'
+    :   'IF' whiteSpace? '('whiteSpace? condition whiteSpace? ')' whiteSpace 'THEN' whiteSpace primaryExpression whiteSpace 'ENDIF' whiteSpace? ';'
     ;
 
 condition
-    :   variableName WS* '==' WS* arithmeticalExpression
-    |   variableName WS* '>' WS* arithmeticalExpression
-    |   variableName WS* '<' WS* arithmeticalExpression
-    |   variableName WS* '>=' WS* arithmeticalExpression
-    |   variableName WS* '<=' WS* arithmeticalExpression
-    |   variableName WS* '!=' WS* arithmeticalExpression
+    :   variableName whiteSpace? '==' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '>' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '<' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '>=' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '<=' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '!=' whiteSpace? arithmeticalExpression
     ;
 
 parallelExpression
-    :   'PARALLEL' WS+ primaryExpression WS+ 'ENDPARALLEL' WS* ';'
+    :   'PARALLEL' whiteSpace primaryExpression whiteSpace 'ENDPARALLEL' whiteSpace? ';'
     ;
 
 loop
-    : 'LOOP' WS+ '(' WS* declaration WS* condition WS* ';' WS* definition WS*')'WS+ primaryExpression WS+ 'ENDLOOP' WS* ';'
-    | 'LOOP' WS+ '('WS*';' WS* condition WS* ';' WS* definition WS*')' WS+ primaryExpression WS+ 'ENDLOOP' WS* ';'
+    : 'LOOP' whiteSpace '(' whiteSpace? declaration whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')'whiteSpace primaryExpression whiteSpace 'ENDLOOP' whiteSpace? ';'
+    | 'LOOP' whiteSpace '('whiteSpace?';' whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')' whiteSpace primaryExpression whiteSpace 'ENDLOOP' whiteSpace? ';'
     ;
 
 function
-    :   'DEFINE FUNCTION' WS+ functionName '(' WS* functionArgs WS* ')' WS 'AS' WS+ functionBody WS+ 'ENDFUNCTION' WS* ';'
-    |   'DEFINE FUNCTION' WS+ functionName WS+ 'AS' WS+ functionBody WS+ 'ENDFUNCTION' WS* ';'
+    :   'DEFINE FUNCTION' whiteSpace functionName '(' whiteSpace? functionArgs whiteSpace? ')' whiteSpace 'AS' whiteSpace functionBody whiteSpace 'ENDFUNCTION' whiteSpace? ';'
+    |   'DEFINE FUNCTION' whiteSpace functionName whiteSpace 'AS' whiteSpace functionBody whiteSpace 'ENDFUNCTION' whiteSpace? ';'
     ;
 
 functionBody
-    : primaryExpression WS*
-    | primaryExpression WS+ parallelExpression WS+ primaryExpression WS*
+    : primaryExpression whiteSpace?
+    | primaryExpression whiteSpace parallelExpression whiteSpace primaryExpression whiteSpace?
     ;
 
 functionArgs
-    : declaration WS*
-    | declaration WS* ',' WS* functionArgs
+    : declaration whiteSpace?
+    | declaration whiteSpace? ',' whiteSpace? functionArgs
     ;
 
 whiteSpace
