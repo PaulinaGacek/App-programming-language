@@ -1,11 +1,11 @@
 # Generated from ./antlr4/App.g4 by ANTLR 4.9.2
 from antlr4 import *
 from utils.AppParseTreeVisitor import AppParseTreeVisitor
+from utils.Programm import Programm
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
     from AppParser import AppParser
-
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
 class AppVisitor(AppParseTreeVisitor):
@@ -25,14 +25,12 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#simpleVariableType.
     def visitSimpleVariableType(self, ctx:AppParser.SimpleVariableTypeContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
 
-    # Visit a parse tree produced by AppParser#complexVariableType.
     def visitComplexVariableType(self, ctx:AppParser.ComplexVariableTypeContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
 
     # Visit a parse tree produced by AppParser#variable.
@@ -42,7 +40,7 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#variableName.
     def visitVariableName(self, ctx:AppParser.VariableNameContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
 
     # Visit a parse tree produced by AppParser#functionName.
@@ -50,31 +48,92 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#integer.
     def visitInteger(self, ctx:AppParser.IntegerContext):
         value = ctx.getText()
-        print("integer: ", int(value))
         return int(value)
 
 
-    # Visit a parse tree produced by AppParser#arithmeticalExpression.
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
-        return self.visitChildren(ctx)
+        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        if NR_OF_CHILDREN == 1:
+            return self.visitChildren(ctx)
+        else:
+            l = self.visit(ctx.left)
+            r = self.visit(ctx.right)
 
-    '''
-    example: https://www.antlr.org/api/Java/org/antlr/v4/runtime/tree/ParseTreeVisitor.html
-    '''
-    # Visit a parse tree produced by AppParser#declaration.
+            op = ctx.op.text
+            operation =  {
+            '+': lambda: l + r,
+            '-': lambda: l - r,
+            '*': lambda: l * r,
+            '/': lambda: l / r,
+            }
+            return operation.get(op, lambda: None)()
+
+
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
-        print("Nr of children: ", self.getNrOfChildren(ctx))
-        self.visitChild(ctx,8) # visiting only number - for debug purposes
-        # return self.visitChildren(ctx)
+        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        # print("Nr of children: ", NR_OF_CHILDREN)
+
+        if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 6:
+            return
+
+        name = self.visitChild(ctx,4)
+        type = self.visitChild(ctx,2)
+        # print("Type: {}  Name: {}".format(type, name))
+        
+        if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7: # definition without value
+            Programm.declareNewVariable(name, Programm.strToType(type))
+        
+        elif NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11: # definition with value - simple type
+            value = self.visitChild(ctx,8)
+            Programm.defineNewVariable(name, Programm.strToType(type), value)
+
+        else: 
+            # definition with value of complex type
+            value1 = self.visitChild(ctx,8)
+            value2 = None
+            if self.visitChild(ctx,10) is not None:
+                value2 = self.visitChild(ctx,10)
+            
+            elif self.visitChild(ctx,11) is not None:
+                value2 = self.visitChild(ctx,11)
+            
+            else:
+                value2 = self.visitChild(ctx,12)
+            Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
+
         return "declaration"
 
 
-    # Visit a parse tree produced by AppParser#definition.
     def visitDefinition(self, ctx:AppParser.DefinitionContext):
-        return self.visitChildren(ctx)
+        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        # print("Nr of children: ", NR_OF_CHILDREN)
+
+        if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 8:
+            return
+        
+        name = self.visitChild(ctx,2)
+        value = self.visitChild(ctx,6)
+
+        if NR_OF_CHILDREN < 10: # simple type
+            Programm.defineExistingVariable(name, value)
+
+        else: # complex type
+            value2 = None
+            if self.visitChild(ctx,8) is not None:
+                value2 = self.visitChild(ctx,8)
+            
+            elif self.visitChild(ctx,9) is not None:
+                value2 = self.visitChild(ctx,9)
+            
+            else:
+                value2 = self.visitChild(ctx,10)
+
+            Programm.defineExistingVariable(name, value, value2)
+
+        return "definition"
+
 
 
     # Visit a parse tree produced by AppParser#conditionalStatement.
@@ -84,11 +143,6 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#condition.
     def visitCondition(self, ctx:AppParser.ConditionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#instructions.
-    def visitInstructions(self, ctx:AppParser.InstructionsContext):
         return self.visitChildren(ctx)
 
 
@@ -114,6 +168,11 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#functionArgs.
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AppParser#whiteSpace.
+    def visitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
         return self.visitChildren(ctx)
 
 

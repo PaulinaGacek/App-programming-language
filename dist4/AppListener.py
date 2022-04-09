@@ -134,15 +134,6 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#instructions.
-    def enterInstructions(self, ctx:AppParser.InstructionsContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#instructions.
-    def exitInstructions(self, ctx:AppParser.InstructionsContext):
-        pass
-
-
     # Enter a parse tree produced by AppParser#parallelExpression.
     def enterParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
         pass
@@ -185,6 +176,15 @@ class AppListener(ParseTreeListener):
 
     # Exit a parse tree produced by AppParser#functionArgs.
     def exitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#whiteSpace.
+    def enterWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#whiteSpace.
+    def exitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
         pass
 
 

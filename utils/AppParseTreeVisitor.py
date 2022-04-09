@@ -73,14 +73,24 @@ class AppParseTreeVisitor(ParseTreeVisitor):
         return True
     
     def getNrOfChildren(self, node):
+        if node is None or node.children is None:
+            return None
         return len(node.children)
     
     def getNodesChild(self, node, idx: int):
+        if node is None:
+            return None
+
         if idx < 0 or idx >= len(node.children):
             return None
+
         return node.children[idx]
     
     def visitChild(self, node, idx: int):
+
+        if node is None:
+            return None
+
         if idx < 0 or idx >= len(node.children):
             return None
         c = node.getChild(idx)

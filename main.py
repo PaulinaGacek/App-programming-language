@@ -1,9 +1,10 @@
 import sys
 import antlr4
 from antlr4 import *
-from dist2.AppLexer import AppLexer
-from dist2.AppParser import AppParser
-from dist2.AppVisitor import AppVisitor
+from dist4.AppLexer import AppLexer
+from dist4.AppParser import AppParser
+from dist4.AppVisitor import AppVisitor
+from utils.Programm import Programm
 
 if __name__ == "__main__":
     while True:
@@ -17,4 +18,6 @@ if __name__ == "__main__":
         # evaluator
         visitor = AppVisitor()
         output = visitor.visit(tree)
+        
         print(output)
+        Programm.displayVariables()

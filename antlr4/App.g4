@@ -1,9 +1,7 @@
-// Gramatyka ANTRL
-
 grammar App;
 
 primaryExpression
-	: (WS* instruction WS*)+
+	: (whiteSpace? instruction whiteSpace?)+
 	;
 
 instruction
@@ -47,21 +45,22 @@ integer
 
 
 arithmeticalExpression
-    : arithmeticalExpression WS* ('+'|'-'|'/'|'*') WS* arithmeticalExpression
+    : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
     ;
 
 declaration
-	:   'DEFINE' WS+ simpleVariableType WS+ variableName WS* ';'
-	|   'DEFINE' WS+ simpleVariableType WS+ variableName WS+ 'AS' WS+ arithmeticalExpression WS* ';'
-	|   'DEFINE' WS+ complexVariableType WS+ variableName WS* ';'
-	|   'DEFINE' WS+ complexVariableType WS+ variableName WS+ 'AS' WS+ arithmeticalExpression WS* ','
-	     WS* arithmeticalExpression WS*';'
+	:   'DEFINE' whiteSpace simpleVariableType whiteSpace variableName whiteSpace? ';'
+	|   'DEFINE' whiteSpace simpleVariableType whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression whiteSpace? ';'
+	|   'DEFINE' whiteSpace complexVariableType whiteSpace variableName whiteSpace? ';'
+	|   'DEFINE' whiteSpace complexVariableType whiteSpace variableName whiteSpace 'AS' 
+		whiteSpace arithmeticalExpression whiteSpace? ',' whiteSpace? arithmeticalExpression whiteSpace? ';'
 	;
 
 definition
-	:   'SET' WS+ variableName WS+ 'AS' WS+ arithmeticalExpression ';'
-	|   'SET' WS+ variableName WS+ 'AS' WS+ arithmeticalExpression WS+ ',' WS+ arithmeticalExpression ';'
+	:   'SET' whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression ';'
+	|   'SET' whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression whiteSpace? 
+		',' whiteSpace? arithmeticalExpression ';'
 	;
 
 conditionalStatement
@@ -75,14 +74,6 @@ condition
     |   variableName WS* '>=' WS* arithmeticalExpression
     |   variableName WS* '<=' WS* arithmeticalExpression
     |   variableName WS* '!=' WS* arithmeticalExpression
-    ;
-
-instructions
-    :   WS+
-    |   declaration WS+ instructions WS*
-    |   declaration WS+ instructions WS*
-    |   loop WS+ instructions WS*
-    |   conditionalStatement WS+ instructions WS*
     ;
 
 parallelExpression
@@ -109,9 +100,11 @@ functionArgs
     | declaration WS* ',' WS* functionArgs
     ;
 
+whiteSpace
+	: WS+;
+
 WS
-	:
-	'\n'
+	: '\n'
 	| ' '
 	| '\t'
 	;
