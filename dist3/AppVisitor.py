@@ -26,14 +26,12 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#simpleVariableType.
     def visitSimpleVariableType(self, ctx:AppParser.SimpleVariableTypeContext):
         return ctx.getText()
 
 
-    # Visit a parse tree produced by AppParser#complexVariableType.
     def visitComplexVariableType(self, ctx:AppParser.ComplexVariableTypeContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
 
     # Visit a parse tree produced by AppParser#variable.
@@ -41,7 +39,6 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#variableName.
     def visitVariableName(self, ctx:AppParser.VariableNameContext):
         return ctx.getText()
 
@@ -51,10 +48,8 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#integer.
     def visitInteger(self, ctx:AppParser.IntegerContext):
         value = ctx.getText()
-        # print("integer: ", int(value))
         return int(value)
 
 
@@ -63,17 +58,11 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#declaration.
-    def visitDeclaration(self, ctx:AppParser.DeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#declaration.
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
         print("Nr of children: ", NR_OF_CHILDREN)
 
-        if NR_OF_CHILDREN is None:
+        if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 6:
             return
 
         name = self.visitChild(ctx,4)
@@ -103,6 +92,34 @@ class AppVisitor(AppParseTreeVisitor):
 
         return "declaration"
 
+
+    def visitDefinition(self, ctx:AppParser.DefinitionContext):
+        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        # print("Nr of children: ", NR_OF_CHILDREN)
+
+        if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 8:
+            return
+        
+        name = self.visitChild(ctx,2)
+        value = self.visitChild(ctx,6)
+
+        if NR_OF_CHILDREN < 10: # simple type
+            Programm.defineExistingVariable(name, value)
+
+        else: # complex type
+            value2 = None
+            if self.visitChild(ctx,8) is not None:
+                value2 = self.visitChild(ctx,8)
+            
+            elif self.visitChild(ctx,9) is not None:
+                value2 = self.visitChild(ctx,9)
+            
+            else:
+                value2 = self.visitChild(ctx,10)
+
+            Programm.defineExistingVariable(name, value, value2)
+
+        return "definition"
 
     # Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):

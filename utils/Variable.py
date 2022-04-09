@@ -1,4 +1,5 @@
 from enum import Enum
+from utils.Error import *
 
 class Type(Enum):
     TIME = 1
@@ -12,14 +13,13 @@ class Variable:
         self.name = name
         self.type = type
         self.value = value
-        self.value2 = None
-        if type==Type.FORCE:
-            self.value2 = value2
-            if value2 is None or type(value) is not int:
-                raise TypeError("Second parameter of force variable is not int")
+        self.value2 = value2
     
     def displayDetails(self):
-        return "Name: {}, Type: {}, Value: {}".format(self.name, self.getTypeString(), self.value, self.value2)
+        if self.value2 is None:
+            return "Name: {}, Type: {}, Value: {}".format(self.name, self.getTypeString(), self.value, self.value2)
+        else:
+            return "Name: {}, Type: {}, Values: ({},{})".format(self.name, self.getTypeString(), self.value, self.value2)
     
     def getTypeString(self):
         if self.type == Type.TIME:

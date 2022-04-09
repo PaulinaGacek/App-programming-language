@@ -1,5 +1,5 @@
 from utils.Variable import *
-from utils.Error import VariableRedefinitionError
+from utils.Error import *
 
 class Programm:
 
@@ -15,7 +15,7 @@ class Programm:
     def defineNewVariable(name: str, type: Type, value: int, value2=None):
         
         if Programm.variables.get(name) is not None:
-            raise VariableRedefinitionError(Programm.getVariable(name))
+            raise VariableRedefinitionError(name, Programm.typeToStr(type))
         
         new_var = Variable(name, type, value, value2)
         Programm.variables[name] = new_var
@@ -25,13 +25,14 @@ class Programm:
     handles: SET zmienna AS 100;
     '''
     @staticmethod
-    def defineExistingVariable(name: str, type: Type, value: int, value2=None):
+    def defineExistingVariable(name: str, value: int, value2=None):
 
         if Programm.variables.get(name) is None:
-            raise Error("Variable was not declared in current scope")
+            raise UndefinedVariableReferenceError(name)
         
-        new_var = Variable(name, type, value, value2)
-        Programm.variables[name] = new_var
+        print("Value 2: {}".format(value2))
+        Programm.variables[name].value = value
+        Programm.variables[name].value2 = value2
 
 
     '''
@@ -41,7 +42,7 @@ class Programm:
     def declareNewVariable(name: str, type: Type):
         
         if Programm.getVariable(name) is not None:
-            raise VariableRedefinitionError(Programm.getVariable(name))
+            raise VariableRedefinitionError(name, Programm.typeToStr(type))
         
         new_var = Variable(name, type, None, None)
         Programm.variables[name] = new_var
