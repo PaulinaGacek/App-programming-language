@@ -15,7 +15,7 @@ class Programm:
     def defineNewVariable(name: str, type: Type, value: int, value2=None):
         
         if Programm.variables.get(name) is not None:
-            raise Error("Redefinition of the variable")
+            raise VariableRedefinitionError(Programm.getVariable(name))
         
         new_var = Variable(name, type, value, value2)
         Programm.variables[name] = new_var

@@ -78,27 +78,28 @@ class AppVisitor(AppParseTreeVisitor):
 
         name = self.visitChild(ctx,4)
         type = self.visitChild(ctx,2)
-        print("Type: {}  Name: {}".format(type, name))
+        # print("Type: {}  Name: {}".format(type, name))
         
-        if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7:
-            # DEFINE TIME t; or DEFINE TIME t ; or ComplexType
+        if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7: # definition without value
             Programm.declareNewVariable(name, Programm.strToType(type))
         
-        if NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11:
-            # DEFINE TIME t AS 20; or DEFINE TIME t AS 20 ;
-            print("Value: ", self.visitChild(ctx,8))
-        
-        else:
-            # DEFINITION and declaration of complex type
-            print("Value 1: ", self.visitChild(ctx,8))
+        elif NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11: # definition with value - simple type
+            value = self.visitChild(ctx,8)
+            Programm.defineNewVariable(name, Programm.strToType(type), value)
+
+        else: 
+            # definition with value of complex type
+            value1 = self.visitChild(ctx,8)
+            value2 = None
             if self.visitChild(ctx,10) is not None:
-                print("Value 2: ", self.visitChild(ctx,10))
+                value2 = self.visitChild(ctx,10)
             
             elif self.visitChild(ctx,11) is not None:
-                print("Value 2: ", self.visitChild(ctx,11))
+                value2 = self.visitChild(ctx,11)
             
             else:
-                print("Value 2: ", self.visitChild(ctx,12))
+                value2 = self.visitChild(ctx,12)
+            Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
 
         return "declaration"
 

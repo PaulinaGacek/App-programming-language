@@ -19,7 +19,7 @@ class Variable:
                 raise TypeError("Second parameter of force variable is not int")
     
     def displayDetails(self):
-        return "Name:{}".format(self.name)
+        return "Name: {}, Type: {}, Value: {}".format(self.name, self.getTypeString(), self.value, self.value2)
     
     def getTypeString(self):
         if self.type == Type.TIME:
