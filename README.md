@@ -31,7 +31,7 @@
 ## (optional) Creating lexer and parser - this command will automatically generate whole dist folder
 *Do not do  it if dist folder is up to date with the grammar*
 ```
-antlr4 -Dlanguage=Python3 ./antlr/App.g4 -visitor -o dist
+antlr4 -Dlanguage=Python3 ./antlr4/App.g4  -visitor -o dist3
 ```
 
 ## How to run main.py - linux

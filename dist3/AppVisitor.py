@@ -61,6 +61,12 @@ class AppVisitor(AppParseTreeVisitor):
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
         return self.visitChildren(ctx)
 
+
+    # Visit a parse tree produced by AppParser#declaration.
+    def visitDeclaration(self, ctx:AppParser.DeclarationContext):
+        return self.visitChildren(ctx)
+
+
     '''
     example: https://www.antlr.org/api/Java/org/antlr/v4/runtime/tree/ParseTreeVisitor.html
     '''
@@ -72,11 +78,6 @@ class AppVisitor(AppParseTreeVisitor):
         return "declaration"
 
 
-    # Visit a parse tree produced by AppParser#definition.
-    def visitDefinition(self, ctx:AppParser.DefinitionContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):
         return self.visitChildren(ctx)
@@ -84,11 +85,6 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#condition.
     def visitCondition(self, ctx:AppParser.ConditionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AppParser#instructions.
-    def visitInstructions(self, ctx:AppParser.InstructionsContext):
         return self.visitChildren(ctx)
 
 
@@ -114,6 +110,11 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#functionArgs.
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AppParser#whiteSpace.
+    def visitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
         return self.visitChildren(ctx)
 
 

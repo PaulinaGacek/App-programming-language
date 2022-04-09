@@ -104,8 +104,7 @@ whiteSpace
 	: WS+;
 
 WS
-	:
-	'\n'
+	: '\n'
 	| ' '
 	| '\t'
 	;
