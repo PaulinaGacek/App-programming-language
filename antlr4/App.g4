@@ -13,17 +13,13 @@ instruction
 	| function
 	;
 
-signSequence
-	: (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)+
-	;
-
 simpleVariableType
 	: 'TIME'
-	| 'INT'
-	| 'OBJECT'
-	;
+	| 'INT';
 
-complexVariableType: 'FORCE';
+complexVariableType
+    : 'FORCE'
+    | 'OBJECT';
 
 variable
 	: simpleVariableType
@@ -31,15 +27,15 @@ variable
 	;
 
 variableName
-	: LOWERCASELETTER signSequence?
+	: LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
 	;
 
 functionName
-	: LOWERCASELETTER signSequence?
+	: LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
 	;
 
 integer
-	: '-'? NONZERODIGIT (NONZERODIGIT|ZERO)*
+	: NONZERODIGIT (NONZERODIGIT|ZERO)*
 	| ZERO
 	;
 
