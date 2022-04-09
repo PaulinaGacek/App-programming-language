@@ -10,17 +10,17 @@ else:
 
 class AppVisitor(AppParseTreeVisitor):
 
-    # Visit a parse tree produced by AppParser#primaryExpression.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#instruction.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#instruction.
     def visitInstruction(self, ctx:AppParser.InstructionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#signSequence.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#signSequence.
     def visitSignSequence(self, ctx:AppParser.SignSequenceContext):
         return self.visitChildren(ctx)
 
@@ -33,17 +33,16 @@ class AppVisitor(AppParseTreeVisitor):
         return ctx.getText()
 
 
-    # Visit a parse tree produced by AppParser#variable.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#variable.
     def visitVariable(self, ctx:AppParser.VariableContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#variableName.
     def visitVariableName(self, ctx:AppParser.VariableNameContext):
         return ctx.getText()
 
 
-    # Visit a parse tree produced by AppParser#functionName.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionName.
     def visitFunctionName(self, ctx:AppParser.FunctionNameContext):
         return self.visitChildren(ctx)
 
@@ -73,14 +72,12 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
-        # print("Nr of children: ", NR_OF_CHILDREN)
 
         if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 6:
             return
 
         name = self.visitChild(ctx,4)
         type = self.visitChild(ctx,2)
-        # print("Type: {}  Name: {}".format(type, name))
         
         if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7: # definition without value
             Programm.declareNewVariable(name, Programm.strToType(type))
@@ -108,7 +105,6 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitDefinition(self, ctx:AppParser.DefinitionContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
-        # print("Nr of children: ", NR_OF_CHILDREN)
 
         if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 8:
             return
@@ -136,42 +132,42 @@ class AppVisitor(AppParseTreeVisitor):
 
 
 
-    # Visit a parse tree produced by AppParser#conditionalStatement.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#condition.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
     def visitCondition(self, ctx:AppParser.ConditionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#parallelExpression.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#parallelExpression.
     def visitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#loop.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loop.
     def visitLoop(self, ctx:AppParser.LoopContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#function.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#function.
     def visitFunction(self, ctx:AppParser.FunctionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#functionBody.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionBody.
     def visitFunctionBody(self, ctx:AppParser.FunctionBodyContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#functionArgs.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionArgs.
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#whiteSpace.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#whiteSpace.
     def visitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
         return self.visitChildren(ctx)
 

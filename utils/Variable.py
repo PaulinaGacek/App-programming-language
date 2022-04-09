@@ -15,12 +15,18 @@ class Variable:
         self.value = value
         self.value2 = value2
     
+    '''
+    Returns string with variable's details
+    '''
     def displayDetails(self):
         if self.value2 is None:
             return "Name: {}, Type: {}, Value: {}".format(self.name, self.getTypeString(), self.value, self.value2)
         else:
             return "Name: {}, Type: {}, Values: ({},{})".format(self.name, self.getTypeString(), self.value, self.value2)
     
+    '''
+    Returns self.type in the string format
+    '''
     def getTypeString(self):
         if self.type == Type.TIME:
             return "TIME" 

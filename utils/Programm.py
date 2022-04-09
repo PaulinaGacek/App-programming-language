@@ -4,12 +4,14 @@ from utils.Error import *
 class Programm:
 
     '''
-    Mapps variable name to the variable object
+    Keeps global variables, mapps variable name to the variable object
     '''
     variables = {}
 
     '''
-    handles: DEFINE TIME zmienna AS 100;
+    Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
+    Creates variable and puts it into variables dict or raises exception
+    if variable was already defined.
     '''
     @staticmethod
     def defineNewVariable(name: str, type: Type, value: int, value2=None):
@@ -22,7 +24,9 @@ class Programm:
 
 
     '''
-    handles: SET zmienna AS 100;
+    Handles definition of declared object, e.g. SET zmienna AS 100;
+    It sets value of the variable as given nr or raises exception 
+    if variable was not previously defined.
     '''
     @staticmethod
     def defineExistingVariable(name: str, value: int, value2=None):
@@ -36,7 +40,9 @@ class Programm:
 
 
     '''
-    handles: DEFINE TIME zmienna;
+    Handles declaration without definition, e.g. DEFINE TIME zmienna;
+    Creates variable with no value and puts it into variables dict or raises exception
+    if variable was already defined.
     '''
     @staticmethod
     def declareNewVariable(name: str, type: Type):
@@ -48,6 +54,9 @@ class Programm:
         Programm.variables[name] = new_var
     
 
+    '''
+    Prints the content of variables dict.
+    '''
     @staticmethod
     def displayVariables():
         if len(Programm.variables) == 0:
@@ -58,6 +67,9 @@ class Programm:
             print("Name: {} -> details: {}".format(key,value.displayDetails()))
 
 
+    '''
+    Converts given string to Type object
+    '''
     def strToType(type: str):
         if type == "TIME":
             return Type.TIME
@@ -69,6 +81,9 @@ class Programm:
             return Type.FORCE
 
 
+    '''
+    Converts Type object to string
+    '''
     def typeToStr(type: Type):
         if type == Type.TIME:
             return "TIME" 
@@ -80,5 +95,8 @@ class Programm:
             return "FORCE"
 
 
+    '''
+    Returns Variable object with given name
+    '''
     def getVariable(name: str):
         return Programm.variables.get(name)

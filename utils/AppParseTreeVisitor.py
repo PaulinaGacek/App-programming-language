@@ -1,39 +1,3 @@
-'''
-class ParseTreeVisitor(object):
-    def visit(self, tree):
-        return tree.accept(self)
-
-    def visitChildren(self, node):
-        result = self.defaultResult()
-        n = node.getChildCount()
-        for i in range(n):
-            if not self.shouldVisitNextChild(node, result):
-                return result
-
-            c = node.getChild(i)
-            childResult = c.accept(self)
-            result = self.aggregateResult(result, childResult)
-
-        return result
-
-    def visitTerminal(self, node):
-        return self.defaultResult()
-
-    def visitErrorNode(self, node):
-        return self.defaultResult()
-
-    def defaultResult(self):
-        return None
-
-    def aggregateResult(self, aggregate, nextResult):
-        return nextResult
-
-    def shouldVisitNextChild(self, node, currentResult):
-        return True
-
-ParserRuleContext = None
-'''
-
 from antlr4 import *
 
 class AppParseTreeVisitor(ParseTreeVisitor):
@@ -72,11 +36,17 @@ class AppParseTreeVisitor(ParseTreeVisitor):
     def shouldVisitNextChild(self, node, currentResult):
         return True
     
+    '''
+    Returns number of node's children
+    '''
     def getNrOfChildren(self, node):
         if node is None or node.children is None:
             return None
         return len(node.children)
     
+    '''
+    Returns node's child with given idx (starts from 0)
+    '''
     def getNodesChild(self, node, idx: int):
         if node is None:
             return None
@@ -86,6 +56,9 @@ class AppParseTreeVisitor(ParseTreeVisitor):
 
         return node.children[idx]
     
+    '''
+    Visits node's child with given idx (starts from 0)
+    '''
     def visitChild(self, node, idx: int):
 
         if node is None:
