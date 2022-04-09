@@ -45,7 +45,7 @@ integer
 
 
 arithmeticalExpression
-    : arithmeticalExpression whiteSpace? ('+'|'-'|'/'|'*') whiteSpace? arithmeticalExpression
+    : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
     ;
 

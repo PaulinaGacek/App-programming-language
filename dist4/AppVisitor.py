@@ -6,7 +6,6 @@ if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
     from AppParser import AppParser
-
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
 class AppVisitor(AppParseTreeVisitor):
@@ -39,6 +38,7 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by AppParser#variableName.
     def visitVariableName(self, ctx:AppParser.VariableNameContext):
         return ctx.getText()
 
@@ -58,7 +58,6 @@ class AppVisitor(AppParseTreeVisitor):
         if NR_OF_CHILDREN == 1:
             return self.visitChildren(ctx)
         else:
-            print("Arithmetic expr, nr of children: {}".format(NR_OF_CHILDREN))
             l = self.visit(ctx.left)
             r = self.visit(ctx.right)
 
@@ -74,7 +73,7 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
-        print("Nr of children: ", NR_OF_CHILDREN)
+        # print("Nr of children: ", NR_OF_CHILDREN)
 
         if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 6:
             return
@@ -134,6 +133,8 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineExistingVariable(name, value, value2)
 
         return "definition"
+
+
 
     # Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):

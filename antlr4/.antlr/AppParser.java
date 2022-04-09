@@ -633,6 +633,9 @@ public class AppParser extends Parser {
 	}
 
 	public static class ArithmeticalExpressionContext extends ParserRuleContext {
+		public ArithmeticalExpressionContext left;
+		public Token op;
+		public ArithmeticalExpressionContext right;
 		public IntegerContext integer() {
 			return getRuleContext(IntegerContext.class,0);
 		}
@@ -685,6 +688,8 @@ public class AppParser extends Parser {
 					{
 					{
 					_localctx = new ArithmeticalExpressionContext(_parentctx, _parentState);
+					_localctx.left = _prevctx;
+					_localctx.left = _prevctx;
 					pushNewRecursionContext(_localctx, _startState, RULE_arithmeticalExpression);
 					setState(96);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
@@ -699,9 +704,10 @@ public class AppParser extends Parser {
 					}
 
 					setState(100);
+					((ArithmeticalExpressionContext)_localctx).op = _input.LT(1);
 					_la = _input.LA(1);
 					if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__8))) != 0)) ) {
-					_errHandler.recoverInline(this);
+						((ArithmeticalExpressionContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 					}
 					else {
 						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -719,7 +725,7 @@ public class AppParser extends Parser {
 					}
 
 					setState(104);
-					arithmeticalExpression(3);
+					((ArithmeticalExpressionContext)_localctx).right = arithmeticalExpression(3);
 					}
 					} 
 				}
