@@ -49,8 +49,6 @@ class PyGameHandler:
         for x_ in range (0,PyGameHandler.RADIUS):
             x1 = x + x_
             x2 = x - x_
-            print("x1: {}, x2: {}, RADIUS: {}".format(x1,x2,PyGameHandler.RADIUS))
-            print("y1**2: {}".format(PyGameHandler.RADIUS**2 - (x1 - x)**2))
             y1 = math.sqrt(PyGameHandler.RADIUS**2 - (x1 - x)**2) + y
             y2 = - math.sqrt(PyGameHandler.RADIUS**2 - (x2-x)**2) + y
 
@@ -79,14 +77,15 @@ class PyGameHandler:
     
 
     '''
-        Used with 'SET' command to modify parameters of the object
+        Used with 'SET' command to modify parameters of the object. 
+        Do not use it to move existing objects!
     '''
     def modify_object(name, x, y):
         for obj in PyGameHandler.objects:
-            print("Name: {}".format(obj.name))
-            if obj.name == name:
 
-                if not PyGameHandler.can_object_be_draw(x,y):
+            if obj.name == name:
+                print("Name: {}, x:{}, y:{}".format(obj.name, x, y))
+                if obj.x is None and not PyGameHandler.can_object_be_drawn(x,y):
                     raise ObjectCannotBeDrawn(name,x,y)
 
                 obj.x = x
