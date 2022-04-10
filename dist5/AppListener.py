@@ -26,15 +26,6 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#signSequence.
-    def enterSignSequence(self, ctx:AppParser.SignSequenceContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#signSequence.
-    def exitSignSequence(self, ctx:AppParser.SignSequenceContext):
-        pass
-
-
     # Enter a parse tree produced by AppParser#simpleVariableType.
     def enterSimpleVariableType(self, ctx:AppParser.SimpleVariableTypeContext):
         pass

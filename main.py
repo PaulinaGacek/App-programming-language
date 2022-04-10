@@ -1,9 +1,9 @@
 import sys
 import antlr4
 from antlr4 import *
-from dist4.AppLexer import AppLexer
-from dist4.AppParser import AppParser
-from dist4.AppVisitor import AppVisitor
+from dist5.AppLexer import AppLexer
+from dist5.AppParser import AppParser
+from dist5.AppVisitor import AppVisitor
 from utils.Programm import Programm
 
 if __name__ == "__main__":

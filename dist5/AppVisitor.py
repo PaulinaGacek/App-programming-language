@@ -20,11 +20,6 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#signSequence.
-    def visitSignSequence(self, ctx:AppParser.SignSequenceContext):
-        return self.visitChildren(ctx)
-
-
     def visitSimpleVariableType(self, ctx:AppParser.SimpleVariableTypeContext):
         return ctx.getText()
 
