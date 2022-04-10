@@ -8,7 +8,7 @@ class PyGameHandler:
 
     HEIGHT = 400
     WIDTH = 400
-    RADIUS = 30
+    RADIUS = 20
 
     win = None
     color = (255, 255, 255)
@@ -66,23 +66,24 @@ class PyGameHandler:
 
 
     '''
-        Draws new object on the board and puts it into the set.
+        Creates new object on the board and puts it into the set.
         Center of new object is in (x,y), RADIUS is standaralised for all objects
     '''
-    def draw_new_object(name, x, y):
+    def add_new_object(name, x, y):
 
         # if not PyGameHandler.can_object_be_draw(x,y):
             # raise ObjectCannotBeDrawn(name,x,y)
 
-        # draw object on the board
+
         object_ = Object(name, x, y, PyGameHandler.RADIUS)
-        PyGameHandler.fill_board_with_color()
-        pygame.draw.circle(PyGameHandler.win, object_.color, (x, y), PyGameHandler.RADIUS)
-        pygame.display.update()
-        
         PyGameHandler.objects.append(object_)
         
-    
+    def draw_all_objects():
+        PyGameHandler.fill_board_with_color()
+        for obj in PyGameHandler.objects:
+            pygame.draw.circle(PyGameHandler.win, obj.color, (obj.x, obj.y), PyGameHandler.RADIUS)
+        
+        pygame.display.update()
 
     def instantiate_board():
         pygame.init()

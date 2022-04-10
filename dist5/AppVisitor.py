@@ -97,7 +97,7 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
 
         if type == "OBJECT":
-            PyGameHandler.draw_new_object(name, value1, value2)
+            PyGameHandler.add_new_object(name, value1, value2)
             
         return "declaration"
 

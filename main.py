@@ -34,6 +34,7 @@ if __name__ == "__main__":
         
         print(output)
         Programm.displayVariables()
+        PyGameHandler.draw_all_objects()
         pygame.display.update()
 
     pygame.display.update()

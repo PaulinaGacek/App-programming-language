@@ -4,18 +4,23 @@ from utils.Error import *
 
 class Object:
 
-    def __init__(self, name: str, x: int, y:int, radius:int):
-        self.name = name
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.color = (20,20,20)
+    colors = [(101, 93, 138), (120, 151, 171), (216, 133, 163), (253, 206, 185)]
+    NR_OF_OBJECTS = 0
 
+    def __init__(self, name: str, x: int, y:int, radius:int):
         if radius <= 0:
             raise NegativeOrZeroRadius(radius)
         
         if x - radius < 0 or y - radius < 0:
             raise WrongObjectsCoordinates(name, x,y)
+
+        self.name = name
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = Object.colors[Object.NR_OF_OBJECTS % len(Object.colors)]
+
+        Object.NR_OF_OBJECTS += 1
 
 
     '''
