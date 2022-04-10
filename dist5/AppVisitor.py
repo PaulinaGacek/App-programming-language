@@ -2,6 +2,7 @@
 from antlr4 import *
 from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
+from front.PygameHandler import PyGameHandler
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
@@ -95,6 +96,9 @@ class AppVisitor(AppParseTreeVisitor):
                 value2 = self.visitChild(ctx,12)
             Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
 
+        if type == "OBJECT":
+            PyGameHandler.draw_new_object(name, value1, value2)
+            
         return "declaration"
 
 

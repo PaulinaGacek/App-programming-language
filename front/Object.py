@@ -9,6 +9,7 @@ class Object:
         self.x = x
         self.y = y
         self.radius = radius
+        self.color = (20,20,20)
 
         if radius <= 0:
             raise NegativeOrZeroRadius(radius)

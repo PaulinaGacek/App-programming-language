@@ -1,6 +1,8 @@
 import pygame
+import math
 from typing import List
 from front.Object import Object
+from utils.Error import *
 
 class PyGameHandler:
 
@@ -12,7 +14,7 @@ class PyGameHandler:
     color = (255, 255, 255)
     isBoardInstantiated = False
 
-    objects: List[Object]
+    objects = []
     
 
     def set_height(height):
@@ -26,7 +28,7 @@ class PyGameHandler:
     '''
     def is_pixel_available(x, y) -> bool:
 
-        for obj in self.objects:
+        for obj in PyGameHandler.objects:
             if obj.is_pixel_inside(x, y) is True:
                 return False
             else:
@@ -48,10 +50,16 @@ class PyGameHandler:
         for x_ in range (0,PyGameHandler.RADIUS):
             x1 = x + x_
             x2 = x - x_
-            y1 = sqrt(PyGameHandler.RADIUS**2 - (x_ - x)**2) + y
-            y2 = - sqrt(PyGameHandler.RADIUS**2 - (x_ - x)**2) + y
+            print("x1: {}, x2: {}, RADIUS: {}".format(x1,x2,PyGameHandler.RADIUS))
+            print("y1**2: {}".format(PyGameHandler.RADIUS**2 - (x1 - x)**2))
+            y1 = math.sqrt(PyGameHandler.RADIUS**2 - (x1 - x)**2) + y
+            y2 = - math.sqrt(PyGameHandler.RADIUS**2 - (x2-x)**2) + y
 
-            if not PyGameHandler.is_pixel_available(x1, y1) or not PyGameHandler.is_pixel_available(x2, y2):
+            if not PyGameHandler.is_pixel_available(int(x1), int(y1)):
+                print("Pixel: ({},{}) not available".format(x1,y1))
+                return False
+            if not PyGameHandler.is_pixel_available(x2, y2):
+                print("Pixel: ({},{}) not available".format(x1,y1))
                 return False
         
         return True
@@ -63,9 +71,16 @@ class PyGameHandler:
     '''
     def draw_new_object(name, x, y):
 
-        object_ = Object(name, x, y, PyGameHandler.RADIUS)
-        objects.append(object_)
+        # if not PyGameHandler.can_object_be_draw(x,y):
+            # raise ObjectCannotBeDrawn(name,x,y)
+
         # draw object on the board
+        object_ = Object(name, x, y, PyGameHandler.RADIUS)
+        pygame.draw.circle(PyGameHandler.win, object_.color, (x, y), PyGameHandler.RADIUS)
+        pygame.display.update()
+        
+        PyGameHandler.objects.append(object_)
+        
     
 
     def instantiate_board():

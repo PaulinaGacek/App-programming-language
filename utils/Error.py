@@ -80,3 +80,13 @@ class WrongObjectsCoordinates(Exception):
 
     def __str__(self):
         return self.message
+
+
+class ObjectCannotBeDrawn(Exception):
+    def __init__(self, name: str, x: int, y: int, message=None):
+        if message is None:
+            self.message = "Object {} cannot be drawn at ({},{})".format(name,x,y)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
