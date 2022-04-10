@@ -1,9 +1,7 @@
-// Gramatyka ANTRL
-
 grammar App;
 
 primaryExpression
-	: (WS* instruction WS*)+
+	: (whiteSpace? instruction whiteSpace?)+
 	;
 
 instruction
@@ -15,17 +13,13 @@ instruction
 	| function
 	;
 
-signSequence
-	: (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)+
-	;
-
 simpleVariableType
 	: 'TIME'
-	| 'INT'
-	| 'OBJECT'
-	;
+	| 'INT';
 
-complexVariableType: 'FORCE';
+complexVariableType
+    : 'FORCE'
+    | 'OBJECT';
 
 variable
 	: simpleVariableType
@@ -33,85 +27,81 @@ variable
 	;
 
 variableName
-	: LOWERCASELETTER signSequence?
+	: LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
 	;
 
 functionName
-	: LOWERCASELETTER signSequence?
+	: LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
 	;
 
 integer
-	: '-'? NONZERODIGIT (NONZERODIGIT|ZERO)*
+	: NONZERODIGIT (NONZERODIGIT|ZERO)*
 	| ZERO
 	;
 
 
 arithmeticalExpression
-    : arithmeticalExpression WS* ('+'|'-'|'/'|'*') WS* arithmeticalExpression
+    : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
+	| variableName
     ;
 
 declaration
-	:   'DEFINE' WS+ simpleVariableType WS+ variableName WS* ';'
-	|   'DEFINE' WS+ simpleVariableType WS+ variableName WS+ 'AS' WS+ arithmeticalExpression WS* ';'
-	|   'DEFINE' WS+ complexVariableType WS+ variableName WS* ';'
-	|   'DEFINE' WS+ complexVariableType WS+ variableName WS+ 'AS' WS+ arithmeticalExpression WS* ','
-	     WS* arithmeticalExpression WS*';'
+	:   'DEFINE' whiteSpace simpleVariableType whiteSpace variableName whiteSpace? ';'
+	|   'DEFINE' whiteSpace simpleVariableType whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression whiteSpace? ';'
+	|   'DEFINE' whiteSpace complexVariableType whiteSpace variableName whiteSpace? ';'
+	|   'DEFINE' whiteSpace complexVariableType whiteSpace variableName whiteSpace 'AS' 
+		whiteSpace arithmeticalExpression whiteSpace? ',' whiteSpace? arithmeticalExpression whiteSpace? ';'
 	;
 
 definition
-	:   'SET' WS+ variableName WS+ 'AS' WS+ arithmeticalExpression ';'
-	|   'SET' WS+ variableName WS+ 'AS' WS+ arithmeticalExpression WS+ ',' WS+ arithmeticalExpression ';'
+	:   'SET' whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression ';'
+	|   'SET' whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression whiteSpace? 
+		',' whiteSpace? arithmeticalExpression ';'
 	;
 
 conditionalStatement
-    :   'IF' WS* '('WS* condition WS* ')' WS+ 'THEN' WS+ primaryExpression WS+ 'ENDIF' WS* ';'
+    :   'IF' whiteSpace? '('whiteSpace? condition whiteSpace? ')' whiteSpace 'THEN' whiteSpace primaryExpression whiteSpace 'ENDIF' whiteSpace? ';'
     ;
 
 condition
-    :   variableName WS* '==' WS* arithmeticalExpression
-    |   variableName WS* '>' WS* arithmeticalExpression
-    |   variableName WS* '<' WS* arithmeticalExpression
-    |   variableName WS* '>=' WS* arithmeticalExpression
-    |   variableName WS* '<=' WS* arithmeticalExpression
-    |   variableName WS* '!=' WS* arithmeticalExpression
-    ;
-
-instructions
-    :   WS+
-    |   declaration WS+ instructions WS*
-    |   declaration WS+ instructions WS*
-    |   loop WS+ instructions WS*
-    |   conditionalStatement WS+ instructions WS*
+    :   variableName whiteSpace? '==' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '>' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '<' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '>=' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '<=' whiteSpace? arithmeticalExpression
+    |   variableName whiteSpace? '!=' whiteSpace? arithmeticalExpression
     ;
 
 parallelExpression
-    :   'PARALLEL' WS+ primaryExpression WS+ 'ENDPARALLEL' WS* ';'
+    :   'PARALLEL' whiteSpace primaryExpression whiteSpace 'ENDPARALLEL' whiteSpace? ';'
     ;
 
 loop
-    : 'LOOP' WS+ '(' WS* declaration WS* condition WS* ';' WS* definition WS*')'WS+ primaryExpression WS+ 'ENDLOOP' WS* ';'
-    | 'LOOP' WS+ '('WS*';' WS* condition WS* ';' WS* definition WS*')' WS+ primaryExpression WS+ 'ENDLOOP' WS* ';'
+    : 'LOOP' whiteSpace '(' whiteSpace? declaration whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')'whiteSpace primaryExpression whiteSpace 'ENDLOOP' whiteSpace? ';'
+    | 'LOOP' whiteSpace '('whiteSpace?';' whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')' whiteSpace primaryExpression whiteSpace 'ENDLOOP' whiteSpace? ';'
     ;
 
 function
-    :   'DEFINE FUNCTION' WS+ functionName '(' WS* functionArgs WS* ')' WS 'AS' WS+ functionBody WS+ 'ENDFUNCTION' WS* ';'
-    |   'DEFINE FUNCTION' WS+ functionName WS+ 'AS' WS+ functionBody WS+ 'ENDFUNCTION' WS* ';'
+    :   'DEFINE FUNCTION' whiteSpace functionName '(' whiteSpace? functionArgs whiteSpace? ')' whiteSpace 'AS' whiteSpace functionBody whiteSpace 'ENDFUNCTION' whiteSpace? ';'
+    |   'DEFINE FUNCTION' whiteSpace functionName whiteSpace 'AS' whiteSpace functionBody whiteSpace 'ENDFUNCTION' whiteSpace? ';'
     ;
 
 functionBody
-    : primaryExpression WS*
-    | primaryExpression WS+ parallelExpression WS+ primaryExpression WS*
+    : primaryExpression whiteSpace?
+    | primaryExpression whiteSpace parallelExpression whiteSpace primaryExpression whiteSpace?
     ;
 
 functionArgs
-    : declaration WS*
-    | declaration WS* ',' WS* functionArgs
+    : declaration whiteSpace?
+    | declaration whiteSpace? ',' whiteSpace? functionArgs
     ;
 
+whiteSpace
+	: WS+;
+
 WS
-	:
-	'\n'
+	: '\n'
 	| ' '
 	| '\t'
 	;
