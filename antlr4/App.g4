@@ -11,6 +11,7 @@ instruction
 	| parallelExpression
 	| loop
 	| function
+	| applyForce
 	;
 
 simpleVariableType
@@ -20,11 +21,6 @@ simpleVariableType
 complexVariableType
     : 'FORCE'
     | 'OBJECT';
-
-variable
-	: simpleVariableType
-	| complexVariableType
-	;
 
 variableName
 	: LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
@@ -38,6 +34,10 @@ integer
 	: NONZERODIGIT (NONZERODIGIT|ZERO)*
 	| ZERO
 	;
+
+applyForce
+    : 'APPLY' whiteSpace variableName whiteSpace 'TO' whiteSpace variableName whiteSpace 'FOR' whiteSpace (variableName|integer) whiteSpace? ';'
+    ;
 
 
 arithmeticalExpression
