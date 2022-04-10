@@ -44,15 +44,6 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#variable.
-    def enterVariable(self, ctx:AppParser.VariableContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#variable.
-    def exitVariable(self, ctx:AppParser.VariableContext):
-        pass
-
-
     # Enter a parse tree produced by AppParser#variableName.
     def enterVariableName(self, ctx:AppParser.VariableNameContext):
         pass
@@ -77,6 +68,15 @@ class AppListener(ParseTreeListener):
 
     # Exit a parse tree produced by AppParser#integer.
     def exitInteger(self, ctx:AppParser.IntegerContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#applyForce.
+    def enterApplyForce(self, ctx:AppParser.ApplyForceContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#applyForce.
+    def exitApplyForce(self, ctx:AppParser.ApplyForceContext):
         pass
 
 

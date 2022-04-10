@@ -29,11 +29,6 @@ class AppVisitor(AppParseTreeVisitor):
         return ctx.getText()
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#variable.
-    def visitVariable(self, ctx:AppParser.VariableContext):
-        return self.visitChildren(ctx)
-
-
     def visitVariableName(self, ctx:AppParser.VariableNameContext):
         return ctx.getText()
 
@@ -42,6 +37,9 @@ class AppVisitor(AppParseTreeVisitor):
     def visitFunctionName(self, ctx:AppParser.FunctionNameContext):
         return self.visitChildren(ctx)
 
+    # Visit a parse tree produced by AppParser#applyForce.
+    def visitApplyForce(self, ctx:AppParser.ApplyForceContext):
+        return self.visitChildren(ctx)
 
     def visitInteger(self, ctx:AppParser.IntegerContext):
         value = ctx.getText()
