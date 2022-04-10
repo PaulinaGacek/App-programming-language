@@ -11,9 +11,10 @@ from front.PygameHandler import PyGameHandler
 if __name__ == "__main__":
 
     PyGameHandler.instantiate_board()
+    
+
     exit = False
     while not exit:
-        PyGameHandler.fill_board_with_color()
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit = True
@@ -34,5 +35,5 @@ if __name__ == "__main__":
         print(output)
         Programm.displayVariables()
         pygame.display.update()
-        
+
     pygame.display.update()

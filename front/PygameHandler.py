@@ -76,6 +76,7 @@ class PyGameHandler:
 
         # draw object on the board
         object_ = Object(name, x, y, PyGameHandler.RADIUS)
+        PyGameHandler.fill_board_with_color()
         pygame.draw.circle(PyGameHandler.win, object_.color, (x, y), PyGameHandler.RADIUS)
         pygame.display.update()
         
