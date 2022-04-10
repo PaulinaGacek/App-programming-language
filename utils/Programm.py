@@ -62,7 +62,8 @@ class Programm:
         if len(Programm.variables) == 0:
             print("There are no declared variables")
             return
-
+            
+        print("Global variables:")
         for key, value in Programm.variables.items():
             print("Name: {} -> details: {}".format(key,value.displayDetails()))
 
@@ -91,8 +92,9 @@ class Programm:
             return "INT"
         elif type == Type.OBJECT:
             return "OBJECT"
-        else:
+        elif type == Type.FORCE:
             return "FORCE"
+        return None
 
 
     '''
@@ -100,3 +102,9 @@ class Programm:
     '''
     def getVariable(name: str):
         return Programm.variables.get(name)
+    
+    '''
+    Returns type of the Variable object with given name
+    '''
+    def getVariablesTypeStr(name: str):
+        return Programm.typeToStr(Programm.variables.get(name).type)
