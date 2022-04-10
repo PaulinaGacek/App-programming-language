@@ -11,7 +11,7 @@ class Object:
         if radius <= 0:
             raise NegativeOrZeroRadius(radius)
         
-        if x - radius < 0 or y - radius < 0:
+        if x is not None and y is not None and (x - radius < 0 or y - radius < 0):
             raise WrongObjectsCoordinates(name, x,y)
 
         self.name = name

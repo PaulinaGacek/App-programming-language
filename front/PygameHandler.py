@@ -66,22 +66,32 @@ class PyGameHandler:
 
 
     '''
-        Creates new object on the board and puts it into the set.
-        Center of new object is in (x,y), RADIUS is standaralised for all objects
+        Creates new object and puts it into the set.
+        Center of new object is in (x,y), RADIUS is standaralised for all objects.
     '''
     def add_new_object(name, x, y):
 
         # if not PyGameHandler.can_object_be_draw(x,y):
             # raise ObjectCannotBeDrawn(name,x,y)
 
-
         object_ = Object(name, x, y, PyGameHandler.RADIUS)
         PyGameHandler.objects.append(object_)
+    
+
+    def modify_object(name, x, y):
+        for obj in PyGameHandler.objects:
+            print("Name: {}".format(obj.name))
+            if obj.name == name:
+                obj.x = x
+                obj.y = y
+                break
+
         
     def draw_all_objects():
         PyGameHandler.fill_board_with_color()
         for obj in PyGameHandler.objects:
-            pygame.draw.circle(PyGameHandler.win, obj.color, (obj.x, obj.y), PyGameHandler.RADIUS)
+            if obj.x is not None:
+                pygame.draw.circle(PyGameHandler.win, obj.color, (obj.x, obj.y), PyGameHandler.RADIUS)
         
         pygame.display.update()
 
@@ -98,6 +108,14 @@ class PyGameHandler:
     def close_board():
         PyGameHandler.isBoardInstantiated = False
         # close board
-    
+
+    def display_all_objects():
+        if len(PyGameHandler.objects)==0:
+            print("No variables of OBJECT type")
+        else:
+            print("Variables of OBJECT type")
+            for obj in PyGameHandler.objects:
+                print("Name: {}, coordinates:({},{})".format(obj.name, obj.x, obj.y))
+        
     def move_object(object_, x, y):
         pass

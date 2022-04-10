@@ -11,7 +11,6 @@ from front.PygameHandler import PyGameHandler
 if __name__ == "__main__":
 
     PyGameHandler.instantiate_board()
-    
 
     exit = False
     while not exit:
@@ -34,6 +33,7 @@ if __name__ == "__main__":
         
         print(output)
         Programm.displayVariables()
+        PyGameHandler.display_all_objects()
         PyGameHandler.draw_all_objects()
         pygame.display.update()
 

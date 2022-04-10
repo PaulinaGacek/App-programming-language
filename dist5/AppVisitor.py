@@ -77,6 +77,8 @@ class AppVisitor(AppParseTreeVisitor):
         
         if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7: # definition without value
             Programm.declareNewVariable(name, Programm.strToType(type))
+            if type == "OBJECT":
+                PyGameHandler.add_new_object(name, None, None)
         
         elif NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11: # definition with value - simple type
             value = self.visitChild(ctx,8)
@@ -96,8 +98,8 @@ class AppVisitor(AppParseTreeVisitor):
                 value2 = self.visitChild(ctx,12)
             Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
 
-        if type == "OBJECT":
-            PyGameHandler.add_new_object(name, value1, value2)
+            if type == "OBJECT":
+                PyGameHandler.add_new_object(name, value1, value2)
             
         return "declaration"
 
@@ -126,6 +128,9 @@ class AppVisitor(AppParseTreeVisitor):
                 value2 = self.visitChild(ctx,10)
 
             Programm.defineExistingVariable(name, value, value2)
+
+            if Programm.getVariablesTypeStr(name) == "OBJECT":
+                PyGameHandler.modify_object(name, value, value2)
 
         return "definition"
 
