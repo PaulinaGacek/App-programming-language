@@ -34,7 +34,7 @@ class UndefinedVariableReferenceError(Exception):
         return self.message
 
 class ParameterError(Exception):
-    """ Raised when user tries to define not existing variable
+    """ 
     
     Attributes:
         message -- explanation of the error
@@ -42,6 +42,40 @@ class ParameterError(Exception):
     
     def __init__(self, message=None):
         self.message = "Second parameter is null"
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
+
+class NegativeOrZeroRadius(Exception):
+    """ Raised when Object with radius <= 0 is to be created
+
+    Attributes:
+        radius -- radius
+        message -- explanation of the error
+    """
+
+    def __init__(self, radius: int, message=None):
+        self.message = "Wrong radius {} -> it has to be positive".format(radius)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
+class WrongObjectsCoordinates(Exception):
+    """ Raised when Object is to be created with negative coordinates or coordinates which
+        implies being out of board
+
+    Attributes:
+        name -- object's name
+        radius -- radius
+        message -- explanation of the error
+    """
+
+    def __init__(self, name: str, x: int, y: int, message=None):
+        if message is None:
+            self.message = "Wrong coordinates {},{} for object {}".format(x,y,name)
         super().__init__(self.message)
 
     def __str__(self):
