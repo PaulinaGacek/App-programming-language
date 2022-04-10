@@ -6,3 +6,4 @@ docs
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/vcs.xml
 *.pyc
+front/__pycache__

@@ -2,9 +2,9 @@ import sys
 import antlr4
 import pygame
 from antlr4 import *
-from dist5.AppLexer import AppLexer
-from dist5.AppParser import AppParser
-from dist5.AppVisitor import AppVisitor
+from dist6.AppLexer import AppLexer
+from dist6.AppParser import AppParser
+from dist6.AppVisitor import AppVisitor
 from utils.Programm import Programm
 from front.PygameHandler import PyGameHandler
 
