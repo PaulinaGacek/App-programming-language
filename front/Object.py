@@ -16,6 +16,11 @@ class Object:
         if x - radius < 0 or y - radius < 0:
             raise WrongObjectsCoordinates(name, x,y)
 
+
+    '''
+        Checks if given pixel (x_, y_) is inside self
+        Returns true if it is inside.
+    '''
     def is_pixel_inside(self, x_, y_) -> bool:
         diff_x = abs(x_ - self.x)
         diff_y = abs(y_ - self.y)

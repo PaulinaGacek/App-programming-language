@@ -17,6 +17,7 @@
     source venv/bin/activate
     pip install wheel
     pip install antlr4-python3-runtime
+    pip install pygame
    ```
 3. Add to your .bashrc:
 ```
@@ -48,6 +49,7 @@ antlr4 -Dlanguage=Python3 ./antlr4/App.g4  -visitor -o dist3
     venv\Scripts\activate
     pip install wheel
     pip install antlr4-python3-runtime
+    pip install pygame
    ```
 
 ## How to run main.py - windows
