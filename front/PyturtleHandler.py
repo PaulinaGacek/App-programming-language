@@ -20,9 +20,11 @@ class Ball:
         self.dy = dy 
         self.dx = dx
 
+        self.turtle.hideturtle()
         self.turtle.penup()
         self.turtle.goto(x,y)
         self.turtle.color("blue")
+        self.turtle.showturtle()
 
         self.event_queue = queue.Queue()
         self.queue_size = 0
@@ -52,7 +54,6 @@ class PyturtleHandler:
 
     objects = []
     balls = {} # mapps name to the Ball()
-    
 
     def set_height(height):
         PyturtleHandler.HEIGHT = height
@@ -60,6 +61,7 @@ class PyturtleHandler:
     def set_width(width):
         PyturtleHandler.WIDTH = width
 
+    @staticmethod
     def instantiate_board():
         PyturtleHandler.win = turtle.Screen()
         PyturtleHandler.win.bgcolor("white")
@@ -69,7 +71,7 @@ class PyturtleHandler:
     
     def add_new_object(name, x, y):
         PyturtleHandler.balls[name] = Ball(name,x,y,0,0) # should be 0,0
-    
+    @staticmethod
     def update_positions_of_all_balls():
         for key, value in PyturtleHandler.balls.items():
 
