@@ -18,6 +18,8 @@
     pip install wheel
     pip install antlr4-python3-runtime
     pip install pygame
+    pip install wxpython
+    pip install turtle
    ```
 3. Add to your .bashrc:
 ```
@@ -50,6 +52,8 @@ antlr4 -Dlanguage=Python3 ./antlr4/App.g4  -visitor -o dist3
     pip install wheel
     pip install antlr4-python3-runtime
     pip install pygame
+    pip install wxpython
+    pip install turtle
    ```
 
 ## How to run main.py - windows
