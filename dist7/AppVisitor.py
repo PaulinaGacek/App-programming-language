@@ -38,8 +38,16 @@ class AppVisitor(AppParseTreeVisitor):
     def visitFunctionName(self, ctx:AppParser.FunctionNameContext):
         return self.visitChildren(ctx)
 
-    # Visit a parse tree produced by AppParser#applyForce.
+    
     def visitApplyForce(self, ctx:AppParser.ApplyForceContext):
+        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        if NR_OF_CHILDREN < 11:
+            return
+        print("IN APPLY FORCE")
+
+        object_ = self.visit(ctx.object_)
+        force_ = self.visit(ctx.force_)
+        time_ = self.visit(ctx.time_)
         return self.visitChildren(ctx)
 
     def visitInteger(self, ctx:AppParser.IntegerContext):
