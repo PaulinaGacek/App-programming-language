@@ -1044,9 +1044,9 @@ class AppParser ( Parser ):
             if hasattr( listener, "exitArithmeticalExpression" ):
                 listener.exitArithmeticalExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
+        def accept(self, visitor:ParseTreeVisitor, type_=None):
             if hasattr( visitor, "visitArithmeticalExpression" ):
-                return visitor.visitArithmeticalExpression(self)
+                return visitor.visitArithmeticalExpression(self, type_)
             else:
                 return visitor.visitChildren(self)
 
@@ -1176,6 +1176,7 @@ class AppParser ( Parser ):
                 listener.exitDeclaration(self)
 
         def accept(self, visitor:ParseTreeVisitor):
+            print("Visit definition--->")
             if hasattr( visitor, "visitDeclaration" ):
                 return visitor.visitDeclaration(self)
             else:
@@ -1372,6 +1373,7 @@ class AppParser ( Parser ):
                 listener.exitDefinition(self)
 
         def accept(self, visitor:ParseTreeVisitor):
+            print("visit definition--->")
             if hasattr( visitor, "visitDefinition" ):
                 return visitor.visitDefinition(self)
             else:

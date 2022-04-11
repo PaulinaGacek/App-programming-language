@@ -2,6 +2,7 @@
 from antlr4 import *
 from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
+from utils.Error import *
 from front.PygameHandler import PyGameHandler
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
@@ -46,10 +47,20 @@ class AppVisitor(AppParseTreeVisitor):
         return int(value)
 
 
-    def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
+    def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext, type_=None):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
-        if NR_OF_CHILDREN == 1:
-            return self.visitChildren(ctx)
+        if NR_OF_CHILDREN == 1: # variable name or INT
+            if type(self.visitChildren(ctx)) is int:
+                return self.visitChildren(ctx)
+            else:
+                name = self.visitChildren(ctx)
+                print("It is variable: {}".format(name))
+
+                if Programm.getVariable(name) is None:
+                    raise UndefinedVariableReferenceError(name)
+
+                if type is not None and  Programm.getVariable(name).getTypeString() != type_:
+                    raise ParameterError("Bad type")
         else:
             l = self.visit(ctx.left)
             r = self.visit(ctx.right)
@@ -109,7 +120,12 @@ class AppVisitor(AppParseTreeVisitor):
             return
         
         name = self.visitChild(ctx,2)
-        value = self.visitChild(ctx,6)
+        
+        if Programm.getVariable(name) is None:
+            raise UndefinedVariableReferenceError(name)
+        
+        type = Programm.getVariable(name).type
+        value = self.visitChild(ctx,6, type) 
 
         if NR_OF_CHILDREN < 10: # simple type
             Programm.defineExistingVariable(name, value)

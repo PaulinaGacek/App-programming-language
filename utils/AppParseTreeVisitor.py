@@ -59,7 +59,7 @@ class AppParseTreeVisitor(ParseTreeVisitor):
     '''
     Visits node's child with given idx (starts from 0)
     '''
-    def visitChild(self, node, idx: int):
+    def visitChild(self, node, idx: int, param=None):
 
         if node is None:
             return None
