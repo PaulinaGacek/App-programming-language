@@ -36,7 +36,7 @@ integer
 	;
 
 applyForce
-    : 'APPLY' whiteSpace variableName whiteSpace 'TO' whiteSpace variableName whiteSpace 'FOR' whiteSpace (variableName|integer) whiteSpace? ';'
+    : 'APPLY' whiteSpace force_=variableName whiteSpace 'TO' whiteSpace object_=variableName whiteSpace 'FOR' whiteSpace time_=variableName whiteSpace? ';'
     ;
 
 

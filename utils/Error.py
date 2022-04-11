@@ -41,7 +41,8 @@ class ParameterError(Exception):
     """
     
     def __init__(self, message=None):
-        self.message = "Second parameter is null"
+        if message is None:
+            self.message = "Second parameter is null"
         super().__init__(self.message)
 
     def __str__(self):
