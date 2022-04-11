@@ -7,10 +7,12 @@ from dist7.AppParser import AppParser
 from dist7.AppVisitor import AppVisitor
 from utils.Programm import Programm
 from front.PygameHandler import PyGameHandler
+from front.PyturtleHandler import PyturtleHandler
 
 if __name__ == "__main__":
 
     PyGameHandler.instantiate_board()
+    PyturtleHandler.instantiate_board()
 
     exit = False
     while not exit:
