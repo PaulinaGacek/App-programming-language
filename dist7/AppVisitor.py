@@ -129,6 +129,9 @@ class AppVisitor(AppParseTreeVisitor):
             if type == "OBJECT":
                 PyGameHandler.add_new_object(name, value1, value2)
                 PyturtleHandler.add_new_object(name, value1, value2)
+                forces = {}
+                forces[name] = [Force(0,1,200)]
+                PyturtleHandler.add_forces(forces)
             
         return "declaration"
 

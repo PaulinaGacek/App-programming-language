@@ -28,7 +28,7 @@ if __name__ == "__main__":
         
         print(output)
         Programm.displayVariables()
-
-        PyturtleHandler.display_visualisation(100)
+       
+        PyturtleHandler.display_visualisation(200)
         PyturtleHandler.update_positions_of_all_balls()
         PyturtleHandler.win.update()
