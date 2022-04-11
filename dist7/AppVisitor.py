@@ -4,6 +4,7 @@ from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
 from utils.Error import *
 from front.PygameHandler import PyGameHandler
+from front.PyturtleHandler import *
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
@@ -38,8 +39,26 @@ class AppVisitor(AppParseTreeVisitor):
     def visitFunctionName(self, ctx:AppParser.FunctionNameContext):
         return self.visitChildren(ctx)
 
-    # Visit a parse tree produced by AppParser#applyForce.
+    
     def visitApplyForce(self, ctx:AppParser.ApplyForceContext):
+        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        if NR_OF_CHILDREN < 11:
+            return
+        print("IN APPLY FORCE")
+
+        object_name = self.visit(ctx.object_)
+        force_name = self.visit(ctx.force_)
+        time_name = self.visit(ctx.time_)
+
+        if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
+            raise UndefinedVariableReferenceError(object_name)
+
+        if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
+            raise UndefinedVariableReferenceError(force_name)
+        
+        if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
+            raise UndefinedVariableReferenceError(time_name)
+            
         return self.visitChildren(ctx)
 
     def visitInteger(self, ctx:AppParser.IntegerContext):
@@ -109,6 +128,10 @@ class AppVisitor(AppParseTreeVisitor):
 
             if type == "OBJECT":
                 PyGameHandler.add_new_object(name, value1, value2)
+                PyturtleHandler.add_new_object(name, value1, value2)
+                forces = {}
+                forces[name] = [Force(0,1,200)]
+                PyturtleHandler.add_forces(forces)
             
         return "declaration"
 

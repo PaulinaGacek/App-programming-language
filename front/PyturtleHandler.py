@@ -1,0 +1,135 @@
+from platform import python_branch
+import turtle
+import queue
+import math
+import typing
+
+class Force:
+    def __init__(self, angle: int, power: int, ticks: int):
+        self.angle = angle % 360  # normalised angle in degrees
+        self.power = power
+        self.ticks = ticks
+        # add checking if values are not negative
+
+
+class Ball:
+
+    def __init__(self, name, x, y, dx, dy):
+        self.name = name
+        self.turtle = turtle.Turtle("circle")
+        self.dy = dy 
+        self.dx = dx
+
+        self.turtle.penup()
+        self.turtle.goto(x,y)
+        self.turtle.color("blue")
+
+        self.event_queue = queue.Queue()
+        self.queue_size = 0
+    
+    def update_velocity(self):
+        force = self.event_queue.get()
+        self.queue_size -= 1
+        acc_x = math.cos(force.angle * math.pi/180)*force.power
+        acc_y = math.sin(force.angle * math.pi/180)*force.power
+
+        self.dy += acc_y
+        self.dx += acc_x
+
+        self.turtle.sety(self.turtle.ycor() + self.dy)
+        self.turtle.setx(self.turtle.xcor() + self.dx)
+
+
+class PyturtleHandler:
+
+    HEIGHT = 400
+    WIDTH = 400
+    RADIUS = 20
+
+    win = None
+    color = (205, 205, 205)
+    isBoardInstantiated = False
+
+    objects = []
+    balls = {} # mapps name to the Ball()
+    
+
+    def set_height(height):
+        PyturtleHandler.HEIGHT = height
+
+    def set_width(width):
+        PyturtleHandler.WIDTH = width
+
+    def instantiate_board():
+        PyturtleHandler.win = turtle.Screen()
+        PyturtleHandler.win.bgcolor("white")
+        PyturtleHandler.win.title("A++")
+        turtle.setworldcoordinates(0, 0, PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
+        PyturtleHandler.isBoardInstantiated = True
+    
+    def add_new_object(name, x, y):
+        PyturtleHandler.balls[name] = Ball(name,x,y,0,0) # should be 0,0
+    
+    def update_positions_of_all_balls():
+        for key, value in PyturtleHandler.balls.items():
+
+            value.update_velocity()
+
+            # check for a wall collision
+            if value.turtle.xcor() > PyturtleHandler.WIDTH or value.turtle.xcor() <= 0:
+                value.dx *= -1
+            
+            if value.turtle.ycor() > PyturtleHandler.HEIGHT or value.turtle.ycor() <= 0:
+                value.dy *= -1
+    
+    def display_visualisation(period: int):
+        if period <= 0:
+            return 
+        
+        for i in range(1,period): # maybe should be from 0
+            PyturtleHandler.update_positions_of_all_balls()
+            PyturtleHandler.win.update()
+    
+    def force_superposition(forces: list):
+        ret_forces = []
+        max_length = 0
+        for force in forces:
+            max_length = max(max_length, force.ticks)
+        for i in range(max_length):
+            current_forces = []
+            super_force_x = 0
+            super_force_y = 0
+            for force in forces:
+                if force.ticks==0:
+                    continue
+                else:
+                    current_forces.append(force)
+                    force.ticks-=1
+            for force in current_forces:
+                super_force_x += math.cos(force.angle * math.pi/180)*force.power
+                super_force_y += math.sin(force.angle * math.pi/180)*force.power
+            super_angle = math.tan(super_force_y/super_force_x)*180/math.pi
+            super_power = math.sqrt(super_force_y**2 + super_force_x**2)
+            ret_forces.append(Force(super_angle, super_power, 1))
+        return ret_forces
+
+    def add_forces(forces: dict):
+        # forces - dict() name -> List[Force]
+        max_length = 0
+        for key, values in forces.items():
+            for force in values:
+                max_length = max(max_length, force.ticks)
+
+        for key in PyturtleHandler.balls.keys():
+            if key in forces.keys():
+                output_queue = PyturtleHandler.force_superposition(forces[key])
+                for item in output_queue:
+                    PyturtleHandler.balls[key].event_queue.put(item)
+                    PyturtleHandler.balls[key].queue_size += 1
+
+        for ball in PyturtleHandler.balls.values():
+            if ball.queue_size < max_length:
+                for i in range(max_length-ball.queue_size):
+                    ball.event_queue.put(Force(0,0,1))
+                    PyturtleHandler.balls[key].queue_size += 1
+

@@ -108,3 +108,6 @@ class Programm:
     '''
     def getVariablesTypeStr(name: str):
         return Programm.typeToStr(Programm.variables.get(name).type)
+    
+
+    frames = [] # time frames

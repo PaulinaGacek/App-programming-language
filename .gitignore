@@ -7,3 +7,4 @@ docs
 /.idea/vcs.xml
 *.pyc
 front/__pycache__
+utils/__pycache__
