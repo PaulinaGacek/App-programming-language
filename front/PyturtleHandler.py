@@ -92,6 +92,15 @@ class PyturtleHandler:
             if value.turtle.ycor()+5 > PyturtleHandler.HEIGHT or value.turtle.ycor()-5 <= 0:
                 value.dy *= -1
 
+            if value.turtle.xcor() > PyturtleHandler.WIDTH:
+                value.turtle.goto(PyturtleHandler.WIDTH-10, value.turtle.ycor())
+            if value.turtle.xcor() < 0:
+                value.turtle.goto(10, value.turtle.ycor())
+            if value.turtle.ycor() > PyturtleHandler.HEIGHT:
+                value.turtle.goto(value.turtle.xcor(), PyturtleHandler.HEIGHT-10)
+            if value.turtle.ycor() < 0:
+                value.turtle.goto(value.turtle.xcor(), 10)
+
     @staticmethod
     def display_visualisation(period: int):
         if period <= 0:
