@@ -4,6 +4,7 @@ import queue
 import math
 import typing
 
+
 class Force:
     def __init__(self, angle: int, power: int, ticks: int):
         self.angle = angle % 360  # normalised angle in degrees
@@ -19,6 +20,8 @@ class Ball:
         self.turtle = turtle.Turtle("circle")
         self.dy = dy 
         self.dx = dx
+        self.acc_x = 0
+        self.acc_y = 0
 
         self.turtle.hideturtle()
         self.turtle.penup()
@@ -32,14 +35,15 @@ class Ball:
     def update_velocity(self):
         force = self.event_queue.get()
         self.queue_size -= 1
-        acc_x = math.cos(force.angle * math.pi/180)*force.power
-        acc_y = math.sin(force.angle * math.pi/180)*force.power
+        self.acc_x = math.cos(force.angle * math.pi/180)*force.power
+        self.acc_y = math.sin(force.angle * math.pi/180)*force.power
 
-        self.dy += acc_y
-        self.dx += acc_x
+        self.dy += self.acc_y
+        self.dx += self.acc_x
 
-        self.turtle.sety(self.turtle.ycor() + self.dy)
-        self.turtle.setx(self.turtle.xcor() + self.dx)
+        self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
+        # self.turtle.sety(self.turtle.ycor() + self.dy)
+        # self.turtle.setx(self.turtle.xcor() + self.dx)
 
 
 class PyturtleHandler:
@@ -55,9 +59,11 @@ class PyturtleHandler:
     objects = []
     balls = {} # mapps name to the Ball()
 
+    @staticmethod
     def set_height(height):
         PyturtleHandler.HEIGHT = height
 
+    @staticmethod
     def set_width(width):
         PyturtleHandler.WIDTH = width
 
@@ -68,9 +74,11 @@ class PyturtleHandler:
         PyturtleHandler.win.title("A++")
         turtle.setworldcoordinates(0, 0, PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
         PyturtleHandler.isBoardInstantiated = True
-    
+
+    @staticmethod
     def add_new_object(name, x, y):
         PyturtleHandler.balls[name] = Ball(name,x,y,0,0) # should be 0,0
+
     @staticmethod
     def update_positions_of_all_balls():
         for key, value in PyturtleHandler.balls.items():
@@ -78,12 +86,13 @@ class PyturtleHandler:
             value.update_velocity()
 
             # check for a wall collision
-            if value.turtle.xcor() > PyturtleHandler.WIDTH or value.turtle.xcor() <= 0:
+            if value.turtle.xcor()+5 > PyturtleHandler.WIDTH or value.turtle.xcor()-5 <= 0:
                 value.dx *= -1
             
-            if value.turtle.ycor() > PyturtleHandler.HEIGHT or value.turtle.ycor() <= 0:
+            if value.turtle.ycor()+5 > PyturtleHandler.HEIGHT or value.turtle.ycor()-5 <= 0:
                 value.dy *= -1
-    
+
+    @staticmethod
     def display_visualisation(period: int):
         if period <= 0:
             return 
@@ -91,7 +100,8 @@ class PyturtleHandler:
         for i in range(1,period): # maybe should be from 0
             PyturtleHandler.update_positions_of_all_balls()
             PyturtleHandler.win.update()
-    
+
+    @staticmethod
     def force_superposition(forces: list):
         ret_forces = []
         max_length = 0
@@ -110,11 +120,12 @@ class PyturtleHandler:
             for force in current_forces:
                 super_force_x += math.cos(force.angle * math.pi/180)*force.power
                 super_force_y += math.sin(force.angle * math.pi/180)*force.power
-            super_angle = math.tan(super_force_y/super_force_x)*180/math.pi
+            super_angle = math.atan(super_force_y/super_force_x)*180/math.pi
             super_power = math.sqrt(super_force_y**2 + super_force_x**2)
             ret_forces.append(Force(super_angle, super_power, 1))
         return ret_forces
 
+    @staticmethod
     def add_forces(forces: dict):
         # forces - dict() name -> List[Force]
         max_length = 0
