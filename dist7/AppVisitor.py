@@ -45,9 +45,19 @@ class AppVisitor(AppParseTreeVisitor):
             return
         print("IN APPLY FORCE")
 
-        object_ = self.visit(ctx.object_)
-        force_ = self.visit(ctx.force_)
-        time_ = self.visit(ctx.time_)
+        object_name = self.visit(ctx.object_)
+        force_name = self.visit(ctx.force_)
+        time_name = self.visit(ctx.time_)
+
+        if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
+            raise UndefinedVariableReferenceError(object_name)
+
+        if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
+            raise UndefinedVariableReferenceError(force_name)
+        
+        if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
+            raise UndefinedVariableReferenceError(time_name)
+            
         return self.visitChildren(ctx)
 
     def visitInteger(self, ctx:AppParser.IntegerContext):
