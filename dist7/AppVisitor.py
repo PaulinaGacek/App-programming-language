@@ -4,6 +4,7 @@ from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
 from utils.Error import *
 from front.PygameHandler import PyGameHandler
+from front.PyturtleHandler import *
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
@@ -127,6 +128,7 @@ class AppVisitor(AppParseTreeVisitor):
 
             if type == "OBJECT":
                 PyGameHandler.add_new_object(name, value1, value2)
+                PyturtleHandler.add_new_object(name, value1, value2)
             
         return "declaration"
 
