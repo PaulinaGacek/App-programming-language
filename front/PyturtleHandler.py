@@ -33,6 +33,8 @@ class Ball:
         self.queue_size = 0
     
     def update_velocity(self):
+        if self.queue_size <= 0:
+            print("Queue is empty!!!")
         force = self.event_queue.get()
         self.queue_size -= 1
         self.acc_x = math.cos(force.angle * math.pi/180)*force.power
@@ -163,3 +165,8 @@ class PyturtleHandler:
                 max = value.queue_size
         
         return max
+    
+    @staticmethod
+    def display_queues_len():
+        for key, value in PyturtleHandler.balls.items():
+            print("Name:{}, Queue len: {}".format(key, value.queue_size))
