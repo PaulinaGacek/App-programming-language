@@ -41,9 +41,9 @@ class Ball:
         self.dy += self.acc_y
         self.dx += self.acc_x
 
-        self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
-        # self.turtle.sety(self.turtle.ycor() + self.dy)
-        # self.turtle.setx(self.turtle.xcor() + self.dx)
+        # self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
+        self.turtle.sety(self.turtle.ycor() + self.dy)
+        self.turtle.setx(self.turtle.xcor() + self.dx)
 
 
 class PyturtleHandler:
@@ -106,7 +106,7 @@ class PyturtleHandler:
         if period <= 0:
             return 
         
-        for i in range(1,period): # maybe should be from 0
+        for i in range(0,period): # maybe should be from 0
             PyturtleHandler.update_positions_of_all_balls()
             PyturtleHandler.win.update()
 

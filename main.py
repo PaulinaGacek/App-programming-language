@@ -1,12 +1,11 @@
 import sys
 import antlr4
-import pygame
+import turtle
 from antlr4 import *
 from dist7.AppLexer import AppLexer
 from dist7.AppParser import AppParser
 from dist7.AppVisitor import AppVisitor
 from utils.Programm import Programm
-from front.PygameHandler import PyGameHandler
 from front.PyturtleHandler import PyturtleHandler
 
 if __name__ == "__main__":
@@ -31,6 +30,6 @@ if __name__ == "__main__":
        
         if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
             PyturtleHandler.display_visualisation(PyturtleHandler.get_max_queue_len())
-        
-            PyturtleHandler.update_positions_of_all_balls()
+            print("display visualisation ended")
+        print("wyszlo")
         PyturtleHandler.win.update()
