@@ -32,5 +32,5 @@ if __name__ == "__main__":
             PyturtleHandler.display_queues_len()
             PyturtleHandler.display_visualisation(PyturtleHandler.get_max_queue_len())
             print("display visualisation ended")
-        print("wyszlo")
+
         PyturtleHandler.win.update()

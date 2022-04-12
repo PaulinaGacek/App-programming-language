@@ -153,9 +153,9 @@ class PyturtleHandler:
 
         for ball in PyturtleHandler.balls.values():
             if ball.queue_size < max_length:
-                for i in range(max_length-ball.queue_size):
+                for i in range(max_length - ball.queue_size):
                     ball.event_queue.put(Force(0,0,1))
-                    PyturtleHandler.balls[key].queue_size += 1
+                    ball.queue_size += 1
 
     @staticmethod
     def get_max_queue_len() -> int:
