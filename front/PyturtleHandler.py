@@ -14,6 +14,7 @@ class Force:
 
 
 class Ball:
+    colors = [(101, 93, 138), (120, 151, 171), (216, 133, 163), (253, 206, 185)]
 
     def __init__(self, name, x, y, dx, dy):
         self.name = name
@@ -26,7 +27,7 @@ class Ball:
         self.turtle.hideturtle()
         self.turtle.penup()
         self.turtle.goto(x,y)
-        self.turtle.color("blue")
+        self.turtle.color(Ball.colors[len(PyturtleHandler.balls.keys()) % len(Ball.colors)])
         self.turtle.showturtle()
 
         self.event_queue = queue.Queue()
@@ -72,6 +73,7 @@ class PyturtleHandler:
     @staticmethod
     def instantiate_board():
         PyturtleHandler.win = turtle.Screen()
+        PyturtleHandler.win.colormode(255)
         PyturtleHandler.win.bgcolor("white")
         PyturtleHandler.win.title("A++")
         turtle.setworldcoordinates(0, 0, PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
