@@ -50,7 +50,7 @@ class PyturtleHandler:
 
     HEIGHT = 400
     WIDTH = 400
-    RADIUS = 20
+    RADIUS = 10
 
     win = None
     color = (205, 205, 205)
@@ -155,3 +155,11 @@ class PyturtleHandler:
                     ball.event_queue.put(Force(0,0,1))
                     PyturtleHandler.balls[key].queue_size += 1
 
+    @staticmethod
+    def get_max_queue_len() -> int:
+        max = 0
+        for key, value in PyturtleHandler.balls.items():
+            if value.queue_size > max:
+                max = value.queue_size
+        
+        return max

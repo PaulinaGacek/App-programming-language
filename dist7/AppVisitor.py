@@ -12,6 +12,8 @@ else:
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
 class AppVisitor(AppParseTreeVisitor):
+    inside_sequence = False
+    forces = {}
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
@@ -44,8 +46,7 @@ class AppVisitor(AppParseTreeVisitor):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
         if NR_OF_CHILDREN < 11:
             return
-        print("IN APPLY FORCE")
-
+        
         object_name = self.visit(ctx.object_)
         force_name = self.visit(ctx.force_)
         time_name = self.visit(ctx.time_)
@@ -58,7 +59,23 @@ class AppVisitor(AppParseTreeVisitor):
         
         if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
             raise UndefinedVariableReferenceError(time_name)
-            
+        
+        angle = Programm.getVariable(force_name).value
+        power = Programm.getVariable(force_name).value2
+        
+        time_val = Programm.getVariable(time_name).value
+        force_ = Force(angle, power, time_val)
+
+        if AppVisitor.forces.get(object_name) is None:
+            AppVisitor.forces[object_name] = [force_]
+        else:
+            AppVisitor.forces[object_name].append(force_)
+
+        if not AppVisitor.inside_sequence:
+            print("IN APPLY FORCE not in sequence")
+            PyturtleHandler.add_forces(AppVisitor.forces)
+            AppVisitor.forces.clear()
+
         return self.visitChildren(ctx)
 
     def visitInteger(self, ctx:AppParser.IntegerContext):
@@ -127,10 +144,10 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
 
             if type == "OBJECT":
-                PyGameHandler.add_new_object(name, value1, value2)
+                # PyGameHandler.add_new_object(name, value1, value2)
                 PyturtleHandler.add_new_object(name, value1, value2)
-                forces = {name: [Force(40, 1, 200)]}
-                PyturtleHandler.add_forces(forces)
+                # forces = {name: [Force(40, 1, 200)]}
+                # PyturtleHandler.add_forces(forces)
             
         return "declaration"
 

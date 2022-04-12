@@ -44,6 +44,7 @@ class PyGameHandler:
         if y-PyGameHandler.RADIUS < 0 or y+PyGameHandler.RADIUS > PyGameHandler.HEIGHT:
             return False
         
+        ''''
         # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
         # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
         for x_ in range (0,PyGameHandler.RADIUS):
@@ -59,7 +60,7 @@ class PyGameHandler:
             if not PyGameHandler.is_pixel_available(x2, int(y2)):
                 print("Pixel: ({},{}) not available".format(x2,int(y2)))
                 return False
-        
+        '''
         return True
 
 

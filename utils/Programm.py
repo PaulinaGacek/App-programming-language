@@ -1,5 +1,6 @@
 from utils.Variable import *
 from utils.Error import *
+from front.PyturtleHandler import Force
 
 class Programm:
 
@@ -7,6 +8,11 @@ class Programm:
     Keeps global variables, mapps variable name to the variable object
     '''
     variables = {}
+
+    '''
+    Keeps global variables of force type, mapps name to the force object
+    '''
+    forces = {}
 
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
@@ -37,6 +43,7 @@ class Programm:
         print("Value 2: {}".format(value2))
         Programm.variables[name].value = value
         Programm.variables[name].value2 = value2
+        
 
 
     '''
@@ -109,5 +116,3 @@ class Programm:
     def getVariablesTypeStr(name: str):
         return Programm.typeToStr(Programm.variables.get(name).type)
     
-
-    frames = [] # time frames
