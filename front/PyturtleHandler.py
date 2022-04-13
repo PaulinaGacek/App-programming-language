@@ -44,9 +44,9 @@ class Ball:
         self.dy += self.acc_y
         self.dx += self.acc_x
 
-        # self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
-        self.turtle.sety(self.turtle.ycor() + self.dy)
-        self.turtle.setx(self.turtle.xcor() + self.dx)
+        self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
+        # self.turtle.sety(self.turtle.ycor() + self.dy)
+        # self.turtle.setx(self.turtle.xcor() + self.dx)
 
 
 class PyturtleHandler:

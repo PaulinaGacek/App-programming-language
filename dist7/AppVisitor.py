@@ -13,7 +13,7 @@ else:
 
 class AppVisitor(AppParseTreeVisitor):
     inside_sequence = False
-    forces = {}
+    forces = {} # mapps object name to forces applied to it str-> List[Force]
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
@@ -45,6 +45,8 @@ class AppVisitor(AppParseTreeVisitor):
     def visitApplyForce(self, ctx:AppParser.ApplyForceContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
         if NR_OF_CHILDREN < 11:
+            return
+        if ctx.object_ is None or ctx.force_ is None or ctx.time_ is None:
             return
         
         object_name = self.visit(ctx.object_)
@@ -122,8 +124,6 @@ class AppVisitor(AppParseTreeVisitor):
         
         if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7: # definition without value
             Programm.declareNewVariable(name, Programm.strToType(type))
-            if type == "OBJECT":
-                PyGameHandler.add_new_object(name, None, None)
         
         elif NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11: # definition with value - simple type
             value = self.visitChild(ctx,8)
@@ -144,10 +144,7 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
 
             if type == "OBJECT":
-                # PyGameHandler.add_new_object(name, value1, value2)
                 PyturtleHandler.add_new_object(name, value1, value2)
-                # forces = {name: [Force(40, 1, 200)]}
-                # PyturtleHandler.add_forces(forces)
             
         return "declaration"
 
@@ -182,8 +179,8 @@ class AppVisitor(AppParseTreeVisitor):
 
             Programm.defineExistingVariable(name, value, value2)
 
-            if Programm.getVariablesTypeStr(name) == "OBJECT":
-                PyGameHandler.modify_object(name, value, value2)
+            # if Programm.getVariablesTypeStr(name) == "OBJECT":
+                # PyGameHandler.modify_object(name, value, value2)
 
         return "definition"
 
@@ -199,9 +196,12 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#parallelExpression.
     def visitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
-        return self.visitChildren(ctx)
+        AppVisitor.inside_sequence = True
+        # do the work
+        AppVisitor.inside_sequence = False
+        AppVisitor.forces.clear()
+        # return self.visitChildren(ctx)
 
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loop.
