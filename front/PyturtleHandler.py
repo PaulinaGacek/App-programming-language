@@ -19,8 +19,7 @@ class Ball:
     def __init__(self, name, x, y, dx, dy):
         self.name = name
         self.turtle = turtle.Turtle("circle")
-        self.x = x # current x pos
-        self.y = y # current y pos
+
         self.dy = dy # current y velocity
         self.dx = dx
         self.acc_x = 0 # current x acc
@@ -46,9 +45,7 @@ class Ball:
         self.dy += self.acc_y
         self.dx += self.acc_x
 
-        self.x = self.turtle.xcor() + self.dx
-        self.y = self.turtle.ycor() + self.dy
-        self.turtle.goto(self.x, self.y)
+        self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
     
     '''
         Checks if given pixel (x_, y_) is inside self
@@ -61,6 +58,12 @@ class Ball:
             return False
 
         return True
+    
+    def get_pos_x(self) -> int:
+        return self.turtle.xcor()
+
+    def get_pos_y(self) -> int:
+        return self.turtle.ycor()
 
 
 class PyturtleHandler:
@@ -139,25 +142,29 @@ class PyturtleHandler:
 
     @staticmethod
     def update_positions_of_all_balls():
+        radius = PyturtleHandler.RADIUS
         for key, value in PyturtleHandler.balls.items():
 
             value.update_velocity()
 
             # check for a wall collision
-            if value.turtle.xcor()+5 > PyturtleHandler.WIDTH or value.turtle.xcor()-5 <= 0:
+            if value.turtle.xcor()+radius > PyturtleHandler.WIDTH or value.turtle.xcor()-radius <= 0:
                 value.dx *= -1
             
-            if value.turtle.ycor()+5 > PyturtleHandler.HEIGHT or value.turtle.ycor()-5 <= 0:
+            if value.turtle.ycor()+radius > PyturtleHandler.HEIGHT or value.turtle.ycor()-radius <= 0:
                 value.dy *= -1
 
-            if value.turtle.xcor() > PyturtleHandler.WIDTH:
-                value.turtle.goto(PyturtleHandler.WIDTH-10, value.turtle.ycor())
-            if value.turtle.xcor() < 0:
-                value.turtle.goto(10, value.turtle.ycor())
-            if value.turtle.ycor() > PyturtleHandler.HEIGHT:
-                value.turtle.goto(value.turtle.xcor(), PyturtleHandler.HEIGHT-10)
-            if value.turtle.ycor() < 0:
-                value.turtle.goto(value.turtle.xcor(), 10)
+            if value.turtle.xcor() > PyturtleHandler.WIDTH - radius:
+                value.turtle.goto(PyturtleHandler.WIDTH-radius*2, value.turtle.ycor())
+
+            if value.turtle.xcor() < radius:
+                value.turtle.goto(radius*2, value.turtle.ycor())
+
+            if value.turtle.ycor() > PyturtleHandler.HEIGHT - radius:
+                value.turtle.goto(value.turtle.xcor(), PyturtleHandler.HEIGHT-radius*2)
+
+            if value.turtle.ycor() < radius:
+                value.turtle.goto(value.turtle.xcor(), radius*2)
 
     @staticmethod
     def display_visualisation(period: int):
