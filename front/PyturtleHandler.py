@@ -88,6 +88,12 @@ class PyturtleHandler:
     @staticmethod
     def set_width(width):
         PyturtleHandler.WIDTH = width
+
+    @staticmethod
+    def atan2(y, x):
+        if x == 0 and y == 0:
+            return 0
+        return math.atan2(y, x) * 180 / math.pi
     
     '''
         Checks if pixel (x,y) is not occupied by object, so if this pixel is available
@@ -186,19 +192,20 @@ class PyturtleHandler:
             max_length = max(max_length, force.ticks)
         for i in range(max_length):
             current_forces = []
-            super_force_x = 0
-            super_force_y = 0
+            super_power = 0
+            super_angle = 0
             for force in forces:
-                if force.ticks==0:
+                if force.ticks == 0:
                     continue
                 else:
                     current_forces.append(force)
-                    force.ticks-=1
+                    force.ticks -= 1
             for force in current_forces:
-                super_force_x += math.cos(force.angle * math.pi/180)*force.power
-                super_force_y += math.sin(force.angle * math.pi/180)*force.power
-            super_angle = math.atan(super_force_y/super_force_x)*180/math.pi
-            super_power = math.sqrt(super_force_y**2 + super_force_x**2)
+                temp_power = math.sqrt(super_power**2 + force.power**2 - 2*super_power*force.power*math.cos((force.angle - super_angle))*math.pi/180)
+                temp_angle = super_angle + PyturtleHandler.atan2(force.power*math.sin((force.angle - super_angle)*math.pi/180), super_power + force.power*math.cos((force.angle - super_angle)*math.pi/180))
+                super_power = temp_power
+                super_angle = temp_angle
+            print("Super power: {}, angle: {}".format(super_power, super_angle))
             ret_forces.append(Force(super_angle, super_power, 1))
         return ret_forces
 
