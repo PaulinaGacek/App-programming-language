@@ -1,6 +1,6 @@
 from utils.Variable import *
 from utils.Error import *
-from front.PyturtleHandler import Force
+from front.PyturtleHandler import Force, PyturtleHandler
 
 class Programm:
 
@@ -24,6 +24,9 @@ class Programm:
         
         if Programm.variables.get(name) is not None:
             raise VariableRedefinitionError(name, Programm.typeToStr(type))
+        
+        if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
+            raise ObjectCannotBeDrawn(name, value, value2)
         
         new_var = Variable(name, type, value, value2)
         Programm.variables[name] = new_var

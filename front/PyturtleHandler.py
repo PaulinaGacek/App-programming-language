@@ -19,9 +19,11 @@ class Ball:
     def __init__(self, name, x, y, dx, dy):
         self.name = name
         self.turtle = turtle.Turtle("circle")
-        self.dy = dy 
+        self.x = x # current x pos
+        self.y = y # current y pos
+        self.dy = dy # current y velocity
         self.dx = dx
-        self.acc_x = 0
+        self.acc_x = 0 # current x acc
         self.acc_y = 0
 
         self.turtle.hideturtle()
@@ -44,22 +46,33 @@ class Ball:
         self.dy += self.acc_y
         self.dx += self.acc_x
 
-        self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
-        # self.turtle.sety(self.turtle.ycor() + self.dy)
-        # self.turtle.setx(self.turtle.xcor() + self.dx)
+        self.x = self.turtle.xcor() + self.dx
+        self.y = self.turtle.ycor() + self.dy
+        self.turtle.goto(self.x, self.y)
+    
+    '''
+        Checks if given pixel (x_, y_) is inside self
+        Returns true if it is inside.
+    '''
+    def is_pixel_inside(self, x_, y_) -> bool:
+        diff_x = abs(x_ - self.x)
+        diff_y = abs(y_ - self.y)
+        if math.sqrt((diff_x ** 2 + diff_y ** 2)) >= PyturtleHandler.RADIUS:
+            return False
+
+        return True
 
 
 class PyturtleHandler:
 
     HEIGHT = 400
     WIDTH = 400
-    RADIUS = 10
+    RADIUS = 11
 
     win = None
     color = (205, 205, 205)
     isBoardInstantiated = False
 
-    objects = []
     balls = {} # mapps name to the Ball()
 
     @staticmethod
@@ -69,6 +82,46 @@ class PyturtleHandler:
     @staticmethod
     def set_width(width):
         PyturtleHandler.WIDTH = width
+    
+    '''
+        Checks if pixel (x,y) is not occupied by object, so if this pixel is available
+    '''
+    @staticmethod
+    def is_pixel_available(x, y) -> bool:
+        for obj in PyturtleHandler.balls.values():
+            if obj.is_pixel_inside(x, y) is True:
+                return False
+        return True
+    
+    '''
+        Checks if all points on the perimeter of new object are available.
+    '''
+    @staticmethod
+    def can_object_be_drawn(x,y) -> bool:
+
+        if x-PyturtleHandler.RADIUS < 0 or x+ PyturtleHandler.RADIUS > PyturtleHandler.WIDTH:
+            return False
+        
+        if y-PyturtleHandler.RADIUS < 0 or y+PyturtleHandler.RADIUS > PyturtleHandler.HEIGHT:
+            return False
+
+        # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
+        # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
+        for x_ in range (0,PyturtleHandler.RADIUS):
+            x1 = x + x_
+            x2 = x - x_
+            y1 = math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
+            y2 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
+
+            if not PyturtleHandler.is_pixel_available(int(x1), int(y1)):
+                print("Pixel: ({},{}) not available".format(x1,int(y1)))
+                return False
+
+            if not PyturtleHandler.is_pixel_available(x2, int(y2)):
+                print("Pixel: ({},{}) not available".format(x2,int(y2)))
+                return False
+
+        return True
 
     @staticmethod
     def instantiate_board():
@@ -76,6 +129,7 @@ class PyturtleHandler:
         PyturtleHandler.win.colormode(255)
         PyturtleHandler.win.bgcolor("white")
         PyturtleHandler.win.title("A++")
+        PyturtleHandler.win.setup(PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
         turtle.setworldcoordinates(0, 0, PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
         PyturtleHandler.isBoardInstantiated = True
 
