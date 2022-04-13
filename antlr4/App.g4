@@ -48,8 +48,8 @@ arithmeticalExpression
     ;
 
 declaration
-	:   'DEFINE' whiteSpace type_=simpleVariableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
-	|   'DEFINE' whiteSpace type_=complexVariableType whiteSpace name_=variableName whiteSpace 'AS' 
+	:   'DEFINE' whiteSpace type_sim=simpleVariableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
+	|   'DEFINE' whiteSpace type_com=complexVariableType whiteSpace name_=variableName whiteSpace 'AS' 
 		whiteSpace value1_=arithmeticalExpression whiteSpace? ',' whiteSpace? value2_=arithmeticalExpression whiteSpace? ';'
 	;
 

@@ -15,6 +15,8 @@
     cd ${project folder}
     python3 -m venv venv
     source venv/bin/activate
+    pip install --upgrade setuptools
+    sudo apt-get install python3-tk
     pip install wheel
     pip install antlr4-python3-runtime
     pip install pygame
@@ -49,6 +51,7 @@ antlr4 -Dlanguage=Python3 ./antlr4/App.g4  -visitor -o dist3
     cd ${project folder}
     python -m venv venv
     venv\Scripts\activate
+    pip install --upgrade setuptools
     pip install wheel
     pip install antlr4-python3-runtime
     pip install pygame
