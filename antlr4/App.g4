@@ -36,7 +36,8 @@ integer
 	;
 
 applyForce
-    : 'APPLY' whiteSpace force_=variableName whiteSpace 'TO' whiteSpace object_=variableName whiteSpace 'FOR' whiteSpace time_=variableName whiteSpace? ';'
+    : 'APPLY' whiteSpace force_=variableName whiteSpace 'TO' whiteSpace object_=variableName whiteSpace 
+		'FOR' whiteSpace time_=variableName (whiteSpace 'DELAY' whiteSpace delay_=variableName)? whiteSpace? ';'
     ;
 
 
@@ -47,21 +48,19 @@ arithmeticalExpression
     ;
 
 declaration
-	:   'DEFINE' whiteSpace simpleVariableType whiteSpace variableName whiteSpace? ';'
-	|   'DEFINE' whiteSpace simpleVariableType whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression whiteSpace? ';'
-	|   'DEFINE' whiteSpace complexVariableType whiteSpace variableName whiteSpace? ';'
-	|   'DEFINE' whiteSpace complexVariableType whiteSpace variableName whiteSpace 'AS' 
-		whiteSpace arithmeticalExpression whiteSpace? ',' whiteSpace? arithmeticalExpression whiteSpace? ';'
+	:   'DEFINE' whiteSpace type_=simpleVariableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
+	|   'DEFINE' whiteSpace type_=complexVariableType whiteSpace name_=variableName whiteSpace 'AS' 
+		whiteSpace value1_=arithmeticalExpression whiteSpace? ',' whiteSpace? value2_=arithmeticalExpression whiteSpace? ';'
 	;
 
 definition
-	:   'SET' whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression ';'
-	|   'SET' whiteSpace variableName whiteSpace 'AS' whiteSpace arithmeticalExpression whiteSpace? 
-		',' whiteSpace? arithmeticalExpression ';'
+	:   'SET' whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression ';'
+	|   'SET' whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value1_=arithmeticalExpression whiteSpace? 
+		',' whiteSpace? value2_=arithmeticalExpression ';'
 	;
 
 conditionalStatement
-    :   'IF' whiteSpace? '('whiteSpace? condition whiteSpace? ')' whiteSpace 'THEN' whiteSpace primaryExpression whiteSpace 'ENDIF' whiteSpace? ';'
+    :   'IF' whiteSpace? '('whiteSpace? condition whiteSpace? ')' whiteSpace 'THEN' whiteSpace instruction+ whiteSpace 'ENDIF' whiteSpace? ';'
     ;
 
 condition
@@ -74,12 +73,12 @@ condition
     ;
 
 parallelExpression
-    :   'PARALLEL' whiteSpace primaryExpression whiteSpace 'ENDPARALLEL' whiteSpace? ';'
+    :   'PARALLEL' whiteSpace (app_force_=applyForce|parallel_=parallelExpression)+ whiteSpace 'ENDPARALLEL' whiteSpace? ';'
     ;
 
 loop
-    : 'LOOP' whiteSpace '(' whiteSpace? declaration whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')'whiteSpace primaryExpression whiteSpace 'ENDLOOP' whiteSpace? ';'
-    | 'LOOP' whiteSpace '('whiteSpace?';' whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')' whiteSpace primaryExpression whiteSpace 'ENDLOOP' whiteSpace? ';'
+    : 'LOOP' whiteSpace '(' whiteSpace? declaration whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')'whiteSpace instruction+ whiteSpace 'ENDLOOP' whiteSpace? ';'
+    | 'LOOP' whiteSpace '('whiteSpace?';' whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')' whiteSpace instruction+ whiteSpace 'ENDLOOP' whiteSpace? ';'
     ;
 
 function
@@ -88,8 +87,8 @@ function
     ;
 
 functionBody
-    : primaryExpression whiteSpace?
-    | primaryExpression whiteSpace parallelExpression whiteSpace primaryExpression whiteSpace?
+    : instruction+ whiteSpace?
+    | instruction+ whiteSpace parallelExpression whiteSpace instruction+ whiteSpace?
     ;
 
 functionArgs
