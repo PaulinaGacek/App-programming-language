@@ -7,7 +7,10 @@ import typing
 
 class Force:
     def __init__(self, angle: int, power: int, ticks: int):
-        self.angle = angle % 360  # normalised angle in degrees
+        
+        if angle < 0:
+            angle += 360 * int(1 - angle/360)
+        self.angle = angle - int(angle/360)  # normalised angle in degrees
         self.power = power
         self.ticks = ticks
         # add checking if values are not negative
