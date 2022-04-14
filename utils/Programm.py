@@ -9,24 +9,39 @@ class Programm:
     '''
     variables = {}
 
+    local_scopes = [] # list with local scopes of variables and functions names
+
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
     if variable was already defined.
     '''
     @staticmethod
-    def defineNewVariable(name: str, type: Type, value: int, value2=None):
+    def defineNewVariable(name: str, type: Type, value: int, value2=None, scope=None):
         
-        # variable exists in global scope
-        if Programm.variables.get(name) is not None:
-            raise VariableRedefinitionError(name, Programm.typeToStr(type))
+        if scope is None: # scope is gloabal
+            # variable exists in global scope
+            if Programm.variables.get(name) is not None:
+                raise VariableRedefinitionError(name, Programm.typeToStr(type))
+            
+            # drawn object would collide with different object
+            if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
+                raise ObjectCannotBeDrawn(name, value, value2)
+            
+            new_var = Variable(name, type, value, value2)
+            Programm.variables[name] = new_var
         
-        # drawn object would collide with different object
-        if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
-            raise ObjectCannotBeDrawn(name, value, value2)
-        
-        new_var = Variable(name, type, value, value2)
-        Programm.variables[name] = new_var
+        else: # scope is local
+            if Programm.local_scopes[scope].get(none) is not None:
+                raise VariableRedefinitionError(name, Programm.typeToStr(type))
+            
+            # drawn object would collide with different object
+            if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
+                raise ObjectCannotBeDrawn(name, value, value2)
+            
+            new_var = Variable(name, type, value, value2)
+            Programm.local_scopes[scope][name] = new_var
+
 
 
     '''
@@ -35,13 +50,21 @@ class Programm:
     if variable was not previously defined.
     '''
     @staticmethod
-    def defineExistingVariable(name: str, value: int, value2=None):
+    def defineExistingVariable(name: str, value: int, value2=None, scope=None):
 
-        if Programm.variables.get(name) is None:
-            raise UndefinedVariableReferenceError(name)
-        
-        Programm.variables[name].value = value
-        Programm.variables[name].value2 = value2
+        if scope is None:
+            if Programm.variables.get(name) is None:
+                raise UndefinedVariableReferenceError(name)
+            
+            Programm.variables[name].value = value
+            Programm.variables[name].value2 = value2
+
+        else: # scope is local
+            if Programm.local_scopes[scope].get(name) is None:
+                raise UndefinedVariableReferenceError(name)
+            
+            Programm.local_scopes[scope][name].value = value
+            Programm.local_scopes[scope][name].value2 = value2
 
     '''
     Prints the content of variables dict.

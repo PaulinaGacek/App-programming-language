@@ -6,15 +6,37 @@ from utils.Variable import *
 from utils.Error import *
 from front.PygameHandler import PyGameHandler
 from front.PyturtleHandler import *
+from queue import LifoQueue
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
     from AppParser import AppParser
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
+class Stack:
+    def __init__(self):
+        self.stack = []
+    
+    def push(self, item):
+        self.stack.append(item)
+    
+    def pop(self):
+        if len(self.stack) == 0:
+            return None
+        return self.stack.pop(-1)
+    
+    def top(self):
+        if len(self.stack) == 0:
+            return None
+        return self.stack[-1]
+    
+    def getSize(self):
+        return len(self.stack)
+
 class AppVisitor(AppParseTreeVisitor):
     inside_sequence = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
+    scope_history = Stack() # empty stack of following scopes
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
@@ -177,15 +199,15 @@ class AppVisitor(AppParseTreeVisitor):
             if type(self.visit(ctx.value_)) is not int:
                 raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
             value = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value)
+            Programm.defineNewVariable(name, Programm.strToType(type_), value, scope=scope_history.top())
 
         elif type_ == 'FORCE':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2)
+            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=scope_history.top())
 
         elif type_ == 'OBJECT':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2)
+            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=scope_history.top())
             PyturtleHandler.add_new_object(name, value1, value2)
             
         return "declaration"
@@ -204,13 +226,13 @@ class AppVisitor(AppParseTreeVisitor):
 
         if ctx.value_ is not None: # simple type
             value = self.visit(ctx.value_)
-            Programm.defineExistingVariable(name, value)
+            Programm.defineExistingVariable(name, value, scope=self.scope_history.top())
 
         else: # complex type
             value1 = self.visit(ctx.value1_)
             value2 = self.visit(ctx.value2_)
 
-            Programm.defineExistingVariable(name, value1, value2)
+            Programm.defineExistingVariable(name, value1, value2, scope=self.scope_id)
 
         return "definition"
 
@@ -218,7 +240,12 @@ class AppVisitor(AppParseTreeVisitor):
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):
+        id = len(Programm.local_scopes)
+        local_variables = {}
+        Programm.local_scopes.append(local_variables) # adding new variable scope
+        scope_history.put(id)
         return self.visitChildren(ctx)
+        scope_history.pop()
 
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
@@ -227,9 +254,6 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
-        id = len(Programm.local_scopes)
-        local_variables = {}
-        Programm.local_scopes.append(local_variables)
         AppVisitor.inside_sequence = True
         # do the work
         AppVisitor.inside_sequence = False
