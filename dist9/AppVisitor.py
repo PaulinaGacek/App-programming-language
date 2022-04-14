@@ -2,18 +2,41 @@
 from antlr4 import *
 from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
+from utils.Variable import *
 from utils.Error import *
 from front.PygameHandler import PyGameHandler
 from front.PyturtleHandler import *
+from queue import LifoQueue
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
     from AppParser import AppParser
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
+class Stack:
+    def __init__(self):
+        self.stack = []
+    
+    def push(self, item):
+        self.stack.append(item)
+    
+    def pop(self):
+        if len(self.stack) == 0:
+            return None
+        return self.stack.pop(-1)
+    
+    def top(self):
+        if len(self.stack) == 0:
+            return None
+        return self.stack[-1]
+    
+    def getSize(self):
+        return len(self.stack)
+
 class AppVisitor(AppParseTreeVisitor):
     inside_sequence = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
+    scope_history = Stack() # empty stack of following scopes
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
@@ -24,12 +47,7 @@ class AppVisitor(AppParseTreeVisitor):
     def visitInstruction(self, ctx:AppParser.InstructionContext):
         return self.visitChildren(ctx)
 
-
-    def visitSimpleVariableType(self, ctx:AppParser.SimpleVariableTypeContext):
-        return ctx.getText()
-
-
-    def visitComplexVariableType(self, ctx:AppParser.ComplexVariableTypeContext):
+    def visitVariableType(self, ctx:AppParser.VariableTypeContext):
         return ctx.getText()
 
 
@@ -88,69 +106,109 @@ class AppVisitor(AppParseTreeVisitor):
         value = ctx.getText()
         return int(value)
 
+    def visitForce_type(self, ctx:AppParser.Force_typeContext):
+        print("Angle:{}, power: {}".format(ctx.angle.getText(), ctx.power.getText()))
+        return int(ctx.angle.getText()), int(ctx.power.getText())
+    
+    def visitObject_type(self, ctx:AppParser.Object_typeContext):
+        return int(ctx.x_cor.getText()), int(ctx.y_cor.getText())
 
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext, type_=None):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
-        type_ = None
-        if type(ctx.parentCtx).__name__ == "DeclarationContext":
-            if ctx.parentCtx.type_sim is not None:
-                type_ = ctx.parentCtx.type_sim
-                print("-> declaration of simple type")
-            else:
-                type_ = ctx.parentCtx.type_com
-                print("->declaration of complex type")
-
-        # elif type(ctx.parentCtx).__name__ == "DefinitionContext":
-
         if NR_OF_CHILDREN == 1: # variable name or INT
-            if type(self.visitChildren(ctx)) is int:
+            if type(self.getNodesChild(ctx,0)).__name__ == "IntegerContext":
+                print("Integer")
                 return self.visitChildren(ctx)
-            else:
+
+            elif type(self.getNodesChild(ctx,0)).__name__ == "VariableNameContext":
+                print("Variable name")
                 name = self.visitChildren(ctx)
-                print("It is variable: {}".format(name))
 
                 if Programm.getVariable(name) is None:
                     raise UndefinedVariableReferenceError(name)
 
-                if type is not None and  Programm.getVariable(name).getTypeString() != type_:
-                    raise ParameterError("Bad type")
+                if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
+                    return Programm.getVariable(name).value
+            else:
+                return self.visitChildren(ctx)
+
         else:
-            l = self.visit(ctx.left)
-            r = self.visit(ctx.right)
+            type1 = type(self.getNodesChild(ctx.left,0)).__name__
+            val1 = self.getNodesChild(ctx.left,0).getText()
+            type2 = type(self.getNodesChild(ctx.right,0)).__name__
+            val2 = self.getNodesChild(ctx.right,0).getText()
 
-            op = ctx.op.text
-            operation =  {
-            '+': lambda: l + r,
-            '-': lambda: l - r,
-            '*': lambda: l * r,
-            '/': lambda: l / r,
-            }
-            return operation.get(op, lambda: None)()
+            if not Programm.areTypesCompatible(type1, type2, val1, val2):
+                raise Error("Arithmetical operation on different types are not allowed: {}, {} -> {},{}".format(type1,type2, val1, val2))
+            else:
+                print("Types are ok: {}, {} -> {},{}".format(type1,type2, val1, val2))
+            
+            artm_type = None
+            if type1 == "VariableNameContext":
+                artm_type = Programm.getVariable(val1).type
+            elif type1 == "IntegerContext":
+                artm_type = Type.INT
+            elif type1 == "Object_typeContext":
+                artm_type = Type.OBJECT
+            elif type1 == "Force_typeContext":
+                artm_type = Type.FORCE
+            else:
+                artm_type = 'ARITM_EXPR'
 
+            print("Artm type: {}".format(artm_type))
+            
+            if artm_type == Type.INT or artm_type == Type.TIME:
+                l = self.visit(ctx.left)
+                r = self.visit(ctx.right)
+
+                op = ctx.op.text
+                operation =  {
+                '+': lambda: l + r,
+                '-': lambda: l - r,
+                '*': lambda: l * r,
+                '/': lambda: l / r,
+                }
+                return operation.get(op, lambda: None)()
+            
+            elif artm_type == Type.FORCE:
+                l_angle, l_power = self.visit(ctx.left)
+                r_angle, r_power = self.visit(ctx.right)
+                print("Operation on forces left:[{},{}], right:[{},{}]".format(l_angle, l_power, r_angle, r_power))
+                
+                op = ctx.op.text
+                # caculate output force and return
+
+            elif artm_type == Type.OBJECT:
+                print("Operation on objects")
+            
+            else:
+                return self.visitChildren(ctx)
 
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
 
-        if ctx.name_ is None or (ctx.type_sim is None and ctx.type_com is None) or (ctx.value_ is None and (ctx.value1_ is None or ctx.value2_ is None)):
+        if ctx.name_ is None or ctx.type_sim is None or ctx.value_ is None:
             return
 
         name = self.visit(ctx.name_)
-        type = None
-        
-        if ctx.type_sim is not None: # simple type
-            type = self.visit(ctx.type_sim)
+        type_ = self.visit(ctx.type_sim)
+
+        print("Type: {}".format(type_))
+
+        if type_ == 'INT' or type_ == 'TIME':
+            if type(self.visit(ctx.value_)) is not int:
+                raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
             value = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type), value)
+            Programm.defineNewVariable(name, Programm.strToType(type_), value, scope=scope_history.top())
 
-        else: 
-            # definition with value of complex type
-            type = self.visit(ctx.type_com)
-            value1 = self.visit(ctx.value1_)
-            value2 = self.visit(ctx.value2_)
-            Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
+        elif type_ == 'FORCE':
+            value1, value2 = self.visit(ctx.value_)
+            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=scope_history.top())
 
-            if type == "OBJECT":
-                PyturtleHandler.add_new_object(name, value1, value2)
+        elif type_ == 'OBJECT':
+            value1, value2 = self.visit(ctx.value_)
+            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=scope_history.top())
+            PyturtleHandler.add_new_object(name, value1, value2)
             
         return "declaration"
 
@@ -168,13 +226,13 @@ class AppVisitor(AppParseTreeVisitor):
 
         if ctx.value_ is not None: # simple type
             value = self.visit(ctx.value_)
-            Programm.defineExistingVariable(name, value)
+            Programm.defineExistingVariable(name, value, scope=self.scope_history.top())
 
         else: # complex type
             value1 = self.visit(ctx.value1_)
             value2 = self.visit(ctx.value2_)
 
-            Programm.defineExistingVariable(name, value1, value2)
+            Programm.defineExistingVariable(name, value1, value2, scope=self.scope_id)
 
         return "definition"
 
@@ -182,7 +240,12 @@ class AppVisitor(AppParseTreeVisitor):
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):
+        id = len(Programm.local_scopes)
+        local_variables = {}
+        Programm.local_scopes.append(local_variables) # adding new variable scope
+        scope_history.put(id)
         return self.visitChildren(ctx)
+        scope_history.pop()
 
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
