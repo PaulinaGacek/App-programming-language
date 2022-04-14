@@ -98,6 +98,7 @@ class AppVisitor(AppParseTreeVisitor):
             if type(self.getNodesChild(ctx,0)).__name__ == "IntegerContext":
                 print("Integer")
                 return self.visitChildren(ctx)
+
             elif type(self.getNodesChild(ctx,0)).__name__ == "VariableNameContext":
                 print("Variable name")
                 name = self.visitChildren(ctx)
@@ -107,6 +108,8 @@ class AppVisitor(AppParseTreeVisitor):
 
                 if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
                     return Programm.getVariable(name).value
+            else:
+                return self.visitChildren(ctx)
 
         else:
             type1 = type(self.getNodesChild(ctx.left,0)).__name__
@@ -224,6 +227,9 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
+        id = len(Programm.local_scopes)
+        local_variables = {}
+        Programm.local_scopes.append(local_variables)
         AppVisitor.inside_sequence = True
         # do the work
         AppVisitor.inside_sequence = False

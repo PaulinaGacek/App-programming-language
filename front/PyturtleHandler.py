@@ -55,8 +55,8 @@ class Ball:
         Returns true if it is inside.
     '''
     def is_pixel_inside(self, x_, y_) -> bool:
-        diff_x = abs(x_ - self.x)
-        diff_y = abs(y_ - self.y)
+        diff_x = abs(x_ - self.turtle.xcor())
+        diff_y = abs(y_ - self.turtle.ycor())
         if math.sqrt((diff_x ** 2 + diff_y ** 2)) >= PyturtleHandler.RADIUS:
             return False
 
