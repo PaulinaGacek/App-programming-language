@@ -144,10 +144,12 @@ class AppVisitor(AppParseTreeVisitor):
                 artm_type = Programm.getVariable(val1).type
             elif type1 == "IntegerContext":
                 artm_type = Type.INT
-            elif type2 == "Object_typeContext":
+            elif type1 == "Object_typeContext":
                 artm_type = Type.OBJECT
-            else:
+            elif type1 == "Force_typeContext":
                 artm_type = Type.FORCE
+            else:
+                artm_type = 'ARITM_EXPR'
 
             print("Artm type: {}".format(artm_type))
             
@@ -176,7 +178,7 @@ class AppVisitor(AppParseTreeVisitor):
                 print("Operation on objects")
             
             else:
-                self.visitChildren(ctx)
+                return self.visitChildren(ctx)
 
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
 

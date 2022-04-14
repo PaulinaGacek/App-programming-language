@@ -104,6 +104,8 @@ class Programm:
     
     @staticmethod
     def areTypesCompatible(type1, type2, value1, value2) -> bool:
+        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
+            return True
 
         if type1 == "VariableNameContext":
             if Programm.variables[value1].type == Type.INT:
