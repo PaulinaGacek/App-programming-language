@@ -94,17 +94,6 @@ class AppVisitor(AppParseTreeVisitor):
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext, type_=None):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
-        type_ = None
-        if type(ctx.parentCtx).__name__ == "DeclarationContext":
-            if ctx.parentCtx.type_sim is not None:
-                type_ = ctx.parentCtx.type_sim
-                print("-> declaration of simple type")
-            else:
-                type_ = ctx.parentCtx.type_com
-                print("->declaration of complex type")
-
-        # elif type(ctx.parentCtx).__name__ == "DefinitionContext":
-
         if NR_OF_CHILDREN == 1: # variable name or INT
             if type(self.getNodesChild(ctx,0)).__name__ == "IntegerContext":
                 print("Integer")
@@ -118,16 +107,7 @@ class AppVisitor(AppParseTreeVisitor):
 
                 if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
                     return Programm.getVariable(name).value
-            '''
-            else:
-                name = self.visitChildren(ctx)
-                print("It is variable: {}".format(name))
 
-                if Programm.getVariable(name) is None:
-                    raise UndefinedVariableReferenceError(name)
-
-                if type is not None and  Programm.getVariable(name).getTypeString() != type_:
-                    raise ParameterError("Bad type") '''
         else:
             type1 = type(self.getNodesChild(ctx.left,0)).__name__
             val1 = self.getNodesChild(ctx.left,0).getText()
