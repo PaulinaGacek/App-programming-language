@@ -146,35 +146,24 @@ class AppVisitor(AppParseTreeVisitor):
     def visitDefinition(self, ctx:AppParser.DefinitionContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
-        if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 8:
+        if ctx.name_ is None or (ctx.value_ is None and (ctx.value1_ is None or ctx.value2_ is None)):
             return
         
-        name = self.visitChild(ctx,2)
-        
+        name = self.visit(ctx.name_)
         if Programm.getVariable(name) is None:
             raise UndefinedVariableReferenceError(name)
         
         type = Programm.getVariable(name).type
-        value = self.visitChild(ctx,6, type) 
 
-        if NR_OF_CHILDREN < 10: # simple type
+        if ctx.value_ is not None: # simple type
+            value = self.visit(ctx.value_)
             Programm.defineExistingVariable(name, value)
 
         else: # complex type
-            value2 = None
-            if self.visitChild(ctx,8) is not None:
-                value2 = self.visitChild(ctx,8)
-            
-            elif self.visitChild(ctx,9) is not None:
-                value2 = self.visitChild(ctx,9)
-            
-            else:
-                value2 = self.visitChild(ctx,10)
+            value1 = self.visit(ctx.value1_)
+            value2 = self.visit(ctx.value2_)
 
-            Programm.defineExistingVariable(name, value, value2)
-
-            # if Programm.getVariablesTypeStr(name) == "OBJECT":
-                # PyGameHandler.modify_object(name, value, value2)
+            Programm.defineExistingVariable(name, value1, value2)
 
         return "definition"
 
