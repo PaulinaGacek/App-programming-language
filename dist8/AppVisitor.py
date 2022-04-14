@@ -91,6 +91,18 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext, type_=None):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+
+        type_ = None
+        if type(ctx.parentCtx).__name__ == "DeclarationContext":
+            if ctx.parentCtx.type_sim is not None:
+                type_ = ctx.parentCtx.type_sim
+                print("-> declaration of simple type")
+            else:
+                type_ = ctx.parentCtx.type_com
+                print("->declaration of complex type")
+
+        # elif type(ctx.parentCtx).__name__ == "DefinitionContext":
+
         if NR_OF_CHILDREN == 1: # variable name or INT
             if type(self.visitChildren(ctx)) is int:
                 return self.visitChildren(ctx)
@@ -144,7 +156,6 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitDefinition(self, ctx:AppParser.DefinitionContext):
-        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
         if ctx.name_ is None or (ctx.value_ is None and (ctx.value1_ is None or ctx.value2_ is None)):
             return
