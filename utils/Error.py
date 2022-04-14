@@ -91,3 +91,10 @@ class ObjectCannotBeDrawn(Exception):
 
     def __str__(self):
         return self.message
+    
+class Error(Exception):
+    def __init__(self, message):
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message

@@ -14,12 +14,10 @@ instruction
 	| applyForce
 	;
 
-simpleVariableType
+variableType
 	: 'TIME'
-	| 'INT';
-
-complexVariableType
-    : 'FORCE'
+	| 'INT'
+    | 'FORCE'
     | 'OBJECT';
 
 variableName
@@ -35,28 +33,32 @@ integer
 	| ZERO
 	;
 
+force_type: '['angle=integer ',' power=integer ']';
+
+object_type: '('x_cor=integer ',' y_cor=integer ')';
+
 applyForce
-    : 'APPLY' whiteSpace force_=variableName whiteSpace 'TO' whiteSpace object_=variableName whiteSpace 
-		'FOR' whiteSpace time_=variableName (whiteSpace 'DELAY' whiteSpace delay_=variableName)? whiteSpace? ';'
+    : 'APPLY' whiteSpace (force_=variableName|force_val=force_type) whiteSpace 
+		'TO' whiteSpace object_=variableName whiteSpace 
+		'FOR' whiteSpace (time_=variableName|time_val=integer) 
+		(whiteSpace 'DELAY' whiteSpace (delay_=variableName|delay_val_=integer))? whiteSpace? ';'
     ;
 
 
 arithmeticalExpression
     : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
+	| force_type
+	| object_type
 	| variableName
     ;
 
 declaration
-	:   'DEFINE' whiteSpace type_sim=simpleVariableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
-	|   'DEFINE' whiteSpace type_com=complexVariableType whiteSpace name_=variableName whiteSpace 'AS' 
-		whiteSpace value1_=arithmeticalExpression whiteSpace? ',' whiteSpace? value2_=arithmeticalExpression whiteSpace? ';'
+	:   'DEFINE' whiteSpace type_sim=variableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
 	;
 
 definition
 	:   'SET' whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression ';'
-	|   'SET' whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value1_=arithmeticalExpression whiteSpace? 
-		',' whiteSpace? value2_=arithmeticalExpression ';'
 	;
 
 conditionalStatement
