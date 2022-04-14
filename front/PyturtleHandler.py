@@ -140,7 +140,7 @@ class PyturtleHandler:
     '''
     @staticmethod
     def is_pixel_accessible(x, y, name) -> bool:
-        balls_copy = PyturtleHandler.balls
+        balls_copy = PyturtleHandler.balls.copy()
 
         balls_copy.pop(name)
 
