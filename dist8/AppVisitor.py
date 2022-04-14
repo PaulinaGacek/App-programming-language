@@ -118,33 +118,23 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
-        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
-        if NR_OF_CHILDREN is None or NR_OF_CHILDREN < 6:
+        if ctx.name_ is None or (ctx.type_sim is None and ctx.type_com is None) or (ctx.value_ is None and (ctx.value1_ is None or ctx.value2_ is None)):
             return
 
-        name = self.visitChild(ctx,4)
-        type = self.visitChild(ctx,2)
+        name = self.visit(ctx.name_)
+        type = None
         
-        if NR_OF_CHILDREN >= 6 and NR_OF_CHILDREN <= 7: # definition without value
-            Programm.declareNewVariable(name, Programm.strToType(type))
-        
-        elif NR_OF_CHILDREN >= 10 and NR_OF_CHILDREN <=11: # definition with value - simple type
-            value = self.visitChild(ctx,8)
+        if ctx.type_sim is not None: # simple type
+            type = self.visit(ctx.type_sim)
+            value = self.visit(ctx.value_)
             Programm.defineNewVariable(name, Programm.strToType(type), value)
 
         else: 
             # definition with value of complex type
-            value1 = self.visitChild(ctx,8)
-            value2 = None
-            if self.visitChild(ctx,10) is not None:
-                value2 = self.visitChild(ctx,10)
-            
-            elif self.visitChild(ctx,11) is not None:
-                value2 = self.visitChild(ctx,11)
-            
-            else:
-                value2 = self.visitChild(ctx,12)
+            type = self.visit(ctx.type_com)
+            value1 = self.visit(ctx.value1_)
+            value2 = self.visit(ctx.value2_)
             Programm.defineNewVariable(name, Programm.strToType(type), value1, value2)
 
             if type == "OBJECT":

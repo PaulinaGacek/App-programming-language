@@ -10,11 +10,6 @@ class Programm:
     variables = {}
 
     '''
-    Keeps global variables of force type, mapps name to the force object
-    '''
-    forces = {}
-
-    '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
     if variable was already defined.
@@ -22,9 +17,11 @@ class Programm:
     @staticmethod
     def defineNewVariable(name: str, type: Type, value: int, value2=None):
         
+        # variable exists in global scope
         if Programm.variables.get(name) is not None:
             raise VariableRedefinitionError(name, Programm.typeToStr(type))
         
+        # drawn object would collide with different object
         if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
             raise ObjectCannotBeDrawn(name, value, value2)
         
@@ -43,26 +40,8 @@ class Programm:
         if Programm.variables.get(name) is None:
             raise UndefinedVariableReferenceError(name)
         
-        print("Value 2: {}".format(value2))
         Programm.variables[name].value = value
         Programm.variables[name].value2 = value2
-        
-
-
-    '''
-    Handles declaration without definition, e.g. DEFINE TIME zmienna;
-    Creates variable with no value and puts it into variables dict or raises exception
-    if variable was already defined.
-    '''
-    @staticmethod
-    def declareNewVariable(name: str, type: Type):
-        
-        if Programm.getVariable(name) is not None:
-            raise VariableRedefinitionError(name, Programm.typeToStr(type))
-        
-        new_var = Variable(name, type, None, None)
-        Programm.variables[name] = new_var
-    
 
     '''
     Prints the content of variables dict.
