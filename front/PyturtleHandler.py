@@ -108,28 +108,32 @@ class PyturtleHandler:
         Checks if all points on the perimeter of new object are available.
     '''
     @staticmethod
-    def can_object_be_drawn(x,y) -> bool:
+    def can_object_be_drawn(x, y) -> bool:
 
-        if x-PyturtleHandler.RADIUS < 0 or x+ PyturtleHandler.RADIUS > PyturtleHandler.WIDTH:
+        if x-PyturtleHandler.RADIUS < 0 or x + PyturtleHandler.RADIUS > PyturtleHandler.WIDTH:
             return False
         
-        if y-PyturtleHandler.RADIUS < 0 or y+PyturtleHandler.RADIUS > PyturtleHandler.HEIGHT:
+        if y-PyturtleHandler.RADIUS < 0 or y + PyturtleHandler.RADIUS > PyturtleHandler.HEIGHT:
             return False
 
         # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
         # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
-        for x_ in range (0,PyturtleHandler.RADIUS):
+        for x_ in range (0, PyturtleHandler.RADIUS):
             x1 = x + x_
             x2 = x - x_
             y1 = math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
-            y2 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
+            y2 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
+            y3 = math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
+            y4 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
 
-            if not PyturtleHandler.is_pixel_available(int(x1), int(y1)):
-                print("Pixel: ({},{}) not available".format(x1,int(y1)))
+            if not PyturtleHandler.is_pixel_available(int(x1), int(y1))\
+                    or not PyturtleHandler.is_pixel_available(int(x1), int(y2)):
+                print("Pixel: ({},{}) not available".format(x1, int(y1)))
                 return False
 
-            if not PyturtleHandler.is_pixel_available(x2, int(y2)):
-                print("Pixel: ({},{}) not available".format(x2,int(y2)))
+            if not PyturtleHandler.is_pixel_available(x2, int(y3))\
+                    or not PyturtleHandler.is_pixel_available(int(x2), int(y4)):
+                print("Pixel: ({},{}) not available".format(x2, int(y3)))
                 return False
 
         return True
@@ -162,18 +166,20 @@ class PyturtleHandler:
         for x_ in range(0, PyturtleHandler.RADIUS):
             x1 = x + x_
             x2 = x - x_
-            y1 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
-            y2 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
+            y1 = math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
+            y2 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
+            y3 = math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
+            y4 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
 
-            if not PyturtleHandler.is_pixel_accessible(int(x1), int(y1), name):
+            if not PyturtleHandler.is_pixel_accessible(int(x1), int(y1), name)\
+                    or not PyturtleHandler.is_pixel_accessible(int(x1), int(y2), name):
                 print("Pixel: ({},{}) not available".format(x1, int(y1)))
                 return False
 
-            if not PyturtleHandler.is_pixel_accessible(x2, int(y2), name):
-                print("Pixel: ({},{}) not available".format(x2, int(y2)))
+            if not PyturtleHandler.is_pixel_accessible(x2, int(y3), name)\
+                    or not PyturtleHandler.is_pixel_accessible(int(x2), int(y4), name):
+                print("Pixel: ({},{}) not available".format(x2, int(y3)))
                 return False
-
-        return True
 
     @staticmethod
     def instantiate_board():
