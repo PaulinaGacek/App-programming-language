@@ -60,6 +60,7 @@ class Programm:
     '''
     Converts given string to Type object
     '''
+    @staticmethod 
     def strToType(type: str):
         if type == "TIME":
             return Type.TIME
@@ -74,6 +75,7 @@ class Programm:
     '''
     Converts Type object to string
     '''
+    @staticmethod
     def typeToStr(type: Type):
         if type == Type.TIME:
             return "TIME" 
@@ -89,12 +91,41 @@ class Programm:
     '''
     Returns Variable object with given name
     '''
+    @staticmethod
     def getVariable(name: str):
         return Programm.variables.get(name)
     
     '''
     Returns type of the Variable object with given name
     '''
+    @staticmethod
     def getVariablesTypeStr(name: str):
         return Programm.typeToStr(Programm.variables.get(name).type)
     
+    @staticmethod
+    def areTypesCompatible(type1, type2, value1, value2) -> bool:
+
+        if type1 == "VariableNameContext":
+            if Programm.variables[value1].type == Type.INT:
+                type1 = "IntegerContext"
+            elif Programm.variables[value1].type == Type.TIME:
+                type1 = "IntegerContext"
+            elif Programm.variables[value1].type == Type.OBJECT:
+                type1 = "Force_typeContext"
+            elif Programm.variables[value1].type == Type.FORCE:
+                type1 = "Object_typeContext"
+        
+        if type2 == "VariableNameContext":
+            if Programm.variables[value2].type == Type.INT:
+                type2 = "IntegerContext"
+            elif Programm.variables[value2].type == Type.TIME:
+                type2 = "IntegerContext"
+            elif Programm.variables[value2].type == Type.OBJECT:
+                type2 = "Force_typeContext"
+            elif Programm.variables[value2].type == Type.FORCE:
+                type2 = "Object_typeContext"
+        
+        if type1 == type2:
+            return True
+
+        return False

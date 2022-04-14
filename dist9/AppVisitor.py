@@ -2,6 +2,7 @@
 from antlr4 import *
 from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
+from utils.Variable import *
 from utils.Error import *
 from front.PygameHandler import PyGameHandler
 from front.PyturtleHandler import *
@@ -105,7 +106,18 @@ class AppVisitor(AppParseTreeVisitor):
         # elif type(ctx.parentCtx).__name__ == "DefinitionContext":
 
         if NR_OF_CHILDREN == 1: # variable name or INT
-            return self.visitChildren(ctx)
+            if type(self.getNodesChild(ctx,0)).__name__ == "IntegerContext":
+                print("Integer")
+                return self.visitChildren(ctx)
+            elif type(self.getNodesChild(ctx,0)).__name__ == "VariableNameContext":
+                print("Variable name")
+                name = self.visitChildren(ctx)
+
+                if Programm.getVariable(name) is None:
+                    raise UndefinedVariableReferenceError(name)
+
+                if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
+                    return Programm.getVariable(name).value
             '''
             else:
                 name = self.visitChildren(ctx)
@@ -117,13 +129,29 @@ class AppVisitor(AppParseTreeVisitor):
                 if type is not None and  Programm.getVariable(name).getTypeString() != type_:
                     raise ParameterError("Bad type") '''
         else:
-            if type(self.getNodesChild(ctx.left,0)).__name__ != type(self.getNodesChild(ctx.right,0)).__name__:
-                raise Error("Arithmetical operation on different types are not allowed")
+            type1 = type(self.getNodesChild(ctx.left,0)).__name__
+            val1 = self.getNodesChild(ctx.left,0).getText()
+            type2 = type(self.getNodesChild(ctx.right,0)).__name__
+            val2 = self.getNodesChild(ctx.right,0).getText()
+
+            if not Programm.areTypesCompatible(type1, type2, val1, val2):
+                raise Error("Arithmetical operation on different types are not allowed: {}, {} -> {},{}".format(type1,type2, val1, val2))
+            else:
+                print("Types are ok: {}, {} -> {},{}".format(type1,type2, val1, val2))
             
-            artm_type = type(self.getNodesChild(ctx.left,0)).__name__
-            print(artm_type)
+            artm_type = None
+            if type1 == "VariableNameContext":
+                artm_type = Programm.getVariable(val1).type
+            elif type1 == "IntegerContext":
+                artm_type = Type.INT
+            elif type2 == "Object_typeContext":
+                artm_type = Type.OBJECT
+            else:
+                artm_type = Type.FORCE
+
+            print("Artm type: {}".format(artm_type))
             
-            if artm_type == "IntegerContext":
+            if artm_type == Type.INT or artm_type == Type.TIME:
                 l = self.visit(ctx.left)
                 r = self.visit(ctx.right)
 
@@ -136,11 +164,19 @@ class AppVisitor(AppParseTreeVisitor):
                 }
                 return operation.get(op, lambda: None)()
             
-            elif artm_type == "Force_typeContext":
-                print("Operation on forces")
+            elif artm_type == Type.FORCE:
+                l_angle, l_power = self.visit(ctx.left)
+                r_angle, r_power = self.visit(ctx.right)
+                print("Operation on forces left:[{},{}], right:[{},{}]".format(l_angle, l_power, r_angle, r_power))
+                
+                op = ctx.op.text
+                # caculate output force and return
 
-            elif artm_type == "Object_typeContext":
+            elif artm_type == Type.OBJECT:
                 print("Operation on objects")
+            
+            else:
+                self.visitChildren(ctx)
 
     def visitDeclaration(self, ctx:AppParser.DeclarationContext):
 
@@ -154,7 +190,7 @@ class AppVisitor(AppParseTreeVisitor):
 
         if type_ == 'INT' or type_ == 'TIME':
             if type(self.visit(ctx.value_)) is not int:
-                raise Error("Bad casting")
+                raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
             value = self.visit(ctx.value_)
             Programm.defineNewVariable(name, Programm.strToType(type_), value)
 
