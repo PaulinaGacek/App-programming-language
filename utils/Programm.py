@@ -27,6 +27,8 @@ class Programm:
         
         if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
             raise ObjectCannotBeDrawn(name, value, value2)
+        elif type == Type.OBJECT:
+            print("Object can be drawn")
         
         new_var = Variable(name, type, value, value2)
         Programm.variables[name] = new_var

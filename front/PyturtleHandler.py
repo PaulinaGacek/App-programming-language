@@ -54,9 +54,9 @@ class Ball:
         Returns true if it is inside.
     '''
     def is_pixel_inside(self, x_, y_) -> bool:
-        diff_x = abs(x_ - self.x)
-        diff_y = abs(y_ - self.y)
-        if math.sqrt((diff_x ** 2 + diff_y ** 2)) >= PyturtleHandler.RADIUS:
+        diff_x = abs(x_ - self.turtle.xcor())
+        diff_y = abs(y_ - self.turtle.ycor())
+        if math.sqrt((diff_x ** 2 + diff_y ** 2)) > PyturtleHandler.RADIUS:
             return False
 
         return True
@@ -144,8 +144,9 @@ class PyturtleHandler:
 
         balls_copy.pop(name)
 
-        for obj in balls_copy:
+        for obj in balls_copy.values():
             if obj.is_pixel_inside(x, y) is True:
+                print("{} has collission with {}".format(name, obj.name))
                 return False
         return True
 
@@ -213,6 +214,10 @@ class PyturtleHandler:
 
             if value.turtle.ycor() < radius:
                 value.turtle.goto(value.turtle.xcor(), radius*2)
+            
+            if PyturtleHandler.is_object_existing_there(value.turtle.xcor(), value.turtle.ycor(), key):
+                # implement odbicie
+                continue
 
     @staticmethod
     def display_visualisation(period: int):
