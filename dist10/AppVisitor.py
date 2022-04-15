@@ -41,22 +41,19 @@ class AppVisitor(AppParseTreeVisitor):
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
         return self.visitChildren(ctx)
 
-    # Visit a parse tree produced by AppParser#instruction.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#instruction.
     def visitInstruction(self, ctx:AppParser.InstructionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#variableType.
     def visitVariableType(self, ctx:AppParser.VariableTypeContext):
         return ctx.getText()
 
 
-    # Visit a parse tree produced by AppParser#variableName.
     def visitVariableName(self, ctx:AppParser.VariableNameContext):
         return ctx.getText()
 
 
-    # Visit a parse tree produced by AppParser#functionName.
     def visitFunctionName(self, ctx:AppParser.FunctionNameContext):
         return ctx.getText()
 
@@ -252,18 +249,16 @@ class AppVisitor(AppParseTreeVisitor):
         scope_history.pop()
 
 
-
-
-    # Visit a parse tree produced by AppParser#condition.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
     def visitCondition(self, ctx:AppParser.ConditionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#conditionBody.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#conditionBody.
     def visitConditionBody(self, ctx:AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
 
-
+    # [NOT IMPLEMENTED]
     def visitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
         AppVisitor.inside_sequence = True
         # do the work
@@ -272,37 +267,37 @@ class AppVisitor(AppParseTreeVisitor):
         # return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#parallelBody.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#parallelBody.
     def visitParallelBody(self, ctx:AppParser.ParallelBodyContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#loop.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loop.
     def visitLoop(self, ctx:AppParser.LoopContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#loopBody.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loopBody.
     def visitLoopBody(self, ctx:AppParser.LoopBodyContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#functionCall.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionCall.
     def visitFunctionCall(self, ctx:AppParser.FunctionCallContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#functionDeclaration.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionDeclaration.
     def visitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#functionBody.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionBody.
     def visitFunctionBody(self, ctx:AppParser.FunctionBodyContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AppParser#functionArgs.
+    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionArgs.
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
         return self.visitChildren(ctx)
 
