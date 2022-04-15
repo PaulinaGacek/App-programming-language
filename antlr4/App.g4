@@ -99,8 +99,8 @@ functionCall
 	;
 
 functionDeclaration
-	: 'DEFINE FUNCTION' f_name=functionName '(' ')' 'AS'  whiteSpace? f_body=functionBody  whiteSpace 'ENDFUNCTION' whiteSpace? ';'
-	| 'DEFINE FUNCTION' f_name=functionName '('whiteSpace? f_args=functionArgs whiteSpace? ')' 'AS'  whiteSpace? f_body=functionBody  whiteSpace 'ENDFUNCTION' whiteSpace? ';'
+	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace 'ENDFUNCTION' whiteSpace? ';'
+	| 'DEFINE FUNCTION' whiteSpace f_name=functionName '('whiteSpace? f_args=functionArgs whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace 'ENDFUNCTION' whiteSpace? ';'
 	;
 
 functionBody
@@ -108,8 +108,10 @@ functionBody
 	;
 
 functionArgs
-    : variableName (whiteSpace? ',' whiteSpace? variableName)*
+    : functionArgument (whiteSpace? ',' whiteSpace? functionArgument)*
     ;
+
+functionArgument: variableType whiteSpace variableName;
 
 whiteSpace
 	: WS+;
