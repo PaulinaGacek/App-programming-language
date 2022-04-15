@@ -4,7 +4,7 @@ import turtle
 from antlr4 import *
 from dist12.AppLexer import AppLexer
 from dist12.AppParser import AppParser
-from dist12.AppVisitor import AppVisitor
+from dist12.AppVisitor import *
 from utils.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
 
@@ -24,7 +24,12 @@ if __name__ == "__main__":
         # evaluator
         visitor = AppVisitor()
         output = visitor.visit(tree)
+
+        AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
+        data.strdata = Programm.deleteFunctionsDefinitions(data.__str__())
+        print("WITH DELETED FUNCTION DECLARATIONS:", data)
         
+        output = visitor.visit(tree)
         print(output)
         Programm.displayVariables()
         Programm.dispay_functions()

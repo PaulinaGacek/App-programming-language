@@ -3,6 +3,7 @@ from utils.Error import *
 from utils.Stack import *
 from utils.Function import *
 from front.PyturtleHandler import Force, PyturtleHandler
+import re
 
 class Programm:
 
@@ -194,3 +195,15 @@ class Programm:
         for child in ctx.children:
             output += child.getText()
         return output
+    
+    @staticmethod
+    def deleteFunctionsDefinitions(data: str) -> str:
+        idx = data.find('DEFINE FUNCTION')
+        while idx != -1:
+            data = re.sub("^DEFINE FUNCTION .+ ENDFUNCTION;","",data)
+            idx = data.find('DEFINE FUNCTION')
+        return data
+
+    @staticmethod
+    def inputFunctionsDefinition(data: str) -> str:
+        pass

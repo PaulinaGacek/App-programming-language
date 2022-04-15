@@ -13,7 +13,12 @@ else:
     from AppParser import AppParser
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
+class AppVisitorState(Enum):
+    FUNC_DECLARATION_CHECKING = 1,
+    CODE_EXECUTING = 2
+
 class AppVisitor(AppParseTreeVisitor):
+    current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
     inside_function_dec = False
     inside_sequence = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
@@ -21,14 +26,15 @@ class AppVisitor(AppParseTreeVisitor):
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
 
         # gathering info about the functions declarations
-        for child in ctx.children:
-            if type(child).__name__ == "FunctionDeclarationContext":
-                self.visit(child)
+        if AppVisitor.current_state == AppVisitorState.FUNC_DECLARATION_CHECKING:
+            for child in ctx.children:
+                if type(child).__name__ == "FunctionDeclarationContext":
+                    self.visit(child)
         
-        # executing programm
-        for child in ctx.children:
-            if type(child).__name__ != "FunctionDeclarationContext":
-                self.visit(child)
+        elif AppVisitor.current_state == AppVisitorState.CODE_EXECUTING:
+            for child in ctx.children:
+                if type(child).__name__ != "FunctionDeclarationContext":
+                    self.visit(child)
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#instruction.
     def visitInstruction(self, ctx:AppParser.InstructionContext):
