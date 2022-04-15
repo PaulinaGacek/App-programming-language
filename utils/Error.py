@@ -16,6 +16,22 @@ class VariableRedefinitionError(Exception):
     def __str__(self):
         return self.message
 
+class FunctionRedefinitionError(Exception):
+    """ Raised when user tries to declare again existing function
+    
+    Attributes:
+        name: str -- name of the existing function which is tried to be redefined
+        type: str -- type of existing function
+        message -- explanation of the error
+    """
+    
+    def __init__(self, name: str, message=None):
+        self.name = name
+        self.message = "Redefinition of existing function {}".format(self.name)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
 
 class UndefinedVariableReferenceError(Exception):
     """ Raised when user tries to define not existing variable
@@ -32,6 +48,7 @@ class UndefinedVariableReferenceError(Exception):
 
     def __str__(self):
         return self.message
+
 
 class ParameterError(Exception):
     """ 

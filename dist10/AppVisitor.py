@@ -3,6 +3,7 @@ from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
 from utils.Variable import *
 from utils.Error import *
+from utils.Function import Function
 from front.PygameHandler import PyGameHandler
 from front.PyturtleHandler import *
 from queue import LifoQueue
@@ -16,9 +17,17 @@ class AppVisitor(AppParseTreeVisitor):
     inside_sequence = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
-        return self.visitChildren(ctx)
+
+        # gathering info about the functions declarations
+        for child in ctx.children:
+            if type(child).__name__ == "FunctionDeclarationContext":
+                self.visit(child)
+        
+        # executing programm
+        for child in ctx.children:
+            if type(child).__name__ != "FunctionDeclarationContext":
+                self.visit(child)
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#instruction.
     def visitInstruction(self, ctx:AppParser.InstructionContext):
@@ -273,9 +282,17 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionDeclaration.
     def visitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):
-        return self.visitChildren(ctx)
+        
+        f_name = self.visit(ctx.f_name)
+        print("Function declaration {} visited".format(f_name))
+
+        if Programm.getFunction(f_name) is not None:
+            raise FunctionRedefinitionError(f_name)
+        
+        func = Function(f_name)
+        # modify func
+        Programm.addFunction(func)
 
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionBody.

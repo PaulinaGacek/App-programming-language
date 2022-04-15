@@ -1,6 +1,7 @@
 from utils.Variable import *
 from utils.Error import *
 from utils.Stack import *
+from utils.Function import *
 from front.PyturtleHandler import Force, PyturtleHandler
 
 class Programm:
@@ -11,6 +12,7 @@ class Programm:
     variables = {}
     local_scopes = []
     scope_history = Stack() # empty stack of following scopes
+    functions = {} # maps name to Function()
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
@@ -89,6 +91,15 @@ class Programm:
                 for key, value in scope.items():
                     print("     Name: {} -> details: {}".format(key,value.displayDetails()))
 
+    @staticmethod
+    def dispay_functions():
+        if len(Programm.functions.keys()) == 0:
+            print("There are no functions declared")
+        else:
+            print("Users functions:")
+            for key, value in Programm.functions.items():
+                print("     Name: {} -> details: {}".format(key,value.displayDetails()))
+
 
     '''
     Converts given string to Type object
@@ -161,3 +172,14 @@ class Programm:
             return True
 
         return False
+    
+    '''
+        Returns Function() object with given name
+    '''
+    @staticmethod
+    def getFunction(name: str):
+        return Programm.functions.get(name)
+    
+    @staticmethod
+    def addFunction(function):
+        Programm.functions[function.name] = function
