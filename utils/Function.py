@@ -1,4 +1,17 @@
+from distutils.debug import DEBUG
 from utils.Variable import *
+class ActionType(Enum):
+    DECLARATION = 1,
+    DEFINITION = 2,
+    CONDITIONAL_STATEMENT = 3,
+    PARALLEL = 4;
+
+class Action:
+
+    def __init__(self, type: ActionType):
+        self.type = type
+
+
 class Function:
 
     def __init__(self, name: str):
@@ -11,4 +24,7 @@ class Function:
         variable_names = ""
         for item in self.params.values():
             variable_names += "{" +item.name + ", " + item.getTypeString() +"}, "
-        return "params:" + variable_names
+        body = ""
+        for action in self.actions:
+            body += "\t" + action + "\n"
+        return "params:" + variable_names + "\nbody: " + body
