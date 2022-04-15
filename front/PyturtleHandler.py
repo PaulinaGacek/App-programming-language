@@ -167,17 +167,15 @@ class PyturtleHandler:
                 return [False, obj]
         return [True, None]
 
-    # @staticmethod
-    # def collision_of_objects(x, y, name):
-    #     balls_copy = PyturtleHandler.balls.copy()
-    #
-    #     balls_copy.pop(name)
-    #
-    #     for obj in balls_copy.values():
-    #         if obj.is_pixel_inside(x, y) is True:
-    #             print("{} COLLIDE {}".format(name, obj.name))
-    #             return obj
-    #     return None
+    @staticmethod
+    def collision_of_objects(object1, object2) -> bool:
+        x1, y1 = object1.turtle.xcor(), object1.turtle.ycor()
+        x2, y2 = object2.turtle.xcor(), object2.turtle.ycor()
+
+        if (abs(x1 - x2) <= PyturtleHandler.RADIUS) and (abs(y1 - y2) <= PyturtleHandler.RADIUS):
+            return True
+
+        return False
 
     '''
         Returns point of the collision.
@@ -260,13 +258,19 @@ class PyturtleHandler:
             if value.turtle.ycor() < radius:
                 value.turtle.goto(value.turtle.xcor(), radius * 2)
 
-            if PyturtleHandler.is_object_existing_there(value):
-                x = PyturtleHandler.collision_point(value)[0]
-                y = PyturtleHandler.collision_point(value)[1]
+            balls_copy.pop(key)
+            for key_, value_ in balls_copy.items():
+                if PyturtleHandler.collision_of_objects(value, value_):
+                    PyturtleHandler.change_velocity(value, value_)
+            balls_copy[key] = value
 
-                obj = PyturtleHandler.is_pixel_accessible(x, y, key)[1]
-
-                PyturtleHandler.change_velocity(value, obj)
+            # if PyturtleHandler.is_object_existing_there(value):
+            #     x = PyturtleHandler.collision_point(value)[0]
+            #     y = PyturtleHandler.collision_point(value)[1]
+            #
+            #     obj = PyturtleHandler.is_pixel_accessible(x, y, key)[1]
+            #
+            #     PyturtleHandler.change_velocity(value, obj)
                 # if balls_copy.__contains__(obj):
                 #     balls_copy.pop(obj.name)
                 # if len(balls_copy) == 0:
