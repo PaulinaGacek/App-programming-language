@@ -240,8 +240,9 @@ class AppVisitor(AppParseTreeVisitor):
             local_variables = {}
             Programm.local_scopes.append(local_variables) # adding new variable scope
         
-        return self.visitChildren(ctx)
-        scope_history.pop()
+        self.visitChildren(ctx)
+        Programm.displayVariables()
+        Programm.scope_history.pop()
 
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
