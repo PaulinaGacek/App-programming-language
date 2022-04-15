@@ -3,6 +3,7 @@ import turtle
 import queue
 import math
 import typing
+from itertools import combinations
 
 import numpy as np
 
@@ -43,8 +44,8 @@ class Ball:
             print("Queue is empty!!!")
         force = self.event_queue.get()
         self.queue_size -= 1
-        self.acc_x = math.cos(force.angle * math.pi / 180) * force.power
-        self.acc_y = math.sin(force.angle * math.pi / 180) * force.power
+        self.acc_x = math.cos(force.angle * math.pi / 180) * force.power/5
+        self.acc_y = math.sin(force.angle * math.pi / 180) * force.power/5
 
         self.dy += self.acc_y
         self.dx += self.acc_x
@@ -59,7 +60,13 @@ class Ball:
     def is_pixel_inside(self, x_, y_) -> bool:
         diff_x = abs(x_ - self.turtle.xcor())
         diff_y = abs(y_ - self.turtle.ycor())
-        if math.sqrt((diff_x ** 2 + diff_y ** 2)) > PyturtleHandler.RADIUS:
+        z = math.sqrt((diff_x ** 2 + diff_y ** 2))
+        z_ = int(z)
+        # if z - z_ >= 0.5:
+        #     z = math.ceil(z)
+        # else:
+        #     z = math.ceil(z)2
+        if z_ > PyturtleHandler.RADIUS:
             return False
 
         return True
@@ -122,7 +129,7 @@ class PyturtleHandler:
 
         # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
         # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
-        for x_ in range(0, PyturtleHandler.RADIUS):
+        for x_ in range(0, PyturtleHandler.RADIUS + 1):
             x1 = x + x_
             x2 = x - x_
             y1 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
@@ -148,7 +155,7 @@ class PyturtleHandler:
     '''
 
     @staticmethod
-    def is_pixel_accessible(x, y, name) -> bool:
+    def is_pixel_accessible(x, y, name):
         balls_copy = PyturtleHandler.balls.copy()
 
         balls_copy.pop(name)
@@ -156,47 +163,46 @@ class PyturtleHandler:
         for obj in balls_copy.values():
             if obj.is_pixel_inside(x, y) is True:
                 print("{} has collission with {}".format(name, obj.name))
-                return False
-        return True
+                # PyturtleHandler.change_velocity(PyturtleHandler.balls[name], obj)
+                return [False, obj]
+        return [True, None]
 
-    @staticmethod
-    def collision_of_objects(x, y, name):
-        balls_copy = PyturtleHandler.balls.copy()
-
-        balls_copy.pop(name)
-
-        for obj in balls_copy.values():
-            if obj.is_pixel_inside(x, y) is True:
-                print("{} COLLIDE {}".format(name, obj.name))
-                return obj
-        return None
+    # @staticmethod
+    # def collision_of_objects(x, y, name):
+    #     balls_copy = PyturtleHandler.balls.copy()
+    #
+    #     balls_copy.pop(name)
+    #
+    #     for obj in balls_copy.values():
+    #         if obj.is_pixel_inside(x, y) is True:
+    #             print("{} COLLIDE {}".format(name, obj.name))
+    #             return obj
+    #     return None
 
     '''
         Returns point of the collision.
     '''
 
     @staticmethod
-    def collision_point(x, y, name):
+    def collision_point(object_):
 
-        for x_ in range(0, PyturtleHandler.RADIUS + 1):
-            x1 = x + x_
-            x2 = x - x_
-            y1 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
-            y2 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
-            y3 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
-            y4 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
+        for x_ in range(0, PyturtleHandler.RADIUS + 2):
+            x1 = object_.turtle.xcor() + x_
+            x2 = object_.turtle.xcor() - x_
+            y1 = int(math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - object_.turtle.xcor()) ** 2) + object_.turtle.ycor())
+            y2 = - int(math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - object_.turtle.xcor()) ** 2) + object_.turtle.ycor())
 
-            if not PyturtleHandler.is_pixel_accessible(int(x1), int(y1), name):
+            if not PyturtleHandler.is_pixel_accessible(int(x1), int(y1), object_.name)[0]:
                 return [int(x1), int(y1)]
 
-            elif not PyturtleHandler.is_pixel_accessible(int(x1), int(y2), name):
+            elif not PyturtleHandler.is_pixel_accessible(int(x1), int(y2), object_.name)[0]:
                 return [int(x1), int(y2)]
 
-            elif not PyturtleHandler.is_pixel_accessible(x2, int(y3), name):
-                return [int(x2), int(y3)]
+            elif not PyturtleHandler.is_pixel_accessible(int(x2), int(y1), object_.name)[0]:
+                return [int(x2), int(y1)]
 
-            elif not PyturtleHandler.is_pixel_accessible(int(x2), int(y4), name):
-                return [int(x2), int(y4)]
+            elif not PyturtleHandler.is_pixel_accessible(int(x2), int(y2), object_.name)[0]:
+                return [int(x2), int(y2)]
 
             return None
 
@@ -205,8 +211,8 @@ class PyturtleHandler:
     '''
 
     @staticmethod
-    def is_object_existing_there(x, y, name) -> bool:
-        if PyturtleHandler.collision_point(x, y, name) is None:
+    def is_object_existing_there(object_) -> bool:
+        if PyturtleHandler.collision_point(object_) is None:
             return False
         else:
             return True
@@ -228,6 +234,8 @@ class PyturtleHandler:
     @staticmethod
     def update_positions_of_all_balls():
         radius = PyturtleHandler.RADIUS
+
+        balls_copy = PyturtleHandler.balls.copy()
 
         for key, value in PyturtleHandler.balls.items():
 
@@ -252,29 +260,43 @@ class PyturtleHandler:
             if value.turtle.ycor() < radius:
                 value.turtle.goto(value.turtle.xcor(), radius * 2)
 
-            if PyturtleHandler.is_object_existing_there(value.turtle.xcor(), value.turtle.ycor(), key):
-                x = PyturtleHandler.collision_point(value.turtle.xcor(), value.turtle.ycor(), key)[0]
-                y = PyturtleHandler.collision_point(value.turtle.xcor(), value.turtle.ycor(), key)[1]
+            if PyturtleHandler.is_object_existing_there(value):
+                x = PyturtleHandler.collision_point(value)[0]
+                y = PyturtleHandler.collision_point(value)[1]
 
-                obj = PyturtleHandler.collision_of_objects(x, y, key)
+                obj = PyturtleHandler.is_pixel_accessible(x, y, key)[1]
 
                 PyturtleHandler.change_velocity(value, obj)
+                # if balls_copy.__contains__(obj):
+                #     balls_copy.pop(obj.name)
+                # if len(balls_copy) == 0:
+                #     balls_copy = PyturtleHandler.balls.copy()
 
     @staticmethod
     def change_velocity(object1, object2):
 
-        r1 = np.array((object1.turtle.xcor(), object1.turtle.ycor()))
-        r2 = np.array((object2.turtle.xcor(), object2.turtle.ycor()))
-        d = np.linalg.norm(r1 - r2) ** 2
-        v1 = np.array((object1.dx, object1.dy))
-        v2 = np.array((object2.dx, object2.dy))
-        u1 = v1 - 2 / 2 * np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
-        u2 = v2 - 2 / 2 * np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
+        # print(object1.dx, object1.dy, object2.dx, object2.dy, "______________________________________")
 
-        object1.dx = u1[0]
-        object1.dy = u1[1]
-        object2.dx = u2[0]
-        object2.dy = u2[1]
+        # if object1.turtle.ycor() == object2.turtle.ycor():
+        #     tmp1, tmp2 = object1.dx, object1.dy
+        #     object1.dx, object1.dy = object2.dx, object2.dy
+        #     object2.dx, object2.dy = tmp1, tmp2
+        #     print(object1.dx, object1.dy, object2.dx, object2.dy, "***********************")
+
+        if object2 is not None:
+            r1 = np.array((object1.turtle.xcor(), object1.turtle.ycor()))
+            r2 = np.array((object2.turtle.xcor(), object2.turtle.ycor()))
+            d = np.linalg.norm(r1 - r2) ** 2
+            v1 = np.array((object1.dx, object1.dy))
+            v2 = np.array((object2.dx, object2.dy))
+            print("-------------------", v1, v2, r1, r2)
+            u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
+            u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
+            print("-------------------", u1, u2)
+            object1.dx = u1[0]
+            object1.dy = u1[1]
+            object2.dx = u2[0]
+            object2.dy = u2[1]
 
     @staticmethod
     def display_visualisation(period: int):
