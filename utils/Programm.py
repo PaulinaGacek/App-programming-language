@@ -9,6 +9,7 @@ class Programm:
     Keeps global variables, mapps variable name to the variable object
     '''
     variables = {}
+    local_scopes = []
     scope_history = Stack() # empty stack of following scopes
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
@@ -31,7 +32,7 @@ class Programm:
             Programm.variables[name] = new_var
         
         else: # scope is local
-            if Programm.local_scopes[scope].get(none) is not None:
+            if Programm.local_scopes[scope].get(name) is not None:
                 raise VariableRedefinitionError(name, Programm.typeToStr(type))
             
             # drawn object would collide with different object
@@ -71,22 +72,22 @@ class Programm:
     @staticmethod
     def displayVariables():
         if len(Programm.variables) == 0:
-            print("There are no declared variables")
+            print("There are no global variables declared")
 
         else:
             print("Global variables:")
             for key, value in Programm.variables.items():
-                print("Name: {} -> details: {}".format(key,value.displayDetails()))
+                print("     Name: {} -> details: {}".format(key,value.displayDetails()))
         
         if Programm.scope_history.getSize() == 0:
             print( "There are no local variables declared")
         else:
             id = 0
-            for scope in Programm.scope_history.stack:
+            for scope in Programm.local_scopes:
                 print("Local scope nr {}".format(id))
                 id += 1
                 for key, value in scope.items():
-                    print("Name: {} -> details: {}".format(key,value.displayDetails()))
+                    print("     Name: {} -> details: {}".format(key,value.displayDetails()))
 
 
     '''

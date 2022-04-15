@@ -15,7 +15,6 @@ else:
 class AppVisitor(AppParseTreeVisitor):
     inside_sequence = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
-    scope_history = Programm.scope_history # empty stack of following scopes
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
@@ -106,11 +105,9 @@ class AppVisitor(AppParseTreeVisitor):
 
         if NR_OF_CHILDREN == 1: # variable name or INT
             if type(self.getNodesChild(ctx,0)).__name__ == "IntegerContext":
-                print("Integer")
                 return self.visitChildren(ctx)
 
             elif type(self.getNodesChild(ctx,0)).__name__ == "VariableNameContext":
-                print("Variable name")
                 name = self.visitChildren(ctx)
 
                 if Programm.getVariable(name) is None:
@@ -130,7 +127,7 @@ class AppVisitor(AppParseTreeVisitor):
             if not Programm.areTypesCompatible(type1, type2, val1, val2):
                 raise Error("Arithmetical operation on different types are not allowed: {}, {} -> {},{}".format(type1,type2, val1, val2))
             else:
-                print("Types are ok: {}, {} -> {},{}".format(type1,type2, val1, val2))
+                # print("Types are ok: {}, {} -> {},{}".format(type1,type2, val1, val2))
             
             artm_type = None
             if type1 == "VariableNameContext":
@@ -144,7 +141,7 @@ class AppVisitor(AppParseTreeVisitor):
             else:
                 artm_type = 'ARITM_EXPR'
 
-            print("Artm type: {}".format(artm_type))
+            # print("Artm type: {}".format(artm_type))
             
             if artm_type == Type.INT or artm_type == Type.TIME:
                 l = self.visit(ctx.left)
@@ -188,15 +185,15 @@ class AppVisitor(AppParseTreeVisitor):
             if type(self.visit(ctx.value_)) is not int:
                 raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
             value = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value, scope=self.scope_history.top())
+            Programm.defineNewVariable(name, Programm.strToType(type_), value, scope=Programm.scope_history.top())
 
         elif type_ == 'FORCE':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=self.scope_history.top())
+            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=Programm.scope_history.top())
 
         elif type_ == 'OBJECT':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=self.scope_history.top())
+            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=Programm.scope_history.top())
             PyturtleHandler.add_new_object(name, value1, value2)
             
         return "declaration"
@@ -229,10 +226,13 @@ class AppVisitor(AppParseTreeVisitor):
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):
-        id = len(Programm.local_scopes)
-        local_variables = {}
-        Programm.local_scopes.append(local_variables) # adding new variable scope
-        scope_history.put(id)
+        id = Programm.scope_history.getSize()
+        Programm.scope_history.push(id)
+
+        if len(Programm.local_scopes) <= id:
+            local_variables = {}
+            Programm.local_scopes.append(local_variables) # adding new variable scope
+        
         return self.visitChildren(ctx)
         scope_history.pop()
 
