@@ -184,3 +184,13 @@ class Programm:
     @staticmethod
     def addFunction(function):
         Programm.functions[function.name] = function
+    
+    '''
+        Returns instruction as a string
+    '''
+    @staticmethod
+    def getInstructionAsTxt(ctx):
+        output = ""
+        for child in ctx.children:
+            output += child.getText()
+        return output

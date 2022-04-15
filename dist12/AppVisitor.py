@@ -207,12 +207,7 @@ class AppVisitor(AppParseTreeVisitor):
                 PyturtleHandler.add_new_object(name, value1, value2)
         
         else: # in function declaration
-            print("declaration in function declaration")
-            output = ""
-            for child in ctx.children:
-                output += child.getText()
-            print(output)
-            return output
+            return Programm.getInstructionAsTxt(ctx)
 
 
     def visitDefinition(self, ctx:AppParser.DefinitionContext):
@@ -244,8 +239,8 @@ class AppVisitor(AppParseTreeVisitor):
 
             Programm.current_scope = Programm.scope_history.top()
 
-        else: 
-            print("definition in function declaration")
+        else:
+            return Programm.getInstructionAsTxt(ctx)
 
 
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):
@@ -264,7 +259,7 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.scope_history.pop()
         
         else: 
-            print("conditional statement in function declaration")
+            return Programm.getInstructionAsTxt(ctx)
 
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
@@ -325,7 +320,6 @@ class AppVisitor(AppParseTreeVisitor):
         action_list = []
         for child in ctx.children:
             if type(child).__name__ == "InstructionContext":
-                print("list: {}".format(self.visit(child)))
                 action_list.append(self.visit(child))
         AppVisitor.inside_function_dec = False
         return action_list

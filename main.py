@@ -28,7 +28,7 @@ if __name__ == "__main__":
         print(output)
         Programm.displayVariables()
         Programm.dispay_functions()
-       
+        
         if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
             PyturtleHandler.display_queues_len()
             PyturtleHandler.display_visualisation(PyturtleHandler.get_max_queue_len())
