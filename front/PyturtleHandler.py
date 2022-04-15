@@ -167,12 +167,17 @@ class PyturtleHandler:
                 return [False, obj]
         return [True, None]
 
+    """
+    The function checks if the distance between the centers of two objects is less than the sum of their radii, 
+    if so, there is a collision.
+    """
+
     @staticmethod
     def collision_of_objects(object1, object2) -> bool:
         x1, y1 = object1.turtle.xcor(), object1.turtle.ycor()
         x2, y2 = object2.turtle.xcor(), object2.turtle.ycor()
 
-        if (abs(x1 - x2) <= PyturtleHandler.RADIUS) and (abs(y1 - y2) <= PyturtleHandler.RADIUS):
+        if (abs(x1 - x2) <= 2 * PyturtleHandler.RADIUS) and (abs(y1 - y2) <= 2 * PyturtleHandler.RADIUS):
             return True
 
         return False
@@ -259,7 +264,7 @@ class PyturtleHandler:
                 value.turtle.goto(value.turtle.xcor(), radius * 2)
 
             balls_copy.pop(key)
-            for key_, value_ in balls_copy.items():
+            for value_ in balls_copy.values():
                 if PyturtleHandler.collision_of_objects(value, value_):
                     PyturtleHandler.change_velocity(value, value_)
             balls_copy[key] = value
