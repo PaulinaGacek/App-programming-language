@@ -4,12 +4,14 @@ import queue
 import math
 import typing
 
+import numpy as np
+
 
 class Force:
     def __init__(self, angle: int, power: int, ticks: int):
         if angle < 0:
-            angle += 360 * int(1 - angle/360)
-        self.angle = angle - int(angle/360)  # normalised angle in degrees
+            angle += 360 * int(1 - angle / 360)
+        self.angle = angle - int(angle / 360)  # normalised angle in degrees
         self.power = power
         self.ticks = ticks
         # add checking if values are not negative
@@ -22,37 +24,38 @@ class Ball:
         self.name = name
         self.turtle = turtle.Turtle("circle")
 
-        self.dy = dy # current y velocity
+        self.dy = dy  # current y velocity
         self.dx = dx
-        self.acc_x = 0 # current x acc
+        self.acc_x = 0  # current x acc
         self.acc_y = 0
 
         self.turtle.hideturtle()
         self.turtle.penup()
-        self.turtle.goto(x,y)
+        self.turtle.goto(x, y)
         self.turtle.color(Ball.colors[len(PyturtleHandler.balls.keys()) % len(Ball.colors)])
         self.turtle.showturtle()
 
         self.event_queue = queue.Queue()
         self.queue_size = 0
-    
+
     def update_velocity(self):
         if self.queue_size <= 0:
             print("Queue is empty!!!")
         force = self.event_queue.get()
         self.queue_size -= 1
-        self.acc_x = math.cos(force.angle * math.pi/180)*force.power
-        self.acc_y = math.sin(force.angle * math.pi/180)*force.power
+        self.acc_x = math.cos(force.angle * math.pi / 180) * force.power
+        self.acc_y = math.sin(force.angle * math.pi / 180) * force.power
 
         self.dy += self.acc_y
         self.dx += self.acc_x
 
         self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
-    
+
     '''
         Checks if given pixel (x_, y_) is inside self
         Returns true if it is inside.
     '''
+
     def is_pixel_inside(self, x_, y_) -> bool:
         diff_x = abs(x_ - self.turtle.xcor())
         diff_y = abs(y_ - self.turtle.ycor())
@@ -60,7 +63,7 @@ class Ball:
             return False
 
         return True
-    
+
     def get_pos_x(self) -> int:
         return self.turtle.xcor()
 
@@ -69,7 +72,6 @@ class Ball:
 
 
 class PyturtleHandler:
-
     HEIGHT = 400
     WIDTH = 400
     RADIUS = 11
@@ -78,7 +80,7 @@ class PyturtleHandler:
     color = (205, 205, 205)
     isBoardInstantiated = False
 
-    balls = {} # mapps name to the Ball()
+    balls = {}  # mapps name to the Ball()
 
     @staticmethod
     def set_height(height):
@@ -93,45 +95,47 @@ class PyturtleHandler:
         if x == 0 and y == 0:
             return 0
         return math.atan2(y, x) * 180 / math.pi
-    
+
     '''
         Checks if pixel (x,y) is not occupied by object, so if this pixel is available
     '''
+
     @staticmethod
     def is_pixel_available(x, y) -> bool:
         for obj in PyturtleHandler.balls.values():
             if obj.is_pixel_inside(x, y) is True:
                 return False
         return True
-    
+
     '''
         Checks if all points on the perimeter of new object are available.
     '''
+
     @staticmethod
     def can_object_be_drawn(x, y) -> bool:
 
-        if x-PyturtleHandler.RADIUS < 0 or x + PyturtleHandler.RADIUS > PyturtleHandler.WIDTH:
+        if x - PyturtleHandler.RADIUS < 0 or x + PyturtleHandler.RADIUS > PyturtleHandler.WIDTH:
             return False
-        
-        if y-PyturtleHandler.RADIUS < 0 or y + PyturtleHandler.RADIUS > PyturtleHandler.HEIGHT:
+
+        if y - PyturtleHandler.RADIUS < 0 or y + PyturtleHandler.RADIUS > PyturtleHandler.HEIGHT:
             return False
 
         # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
         # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
-        for x_ in range (0, PyturtleHandler.RADIUS):
+        for x_ in range(0, PyturtleHandler.RADIUS):
             x1 = x + x_
             x2 = x - x_
-            y1 = math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
-            y2 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
-            y3 = math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
-            y4 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
+            y1 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
+            y2 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
+            y3 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
+            y4 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
 
-            if not PyturtleHandler.is_pixel_available(int(x1), int(y1))\
+            if not PyturtleHandler.is_pixel_available(int(x1), int(y1)) \
                     or not PyturtleHandler.is_pixel_available(int(x1), int(y2)):
                 print("Pixel: ({},{}) not available".format(x1, int(y1)))
                 return False
 
-            if not PyturtleHandler.is_pixel_available(x2, int(y3))\
+            if not PyturtleHandler.is_pixel_available(x2, int(y3)) \
                     or not PyturtleHandler.is_pixel_available(int(x2), int(y4)):
                 print("Pixel: ({},{}) not available".format(x2, int(y3)))
                 return False
@@ -142,6 +146,7 @@ class PyturtleHandler:
         Checks if pixel (x,y) is not occupied by any other object then that one which name was given,
          so if this pixel is accessible
     '''
+
     @staticmethod
     def is_pixel_accessible(x, y, name) -> bool:
         balls_copy = PyturtleHandler.balls.copy()
@@ -154,32 +159,57 @@ class PyturtleHandler:
                 return False
         return True
 
+    @staticmethod
+    def collision_of_objects(x, y, name):
+        balls_copy = PyturtleHandler.balls.copy()
+
+        balls_copy.pop(name)
+
+        for obj in balls_copy.values():
+            if obj.is_pixel_inside(x, y) is True:
+                print("{} COLLIDE {}".format(name, obj.name))
+                return obj
+        return None
+
+    '''
+        Returns point of the collision.
+    '''
+
+    @staticmethod
+    def collision_point(x, y, name):
+
+        for x_ in range(0, PyturtleHandler.RADIUS + 1):
+            x1 = x + x_
+            x2 = x - x_
+            y1 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
+            y2 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
+            y3 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
+            y4 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
+
+            if not PyturtleHandler.is_pixel_accessible(int(x1), int(y1), name):
+                return [int(x1), int(y1)]
+
+            elif not PyturtleHandler.is_pixel_accessible(int(x1), int(y2), name):
+                return [int(x1), int(y2)]
+
+            elif not PyturtleHandler.is_pixel_accessible(x2, int(y3), name):
+                return [int(x2), int(y3)]
+
+            elif not PyturtleHandler.is_pixel_accessible(int(x2), int(y4), name):
+                return [int(x2), int(y4)]
+
+            return None
+
     '''
         Checks if all points on the perimeter of given object are not taken by any other object.
     '''
 
     @staticmethod
     def is_object_existing_there(x, y, name) -> bool:
-
-        # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
-        # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
-        for x_ in range(0, PyturtleHandler.RADIUS):
-            x1 = x + x_
-            x2 = x - x_
-            y1 = math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
-            y2 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x1 - x)**2) + y
-            y3 = math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
-            y4 = - math.sqrt(PyturtleHandler.RADIUS**2 - (x2-x)**2) + y
-
-            if not PyturtleHandler.is_pixel_accessible(int(x1), int(y1), name)\
-                    or not PyturtleHandler.is_pixel_accessible(int(x1), int(y2), name):
-                print("Pixel: ({},{}) not available".format(x1, int(y1)))
-                return False
-
-            if not PyturtleHandler.is_pixel_accessible(x2, int(y3), name)\
-                    or not PyturtleHandler.is_pixel_accessible(int(x2), int(y4), name):
-                print("Pixel: ({},{}) not available".format(x2, int(y3)))
-                return False
+        if PyturtleHandler.collision_point(x, y, name) is None:
+            return False
+        else:
+            return True
 
     @staticmethod
     def instantiate_board():
@@ -193,44 +223,65 @@ class PyturtleHandler:
 
     @staticmethod
     def add_new_object(name, x, y):
-        PyturtleHandler.balls[name] = Ball(name,x,y,0,0) # should be 0,0
+        PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0)  # should be 0,0
 
     @staticmethod
     def update_positions_of_all_balls():
         radius = PyturtleHandler.RADIUS
+
         for key, value in PyturtleHandler.balls.items():
 
             value.update_velocity()
 
             # check for a wall collision
-            if value.turtle.xcor()+radius > PyturtleHandler.WIDTH or value.turtle.xcor()-radius <= 0:
+            if value.turtle.xcor() + radius > PyturtleHandler.WIDTH or value.turtle.xcor() - radius <= 0:
                 value.dx *= -1
-            
-            if value.turtle.ycor()+radius > PyturtleHandler.HEIGHT or value.turtle.ycor()-radius <= 0:
+
+            if value.turtle.ycor() + radius > PyturtleHandler.HEIGHT or value.turtle.ycor() - radius <= 0:
                 value.dy *= -1
 
             if value.turtle.xcor() > PyturtleHandler.WIDTH - radius:
-                value.turtle.goto(PyturtleHandler.WIDTH-radius*2, value.turtle.ycor())
+                value.turtle.goto(PyturtleHandler.WIDTH - radius * 2, value.turtle.ycor())
 
             if value.turtle.xcor() < radius:
-                value.turtle.goto(radius*2, value.turtle.ycor())
+                value.turtle.goto(radius * 2, value.turtle.ycor())
 
             if value.turtle.ycor() > PyturtleHandler.HEIGHT - radius:
-                value.turtle.goto(value.turtle.xcor(), PyturtleHandler.HEIGHT-radius*2)
+                value.turtle.goto(value.turtle.xcor(), PyturtleHandler.HEIGHT - radius * 2)
 
             if value.turtle.ycor() < radius:
-                value.turtle.goto(value.turtle.xcor(), radius*2)
-            
+                value.turtle.goto(value.turtle.xcor(), radius * 2)
+
             if PyturtleHandler.is_object_existing_there(value.turtle.xcor(), value.turtle.ycor(), key):
-                # implement odbicie
-                continue
+                x = PyturtleHandler.collision_point(value.turtle.xcor(), value.turtle.ycor(), key)[0]
+                y = PyturtleHandler.collision_point(value.turtle.xcor(), value.turtle.ycor(), key)[1]
+
+                obj = PyturtleHandler.collision_of_objects(x, y, key)
+
+                PyturtleHandler.change_velocity(value, obj)
+
+    @staticmethod
+    def change_velocity(object1, object2):
+
+        r1 = np.array((object1.turtle.xcor(), object1.turtle.ycor()))
+        r2 = np.array((object2.turtle.xcor(), object2.turtle.ycor()))
+        d = np.linalg.norm(r1 - r2) ** 2
+        v1 = np.array((object1.dx, object1.dy))
+        v2 = np.array((object2.dx, object2.dy))
+        u1 = v1 - 2 / 2 * np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
+        u2 = v2 - 2 / 2 * np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
+
+        object1.dx = u1[0]
+        object1.dy = u1[1]
+        object2.dx = u2[0]
+        object2.dy = u2[1]
 
     @staticmethod
     def display_visualisation(period: int):
         if period <= 0:
-            return 
-        
-        for i in range(0,period): # maybe should be from 0
+            return
+
+        for i in range(0, period):  # maybe should be from 0
             PyturtleHandler.update_positions_of_all_balls()
             PyturtleHandler.win.update()
 
@@ -251,8 +302,11 @@ class PyturtleHandler:
                     current_forces.append(force)
                     force.ticks -= 1
             for force in current_forces:
-                temp_power = math.sqrt(super_power**2 + force.power**2 - 2*super_power*force.power*math.cos((force.angle - super_angle))*math.pi/180)
-                temp_angle = super_angle + PyturtleHandler.atan2(force.power*math.sin((force.angle - super_angle)*math.pi/180), super_power + force.power*math.cos((force.angle - super_angle)*math.pi/180))
+                temp_power = math.sqrt(super_power ** 2 + force.power ** 2 - 2 * super_power * force.power * math.cos(
+                    (force.angle - super_angle)) * math.pi / 180)
+                temp_angle = super_angle + PyturtleHandler.atan2(
+                    force.power * math.sin((force.angle - super_angle) * math.pi / 180),
+                    super_power + force.power * math.cos((force.angle - super_angle) * math.pi / 180))
                 super_power = temp_power
                 super_angle = temp_angle
             print("Super power: {}, angle: {}".format(super_power, super_angle))
@@ -277,7 +331,7 @@ class PyturtleHandler:
         for ball in PyturtleHandler.balls.values():
             if ball.queue_size < max_length:
                 for i in range(max_length - ball.queue_size):
-                    ball.event_queue.put(Force(0,0,1))
+                    ball.event_queue.put(Force(0, 0, 1))
                     ball.queue_size += 1
 
     @staticmethod
@@ -286,9 +340,9 @@ class PyturtleHandler:
         for key, value in PyturtleHandler.balls.items():
             if value.queue_size > max:
                 max = value.queue_size
-        
+
         return max
-    
+
     @staticmethod
     def display_queues_len():
         for key, value in PyturtleHandler.balls.items():
