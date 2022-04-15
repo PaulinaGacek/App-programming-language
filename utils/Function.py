@@ -1,10 +1,11 @@
 from utils.Variable import *
 class Function:
 
-    def __init__(self, name: str, params={}):
+    def __init__(self, name: str):
         self.name = name
-        self.params = params # mapps variable names to Variables()
+        self.params = {} # mapps variable names to Variables()
         self.scopes = {} # mapps var names to their scopes, initialise when function is called
+        self.actions = [] # actions which function makes
     
     def displayDetails(self):
         variable_names = ""

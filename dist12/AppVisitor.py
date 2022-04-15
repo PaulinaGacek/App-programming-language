@@ -14,6 +14,7 @@ else:
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
 class AppVisitor(AppParseTreeVisitor):
+    inside_function_dec = False
     inside_sequence = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
 
@@ -300,13 +301,19 @@ class AppVisitor(AppParseTreeVisitor):
         if ctx.f_args is not None: # function has params
             func.params = self.visit(ctx.f_args) # function args returns dict of variables
         # modify func
+        func.body = self.visit(ctx.f_body)
         Programm.addFunction(func)
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionBody.
     def visitFunctionBody(self, ctx:AppParser.FunctionBodyContext):
-        return self.visitChildren(ctx)
-
+        AppVisitor.inside_function_dec = True
+        action_list = []
+        # do the work
+        for child in ctx.children:
+            if type(child).__name__ == "InstructionContext":
+                self.visit(child)
+        AppVisitor.inside_function_dec = False
+        return action_list
 
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
         arguments = {}
