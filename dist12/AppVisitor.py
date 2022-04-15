@@ -295,9 +295,16 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionCall.
     def visitFunctionCall(self, ctx:AppParser.FunctionCallContext):
-        return self.visitChildren(ctx)
+        # in grammar func call with args is missing
+        if ctx.f_name is None:
+            return
+        name = self.visit(ctx.f_name)
+        if Programm.functions.get(name) is None:
+            raise UndefinedFunctionReferenceError(name)
+        else:
+            # change user input
+            return self.visitChildren(ctx)
 
 
     def visitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):

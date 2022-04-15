@@ -50,6 +50,23 @@ class UndefinedVariableReferenceError(Exception):
         return self.message
 
 
+class UndefinedFunctionReferenceError(Exception):
+    """ Raised when user tries to define not existing function
+    
+    Attributes:
+        name -- name of not existing function which is tried to be defined
+        message -- explanation of the error
+    """
+    
+    def __init__(self, name: str, message=None):
+        self.name = name
+        self.message = "Undefined reference to function {}".format(name)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
+
 class ParameterError(Exception):
     """ 
     
