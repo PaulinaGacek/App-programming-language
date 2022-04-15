@@ -2753,13 +2753,15 @@ class AppParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
-        def variableType(self):
-            return self.getTypedRuleContext(AppParser.VariableTypeContext,0)
-
+            self.type_ = None # VariableTypeContext
+            self.name_ = None # VariableNameContext
 
         def whiteSpace(self):
             return self.getTypedRuleContext(AppParser.WhiteSpaceContext,0)
+
+
+        def variableType(self):
+            return self.getTypedRuleContext(AppParser.VariableTypeContext,0)
 
 
         def variableName(self):
@@ -2793,11 +2795,11 @@ class AppParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 425
-            self.variableType()
+            localctx.type_ = self.variableType()
             self.state = 426
             self.whiteSpace()
             self.state = 427
-            self.variableName()
+            localctx.name_ = self.variableName()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)

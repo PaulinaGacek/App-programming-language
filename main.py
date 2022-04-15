@@ -2,9 +2,9 @@ import sys
 import antlr4
 import turtle
 from antlr4 import *
-from dist11.AppLexer import AppLexer
-from dist11.AppParser import AppParser
-from dist11.AppVisitor import AppVisitor
+from dist12.AppLexer import AppLexer
+from dist12.AppParser import AppParser
+from dist12.AppVisitor import AppVisitor
 from utils.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
 

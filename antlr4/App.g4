@@ -111,7 +111,7 @@ functionArgs
     : functionArgument (whiteSpace? ',' whiteSpace? functionArgument)*
     ;
 
-functionArgument: variableType whiteSpace variableName;
+functionArgument: type_=variableType whiteSpace name_=variableName;
 
 whiteSpace
 	: WS+;

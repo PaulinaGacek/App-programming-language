@@ -2276,11 +2276,13 @@ public class AppParser extends Parser {
 	}
 
 	public static class FunctionArgumentContext extends ParserRuleContext {
-		public VariableTypeContext variableType() {
-			return getRuleContext(VariableTypeContext.class,0);
-		}
+		public VariableTypeContext type_;
+		public VariableNameContext name_;
 		public WhiteSpaceContext whiteSpace() {
 			return getRuleContext(WhiteSpaceContext.class,0);
+		}
+		public VariableTypeContext variableType() {
+			return getRuleContext(VariableTypeContext.class,0);
 		}
 		public VariableNameContext variableName() {
 			return getRuleContext(VariableNameContext.class,0);
@@ -2298,11 +2300,11 @@ public class AppParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(425);
-			variableType();
+			((FunctionArgumentContext)_localctx).type_ = variableType();
 			setState(426);
 			whiteSpace();
 			setState(427);
-			variableName();
+			((FunctionArgumentContext)_localctx).name_ = variableName();
 			}
 		}
 		catch (RecognitionException re) {

@@ -285,7 +285,6 @@ class AppVisitor(AppParseTreeVisitor):
     def visitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):
         
         f_name = self.visit(ctx.f_name)
-        print("Function declaration {} visited".format(f_name))
 
         if Programm.getFunction(f_name) is not None:
             raise FunctionRedefinitionError(f_name)
@@ -303,11 +302,20 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
-        return self.visitChildren(ctx)
+        arguments = {}
+        for child in ctx.children:
+            if type(child).__name__ == "FunctionArgumentContext":
+                # add check whether no redefinition
+                name, var = self.visit(child)
+                arguments[name] = var
+        return arguments
     
-    # Visit a parse tree produced by AppParser#functionArgument.
+
     def visitFunctionArgument(self, ctx:AppParser.FunctionArgumentContext):
-        return self.visitChildren(ctx)
+        name = self.visit(ctx.name_)
+        type = self.visit(ctx.type_)
+        var = Variable(name, Programm.strToType(type), None, None)
+        return name, var
 
 
     # Visit a parse tree produced by AppParser#whiteSpace.
