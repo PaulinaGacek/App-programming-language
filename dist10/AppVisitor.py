@@ -74,26 +74,34 @@ class AppVisitor(AppParseTreeVisitor):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
         if NR_OF_CHILDREN < 11:
             return
-        if ctx.object_ is None or ctx.force_ is None or ctx.time_ is None:
+        if ctx.object_ is None or (ctx.force_ is None and ctx.force_val is None) or (ctx.time_ is None and ctx.time_val is None):
             return
         
         object_name = self.visit(ctx.object_)
-        force_name = self.visit(ctx.force_)
-        time_name = self.visit(ctx.time_)
-
         if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
             raise UndefinedVariableReferenceError(object_name)
+        
+        angle = None
+        power = None
+        if ctx.force_ is not None: # force is variable
+            force_name = self.visit(ctx.force_)
+            if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
+                raise UndefinedVariableReferenceError(force_name)
+            angle = Programm.getVariable(force_name).value
+            power = Programm.getVariable(force_name).value2
+        
+        else: # force is value
+            angle, power = self.visit(ctx.force_val)
 
-        if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
-            raise UndefinedVariableReferenceError(force_name)
+        time_val = None
+        if ctx.time_ is not None:
+            time_name = self.visit(ctx.time_)
+            if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
+                raise UndefinedVariableReferenceError(time_name)
+            time_val = Programm.getVariable(time_name).value
+        else:
+            time_val = self.visit(ctx.time_val)
         
-        if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
-            raise UndefinedVariableReferenceError(time_name)
-        
-        angle = Programm.getVariable(force_name).value
-        power = Programm.getVariable(force_name).value2
-        
-        time_val = Programm.getVariable(time_name).value
         force_ = Force(angle, power, time_val)
         delay = 0
         if ctx.delay_:
