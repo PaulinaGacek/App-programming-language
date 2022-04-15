@@ -1,5 +1,7 @@
 from utils.Variable import *
 from utils.Error import *
+from utils.Stack import *
+from utils.Function import *
 from front.PyturtleHandler import Force, PyturtleHandler
 
 class Programm:
@@ -8,9 +10,9 @@ class Programm:
     Keeps global variables, mapps variable name to the variable object
     '''
     variables = {}
-
-    local_scopes = [] # list with local scopes of variables and functions names
-
+    local_scopes = []
+    scope_history = Stack() # empty stack of following scopes
+    functions = {} # maps name to Function()
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
@@ -32,7 +34,7 @@ class Programm:
             Programm.variables[name] = new_var
         
         else: # scope is local
-            if Programm.local_scopes[scope].get(none) is not None:
+            if Programm.local_scopes[scope].get(name) is not None:
                 raise VariableRedefinitionError(name, Programm.typeToStr(type))
             
             # drawn object would collide with different object
@@ -72,12 +74,31 @@ class Programm:
     @staticmethod
     def displayVariables():
         if len(Programm.variables) == 0:
-            print("There are no declared variables")
-            return
-            
-        print("Global variables:")
-        for key, value in Programm.variables.items():
-            print("Name: {} -> details: {}".format(key,value.displayDetails()))
+            print("There are no global variables declared")
+
+        else:
+            print("Global variables:")
+            for key, value in Programm.variables.items():
+                print("     Name: {} -> details: {}".format(key,value.displayDetails()))
+        
+        if Programm.scope_history.getSize() == 0:
+            print( "There are no local variables declared")
+        else:
+            id = 0
+            for scope in Programm.local_scopes:
+                print("Local scope nr {}".format(id))
+                id += 1
+                for key, value in scope.items():
+                    print("     Name: {} -> details: {}".format(key,value.displayDetails()))
+
+    @staticmethod
+    def dispay_functions():
+        if len(Programm.functions.keys()) == 0:
+            print("There are no functions declared")
+        else:
+            print("Users functions:")
+            for key, value in Programm.functions.items():
+                print("     Name: {} -> details: {}".format(key,value.displayDetails()))
 
 
     '''
@@ -115,15 +136,12 @@ class Programm:
     Returns Variable object with given name
     '''
     @staticmethod
-    def getVariable(name: str):
-        return Programm.variables.get(name)
+    def getVariable(name: str, scope=None):
+        if scope is None:
+            return Programm.variables.get(name)
+        else:
+            return Programm.local_scopes[scope].get(name)
     
-    '''
-    Returns type of the Variable object with given name
-    '''
-    @staticmethod
-    def getVariablesTypeStr(name: str):
-        return Programm.typeToStr(Programm.variables.get(name).type)
     
     @staticmethod
     def areTypesCompatible(type1, type2, value1, value2) -> bool:
@@ -154,3 +172,14 @@ class Programm:
             return True
 
         return False
+    
+    '''
+        Returns Function() object with given name
+    '''
+    @staticmethod
+    def getFunction(name: str):
+        return Programm.functions.get(name)
+    
+    @staticmethod
+    def addFunction(function):
+        Programm.functions[function.name] = function

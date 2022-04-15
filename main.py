@@ -2,9 +2,9 @@ import sys
 import antlr4
 import turtle
 from antlr4 import *
-from dist10.AppLexer import AppLexer
-from dist10.AppParser import AppParser
-from dist10.AppVisitor import AppVisitor
+from dist12.AppLexer import AppLexer
+from dist12.AppParser import AppParser
+from dist12.AppVisitor import AppVisitor
 from utils.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
 
@@ -27,6 +27,7 @@ if __name__ == "__main__":
         
         print(output)
         Programm.displayVariables()
+        Programm.dispay_functions()
        
         if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
             PyturtleHandler.display_queues_len()

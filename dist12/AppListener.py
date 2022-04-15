@@ -134,12 +134,30 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#conditionBody.
+    def enterConditionBody(self, ctx:AppParser.ConditionBodyContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#conditionBody.
+    def exitConditionBody(self, ctx:AppParser.ConditionBodyContext):
+        pass
+
+
     # Enter a parse tree produced by AppParser#parallelExpression.
     def enterParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
         pass
 
     # Exit a parse tree produced by AppParser#parallelExpression.
     def exitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#parallelBody.
+    def enterParallelBody(self, ctx:AppParser.ParallelBodyContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#parallelBody.
+    def exitParallelBody(self, ctx:AppParser.ParallelBodyContext):
         pass
 
 
@@ -152,12 +170,30 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#function.
-    def enterFunction(self, ctx:AppParser.FunctionContext):
+    # Enter a parse tree produced by AppParser#loopBody.
+    def enterLoopBody(self, ctx:AppParser.LoopBodyContext):
         pass
 
-    # Exit a parse tree produced by AppParser#function.
-    def exitFunction(self, ctx:AppParser.FunctionContext):
+    # Exit a parse tree produced by AppParser#loopBody.
+    def exitLoopBody(self, ctx:AppParser.LoopBodyContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#functionCall.
+    def enterFunctionCall(self, ctx:AppParser.FunctionCallContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#functionCall.
+    def exitFunctionCall(self, ctx:AppParser.FunctionCallContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#functionDeclaration.
+    def enterFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#functionDeclaration.
+    def exitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):
         pass
 
 
@@ -176,6 +212,15 @@ class AppListener(ParseTreeListener):
 
     # Exit a parse tree produced by AppParser#functionArgs.
     def exitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#functionArgument.
+    def enterFunctionArgument(self, ctx:AppParser.FunctionArgumentContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#functionArgument.
+    def exitFunctionArgument(self, ctx:AppParser.FunctionArgumentContext):
         pass
 
 

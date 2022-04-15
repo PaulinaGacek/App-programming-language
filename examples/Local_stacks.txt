@@ -1,0 +1,11 @@
+// Definicja zmiennej globalnej i nastepna definicja takiej samej lokalnej, ktora ja przyslania
+DEFINE TIME t AS 2137; 
+IF (3<6) THEN DEFINE TIME t AS 20; ENDIF;
+
+// Redifinicja zmiennej t w localnym scopie -> VariableRedefinitionError
+IF (3<6) THEN DEFINE TIME t AS 20; DEFINE TIME t AS 20; ENDIF;
+
+// Definicja zmiennej lokalnej i globalnej, modyfikacja globalnej i potem lokalnej
+DEFINE TIME t AS 2137;
+IF (3<6) THEN DEFINE TIME t AS 20; SET t AS t + 20; ENDIF;
+SET t AS t * t;
