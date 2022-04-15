@@ -119,11 +119,11 @@ class AppVisitor(AppParseTreeVisitor):
             elif type(self.getNodesChild(ctx,0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
 
-                if Programm.getVariable(name, Programm.scope_history.top()) is None:
+                if Programm.getVariable(name, Programm.current_scope) is None:
                     raise UndefinedVariableReferenceError(name)
 
-                if Programm.getVariable(name, Programm.scope_history.top()).type == Type.INT or Programm.getVariable(name, Programm.scope_history.top()).type == Type.TIME:
-                    return Programm.getVariable(name, Programm.scope_history.top()).value
+                if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name, Programm.current_scope).type == Type.TIME:
+                    return Programm.getVariable(name, Programm.current_scope).value
             else:
                 return self.visitChildren(ctx)
 
@@ -138,7 +138,7 @@ class AppVisitor(AppParseTreeVisitor):
             
             artm_type = None
             if type1 == "VariableNameContext":
-                artm_type = Programm.getVariable(val1, Programm.scope_history.top()).type
+                artm_type = Programm.getVariable(val1, Programm.current_scope).type
             elif type1 == "IntegerContext":
                 artm_type = Type.INT
             elif type1 == "Object_typeContext":
@@ -212,21 +212,26 @@ class AppVisitor(AppParseTreeVisitor):
             return
         
         name = self.visit(ctx.name_)
-        if Programm.getVariable(name, Programm.scope_history.top()) is None:
+        if Programm.getVariable(name, Programm.scope_history.top()) is None and Programm.getVariable(name) is None:
             raise UndefinedVariableReferenceError(name)
         
-        type = Programm.getVariable(name, Programm.scope_history.top()).type
+        Programm.current_scope = None
+        if Programm.getVariable(name, Programm.scope_history.top()) is not None:
+            Programm.current_scope = Programm.scope_history.top()
+        
+        type = Programm.getVariable(name, Programm.current_scope).type
 
         if ctx.value_ is not None: # simple type
             value = self.visit(ctx.value_)
-            Programm.defineExistingVariable(name, value, scope=Programm.scope_history.top())
+            Programm.defineExistingVariable(name, value, scope=Programm.current_scope)
 
         else: # complex type
             value1 = self.visit(ctx.value1_)
             value2 = self.visit(ctx.value2_)
 
-            Programm.defineExistingVariable(name, value1, value2, scope=Programm.scope_id)
+            Programm.defineExistingVariable(name, value1, value2, Programm.current_scope)
 
+        Programm.current_scope = Programm.scope_history.top()
         return "definition"
 
 
@@ -240,6 +245,7 @@ class AppVisitor(AppParseTreeVisitor):
             local_variables = {}
             Programm.local_scopes.append(local_variables) # adding new variable scope
         
+        Programm.current_scope = Programm.scope_history.top()
         self.visitChildren(ctx)
         Programm.displayVariables()
         Programm.scope_history.pop()

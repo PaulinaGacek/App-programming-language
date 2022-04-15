@@ -13,6 +13,7 @@ class Programm:
     local_scopes = []
     scope_history = Stack() # empty stack of following scopes
     functions = {} # maps name to Function()
+    current_scope = None
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
