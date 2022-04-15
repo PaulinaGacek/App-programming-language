@@ -62,11 +62,11 @@ class Ball:
         diff_y = abs(y_ - self.turtle.ycor())
         z = math.sqrt((diff_x ** 2 + diff_y ** 2))
         z_ = int(z)
-        # if z - z_ >= 0.5:
-        #     z = math.ceil(z)
-        # else:
-        #     z = math.ceil(z)2
-        if z_ > PyturtleHandler.RADIUS:
+        if z - z_ >= 0.5:
+            z = math.ceil(z)
+        else:
+            z = math.ceil(z)
+        if z > PyturtleHandler.RADIUS:
             return False
 
         return True
@@ -276,21 +276,9 @@ class PyturtleHandler:
             #     obj = PyturtleHandler.is_pixel_accessible(x, y, key)[1]
             #
             #     PyturtleHandler.change_velocity(value, obj)
-                # if balls_copy.__contains__(obj):
-                #     balls_copy.pop(obj.name)
-                # if len(balls_copy) == 0:
-                #     balls_copy = PyturtleHandler.balls.copy()
 
     @staticmethod
     def change_velocity(object1, object2):
-
-        # print(object1.dx, object1.dy, object2.dx, object2.dy, "______________________________________")
-
-        # if object1.turtle.ycor() == object2.turtle.ycor():
-        #     tmp1, tmp2 = object1.dx, object1.dy
-        #     object1.dx, object1.dy = object2.dx, object2.dy
-        #     object2.dx, object2.dy = tmp1, tmp2
-        #     print(object1.dx, object1.dy, object2.dx, object2.dy, "***********************")
 
         if object2 is not None:
             r1 = np.array((object1.turtle.xcor(), object1.turtle.ycor()))
