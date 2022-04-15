@@ -108,7 +108,7 @@ functionBody
 	;
 
 functionArgs
-    : variableName (whiteSpace? ',' whitespace? variableName)*
+    : variableName (whiteSpace? ',' whiteSpace? variableName)*
     ;
 
 whiteSpace
