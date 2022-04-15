@@ -100,7 +100,7 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext, type_=None):
+    def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
         if NR_OF_CHILDREN == 1: # variable name or INT
@@ -110,11 +110,11 @@ class AppVisitor(AppParseTreeVisitor):
             elif type(self.getNodesChild(ctx,0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
 
-                if Programm.getVariable(name) is None:
+                if Programm.getVariable(name, Programm.scope_history.top()) is None:
                     raise UndefinedVariableReferenceError(name)
 
-                if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
-                    return Programm.getVariable(name).value
+                if Programm.getVariable(name, Programm.scope_history.top()).type == Type.INT or Programm.getVariable(name, Programm.scope_history.top()).type == Type.TIME:
+                    return Programm.getVariable(name, Programm.scope_history.top()).value
             else:
                 return self.visitChildren(ctx)
 
@@ -126,12 +126,10 @@ class AppVisitor(AppParseTreeVisitor):
 
             if not Programm.areTypesCompatible(type1, type2, val1, val2):
                 raise Error("Arithmetical operation on different types are not allowed: {}, {} -> {},{}".format(type1,type2, val1, val2))
-            else:
-                # print("Types are ok: {}, {} -> {},{}".format(type1,type2, val1, val2))
             
             artm_type = None
             if type1 == "VariableNameContext":
-                artm_type = Programm.getVariable(val1).type
+                artm_type = Programm.getVariable(val1, Programm.scope_history.top()).type
             elif type1 == "IntegerContext":
                 artm_type = Type.INT
             elif type1 == "Object_typeContext":
@@ -205,20 +203,20 @@ class AppVisitor(AppParseTreeVisitor):
             return
         
         name = self.visit(ctx.name_)
-        if Programm.getVariable(name) is None:
+        if Programm.getVariable(name, Programm.scope_history.top()) is None:
             raise UndefinedVariableReferenceError(name)
         
-        type = Programm.getVariable(name).type
+        type = Programm.getVariable(name, Programm.scope_history.top()).type
 
         if ctx.value_ is not None: # simple type
             value = self.visit(ctx.value_)
-            Programm.defineExistingVariable(name, value, scope=self.scope_history.top())
+            Programm.defineExistingVariable(name, value, scope=Programm.scope_history.top())
 
         else: # complex type
             value1 = self.visit(ctx.value1_)
             value2 = self.visit(ctx.value2_)
 
-            Programm.defineExistingVariable(name, value1, value2, scope=self.scope_id)
+            Programm.defineExistingVariable(name, value1, value2, scope=Programm.scope_id)
 
         return "definition"
 

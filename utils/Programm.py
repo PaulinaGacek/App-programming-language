@@ -125,15 +125,12 @@ class Programm:
     Returns Variable object with given name
     '''
     @staticmethod
-    def getVariable(name: str):
-        return Programm.variables.get(name)
+    def getVariable(name: str, scope=None):
+        if scope is None:
+            return Programm.variables.get(name)
+        else:
+            return Programm.local_scopes[scope].get(name)
     
-    '''
-    Returns type of the Variable object with given name
-    '''
-    @staticmethod
-    def getVariablesTypeStr(name: str):
-        return Programm.typeToStr(Programm.variables.get(name).type)
     
     @staticmethod
     def areTypesCompatible(type1, type2, value1, value2) -> bool:
