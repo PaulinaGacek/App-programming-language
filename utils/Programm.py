@@ -1,5 +1,6 @@
 from utils.Variable import *
 from utils.Error import *
+from utils.Stack import *
 from front.PyturtleHandler import Force, PyturtleHandler
 
 class Programm:
@@ -8,9 +9,7 @@ class Programm:
     Keeps global variables, mapps variable name to the variable object
     '''
     variables = {}
-
-    local_scopes = [] # list with local scopes of variables and functions names
-
+    scope_history = Stack() # empty stack of following scopes
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
@@ -73,11 +72,21 @@ class Programm:
     def displayVariables():
         if len(Programm.variables) == 0:
             print("There are no declared variables")
-            return
-            
-        print("Global variables:")
-        for key, value in Programm.variables.items():
-            print("Name: {} -> details: {}".format(key,value.displayDetails()))
+
+        else:
+            print("Global variables:")
+            for key, value in Programm.variables.items():
+                print("Name: {} -> details: {}".format(key,value.displayDetails()))
+        
+        if Programm.scope_history.getSize() == 0:
+            print( "There are no local variables declared")
+        else:
+            id = 0
+            for scope in Programm.scope_history.stack:
+                print("Local scope nr {}".format(id))
+                id += 1
+                for key, value in scope.items():
+                    print("Name: {} -> details: {}".format(key,value.displayDetails()))
 
 
     '''
