@@ -339,12 +339,12 @@ class AppVisitor(AppParseTreeVisitor):
         return action_list
 
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
-        arguments = {}
+        arguments = []
         for child in ctx.children:
             if type(child).__name__ == "FunctionArgumentContext":
                 # add check whether no redefinition
                 name, var = self.visit(child)
-                arguments[name] = var
+                arguments.append((name, var))
         return arguments
     
 
@@ -354,7 +354,7 @@ class AppVisitor(AppParseTreeVisitor):
         var = Variable(name, Programm.strToType(type), None, None)
         return name, var
     
-    
+
     # Visit a parse tree produced by AppParser#functionParams.
     def visitFunctionParams(self, ctx:AppParser.FunctionParamsContext):
         return self.visitChildren(ctx)

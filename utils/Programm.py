@@ -208,15 +208,15 @@ class Programm:
     def inputFunctionsDefinition(data: str) -> str:
         # functions = {} # maps name to Function()
         for name, function in Programm.functions.items():
-            idx = data.find(name+"(")
-            while idx != -1:
+            start_idx = data.find(name+"(")
+            while start_idx != -1:
                 variables = {} # maps name in call to name in declaration
                 arg_list = Programm.getArguments(data, name)
                 if len(arg_list) != len(function.params):
                     raise WrongNumberOfArguments(name, len(function.params), len(arg_list))
 
                 for idx in range(0,len(arg_list)):
-
+                    '''
                     if Programm.getVariable(arg_list[idx], scope=Programm.current_scope) is None:
                         if Programm.getVariable(arg_list[idx]) is None:
                             raise UndefinedVariableReferenceError(arg_list[idx])
@@ -227,13 +227,13 @@ class Programm:
                         if Programm.getVariable(arg_list[idx], Programm.current_scope).type != function.params[idx][1].type:
                             raise UnallowedCasting(Programm.getVariable(arg_list[idx], Programm.current_scope).getTypeString(), 
                                 function.params[idx][1].getTypeString())
-                    
-                    variables[function.params[idx][1]] = arg_list[idx] # mapps name in func dec to real name
+                    '''
+                    variables[function.params[idx][0]] = arg_list[idx] # mapps name in func dec to real name
                 
                 # replace all accurance of name(args); with function body
                 f_body =  Programm.getFbodyWithInputedArgs(function.getBody(), variables)
                 data = re.sub(name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", f_body, data)
-                idx = data.find(name+"(")
+                start_idx = data.find(name+"(")
         return data
     
     '''

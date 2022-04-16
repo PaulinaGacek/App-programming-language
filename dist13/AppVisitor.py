@@ -303,7 +303,6 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitFunctionCall(self, ctx:AppParser.FunctionCallContext):
-        # in grammar func call with args is missing
         if ctx.f_name is None:
             return
         name = self.visit(ctx.f_name)
@@ -339,12 +338,12 @@ class AppVisitor(AppParseTreeVisitor):
         return action_list
 
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
-        arguments = {}
+        arguments = []
         for child in ctx.children:
             if type(child).__name__ == "FunctionArgumentContext":
                 # add check whether no redefinition
                 name, var = self.visit(child)
-                arguments[name] = var
+                arguments.append((name, var))
         return arguments
     
 

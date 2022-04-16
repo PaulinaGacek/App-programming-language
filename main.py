@@ -13,7 +13,7 @@ if __name__ == "__main__":
     PyturtleHandler.instantiate_board()
 
     while True: 
-
+        AppVisitor.current_scope = AppVisitorState.FUNC_DECLARATION_CHECKING
         data = InputStream(input(">>> "))
         # lexer
         lexer = AppLexer(data)
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         print("WITH DELETED FUNCTION DECLARATIONS:", new_data)
         new_data = Programm.inputFunctionsDefinition(new_data)
         print("WITH INPUT CODE:", new_data)
-
+        
         data = InputStream(new_data)
         # lexer
         lexer = AppLexer(data)
@@ -39,6 +39,7 @@ if __name__ == "__main__":
         parser = AppParser(stream)
         tree = parser.primaryExpression()
         # evaluator
+        visitor = AppVisitor()
         output = visitor.visit(tree)
         
         print(output)
