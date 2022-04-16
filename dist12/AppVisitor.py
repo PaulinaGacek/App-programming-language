@@ -262,6 +262,7 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.current_scope = Programm.scope_history.top()
             self.visitChildren(ctx)
             Programm.displayVariables()
+            Programm.local_scopes[Programm.scope_history.top()].clear() # deleting local variables
             Programm.scope_history.pop()
         
         else: 

@@ -31,5 +31,5 @@ class Function:
     def getBody(self) -> str:
         body = ""
         for action in self.actions:
-            body += "\t" + action + "\n"
+            body += " "+ action + "\n"
         return body

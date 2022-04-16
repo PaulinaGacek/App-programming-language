@@ -257,4 +257,5 @@ class Programm:
     def getFbodyWithInputedArgs(f_body: str, variables):
         for key, value in variables.items():
             f_body = f_body.replace(key, value)
+        f_body = "IF (1==1) THEN " + f_body + "ENDIF;"
         return f_body
