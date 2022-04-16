@@ -66,17 +66,8 @@ conditionalStatement
     ;
 
 condition
-    :   (left_wxpr=arithmeticalExpression|left_var=variableName) whiteSpace? '==' 
-		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
-    |   (left_wxpr=arithmeticalExpression|left_var=variableName) whiteSpace? '>' 
-		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
-    |   (left_wxpr=arithmeticalExpression|left_var=variableName) whiteSpace? '<' 
-		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
-    |   (left_wxpr=arithmeticalExpression|left_var=variableName) whiteSpace? '>='
-		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
-    |   (left_wxpr=arithmeticalExpression|left_var=variableName) whiteSpace? '<=' 
-		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
-    |   (left_wxpr=arithmeticalExpression|left_var=variableName) whiteSpace? '!=' 
+    :   (left_expr=arithmeticalExpression|left_var=variableName) whiteSpace? 
+		op=('=='|'>' |'<' |'>=' |'<=' |'!=')
 		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
     ;
 
@@ -95,12 +86,13 @@ loop
 loopBody: instruction+ ;
 
 functionCall
-	:  f_name=functionName '(' ')' ';'
+	:  f_name=functionName '(' whiteSpace? ')' whiteSpace? ';'
+	|  f_name=functionName '(' whiteSpace? f_args=functionParams whiteSpace? ')'whiteSpace? ';'
 	;
 
 functionDeclaration
-	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace 'ENDFUNCTION' whiteSpace? ';'
-	| 'DEFINE FUNCTION' whiteSpace f_name=functionName '('whiteSpace? f_args=functionArgs whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace 'ENDFUNCTION' whiteSpace? ';'
+	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
+	| 'DEFINE FUNCTION' whiteSpace f_name=functionName '('whiteSpace? f_args=functionArgs whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
 	;
 
 functionBody
@@ -110,6 +102,10 @@ functionBody
 functionArgs
     : functionArgument (whiteSpace? ',' whiteSpace? functionArgument)*
     ;
+
+functionParams
+	: variableName (whiteSpace? ',' whiteSpace? variableName)*
+	;
 
 functionArgument: type_=variableType whiteSpace name_=variableName;
 

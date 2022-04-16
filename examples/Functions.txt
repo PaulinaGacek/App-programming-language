@@ -1,3 +1,14 @@
 DEFINE FUNCTION funkcja1() AS DEFINE TIME t AS 30; ENDFUNCTION;
 DEFINE FUNCTION funkcja2( TIME t) AS DEFINE TIME t AS 30; ENDFUNCTION;
-DEFINE FUNCTION funkcja2( INT w, OBJECT o, TIME t) AS DEFINE TIME t AS 30; ENDFUNCTION;
+DEFINE FUNCTION funkcja2( INT w, OBJECT o, TIME t) AS DEFINE TIME t AS 30; SET t AS t + 2; ENDFUNCTION;
+DEFINE FUNCTION funkcja3( INT w) AS DEFINE TIME t AS 30; SET t AS t + 2; IF (3<6) THEN DEFINE TIME t AS 20; ENDIF;ENDFUNCTION;
+
+// sprawdzanie czy mozna sie odwolac do funkcji przed deklaracją
+funkcja1();DEFINE FUNCTION funkcja1() AS DEFINE TIME t AS 30; ENDFUNCTION;
+
+// odwołanie do nieistniejącej funkcji
+funkcja2();
+
+// test zczytywania argumentow
+// dziala jesli jest wpisane na poczatku
+DEFINE TIME zmienna AS 20; funkcja2(zmienna); DEFINE FUNCTION funkcja2( TIME t) AS DEFINE TIME t AS 30; ENDFUNCTION;

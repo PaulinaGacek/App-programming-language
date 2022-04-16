@@ -13,21 +13,28 @@ else:
     from AppParser import AppParser
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
+class AppVisitorState(Enum):
+    FUNC_DECLARATION_CHECKING = 1,
+    CODE_EXECUTING = 2
+
 class AppVisitor(AppParseTreeVisitor):
+    current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
+    inside_function_dec = False
     inside_sequence = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
 
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
 
         # gathering info about the functions declarations
-        for child in ctx.children:
-            if type(child).__name__ == "FunctionDeclarationContext":
-                self.visit(child)
+        if AppVisitor.current_state == AppVisitorState.FUNC_DECLARATION_CHECKING:
+            for child in ctx.children:
+                if type(child).__name__ == "FunctionDeclarationContext":
+                    self.visit(child)
         
-        # executing programm
-        for child in ctx.children:
-            if type(child).__name__ != "FunctionDeclarationContext":
-                self.visit(child)
+        elif AppVisitor.current_state == AppVisitorState.CODE_EXECUTING:
+            for child in ctx.children:
+                if type(child).__name__ != "FunctionDeclarationContext":
+                    self.visit(child)
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#instruction.
     def visitInstruction(self, ctx:AppParser.InstructionContext):
@@ -119,11 +126,11 @@ class AppVisitor(AppParseTreeVisitor):
             elif type(self.getNodesChild(ctx,0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
 
-                if Programm.getVariable(name, Programm.scope_history.top()) is None:
+                if Programm.getVariable(name, Programm.current_scope) is None:
                     raise UndefinedVariableReferenceError(name)
 
-                if Programm.getVariable(name, Programm.scope_history.top()).type == Type.INT or Programm.getVariable(name, Programm.scope_history.top()).type == Type.TIME:
-                    return Programm.getVariable(name, Programm.scope_history.top()).value
+                if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name, Programm.current_scope).type == Type.TIME:
+                    return Programm.getVariable(name, Programm.current_scope).value
             else:
                 return self.visitChildren(ctx)
 
@@ -138,7 +145,7 @@ class AppVisitor(AppParseTreeVisitor):
             
             artm_type = None
             if type1 == "VariableNameContext":
-                artm_type = Programm.getVariable(val1, Programm.scope_history.top()).type
+                artm_type = Programm.getVariable(val1, Programm.current_scope).type
             elif type1 == "IntegerContext":
                 artm_type = Type.INT
             elif type1 == "Object_typeContext":
@@ -182,28 +189,31 @@ class AppVisitor(AppParseTreeVisitor):
 
         if ctx.name_ is None or ctx.type_sim is None or ctx.value_ is None:
             return
+        
+        if not AppVisitor.inside_function_dec:
 
-        name = self.visit(ctx.name_)
-        type_ = self.visit(ctx.type_sim)
+            name = self.visit(ctx.name_)
+            type_ = self.visit(ctx.type_sim)
 
-        print("Type: {}".format(type_))
+            # print("Type: {}".format(type_))
 
-        if type_ == 'INT' or type_ == 'TIME':
-            if type(self.visit(ctx.value_)) is not int:
-                raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
-            value = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value, scope=Programm.scope_history.top())
+            if type_ == 'INT' or type_ == 'TIME':
+                if type(self.visit(ctx.value_)) is not int:
+                    raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
+                value = self.visit(ctx.value_)
+                Programm.defineNewVariable(name, Programm.strToType(type_), value, scope=Programm.scope_history.top())
 
-        elif type_ == 'FORCE':
-            value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=Programm.scope_history.top())
+            elif type_ == 'FORCE':
+                value1, value2 = self.visit(ctx.value_)
+                Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=Programm.scope_history.top())
 
-        elif type_ == 'OBJECT':
-            value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=Programm.scope_history.top())
-            PyturtleHandler.add_new_object(name, value1, value2)
-            
-        return "declaration"
+            elif type_ == 'OBJECT':
+                value1, value2 = self.visit(ctx.value_)
+                Programm.defineNewVariable(name, Programm.strToType(type_), value1, value2, scope=Programm.scope_history.top())
+                PyturtleHandler.add_new_object(name, value1, value2)
+        
+        else: # in function declaration
+            return Programm.getInstructionAsTxt(ctx)
 
 
     def visitDefinition(self, ctx:AppParser.DefinitionContext):
@@ -211,38 +221,52 @@ class AppVisitor(AppParseTreeVisitor):
         if ctx.name_ is None or (ctx.value_ is None and (ctx.value1_ is None or ctx.value2_ is None)):
             return
         
-        name = self.visit(ctx.name_)
-        if Programm.getVariable(name, Programm.scope_history.top()) is None:
-            raise UndefinedVariableReferenceError(name)
+        if not AppVisitor.inside_function_dec:
         
-        type = Programm.getVariable(name, Programm.scope_history.top()).type
+            name = self.visit(ctx.name_)
+            if Programm.getVariable(name, Programm.scope_history.top()) is None and Programm.getVariable(name) is None:
+                raise UndefinedVariableReferenceError(name)
+            
+            Programm.current_scope = None
+            if Programm.getVariable(name, Programm.scope_history.top()) is not None:
+                Programm.current_scope = Programm.scope_history.top()
+            
+            type = Programm.getVariable(name, Programm.current_scope).type
 
-        if ctx.value_ is not None: # simple type
-            value = self.visit(ctx.value_)
-            Programm.defineExistingVariable(name, value, scope=Programm.scope_history.top())
+            if ctx.value_ is not None: # simple type
+                value = self.visit(ctx.value_)
+                Programm.defineExistingVariable(name, value, scope=Programm.current_scope)
 
-        else: # complex type
-            value1 = self.visit(ctx.value1_)
-            value2 = self.visit(ctx.value2_)
+            else: # complex type
+                value1 = self.visit(ctx.value1_)
+                value2 = self.visit(ctx.value2_)
 
-            Programm.defineExistingVariable(name, value1, value2, scope=Programm.scope_id)
+                Programm.defineExistingVariable(name, value1, value2, Programm.current_scope)
 
-        return "definition"
+            Programm.current_scope = Programm.scope_history.top()
+
+        else:
+            return Programm.getInstructionAsTxt(ctx)
 
 
-
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#conditionalStatement.
     def visitConditionalStatement(self, ctx:AppParser.ConditionalStatementContext):
-        id = Programm.scope_history.getSize()
-        Programm.scope_history.push(id)
 
-        if len(Programm.local_scopes) <= id:
-            local_variables = {}
-            Programm.local_scopes.append(local_variables) # adding new variable scope
+        if not AppVisitor.inside_function_dec:
+            id = Programm.scope_history.getSize()
+            Programm.scope_history.push(id)
+
+            if len(Programm.local_scopes) <= id:
+                local_variables = {}
+                Programm.local_scopes.append(local_variables) # adding new variable scope
+            
+            Programm.current_scope = Programm.scope_history.top()
+            self.visitChildren(ctx)
+            Programm.displayVariables()
+            Programm.local_scopes[Programm.scope_history.top()].clear() # deleting local variables
+            scope = Programm.scope_history.pop()
         
-        self.visitChildren(ctx)
-        Programm.displayVariables()
-        Programm.scope_history.pop()
+        else: 
+            return Programm.getInstructionAsTxt(ctx)
 
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
@@ -278,9 +302,15 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionCall.
     def visitFunctionCall(self, ctx:AppParser.FunctionCallContext):
-        return self.visitChildren(ctx)
+        if ctx.f_name is None:
+            return
+        name = self.visit(ctx.f_name)
+        if Programm.functions.get(name) is None:
+            raise UndefinedFunctionReferenceError(name)
+        else:
+            # change user input
+            return self.visitChildren(ctx)
 
 
     def visitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):
@@ -294,21 +324,26 @@ class AppVisitor(AppParseTreeVisitor):
         if ctx.f_args is not None: # function has params
             func.params = self.visit(ctx.f_args) # function args returns dict of variables
         # modify func
+        func.actions = self.visit(ctx.f_body)
         Programm.addFunction(func)
 
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#functionBody.
     def visitFunctionBody(self, ctx:AppParser.FunctionBodyContext):
-        return self.visitChildren(ctx)
-
+        AppVisitor.inside_function_dec = True
+        action_list = []
+        for child in ctx.children:
+            if type(child).__name__ == "InstructionContext":
+                action_list.append(self.visit(child))
+        AppVisitor.inside_function_dec = False
+        return action_list
 
     def visitFunctionArgs(self, ctx:AppParser.FunctionArgsContext):
-        arguments = {}
+        arguments = []
         for child in ctx.children:
             if type(child).__name__ == "FunctionArgumentContext":
                 # add check whether no redefinition
                 name, var = self.visit(child)
-                arguments[name] = var
+                arguments.append((name, var))
         return arguments
     
 
@@ -317,6 +352,11 @@ class AppVisitor(AppParseTreeVisitor):
         type = self.visit(ctx.type_)
         var = Variable(name, Programm.strToType(type), None, None)
         return name, var
+    
+    
+    # Visit a parse tree produced by AppParser#functionParams.
+    def visitFunctionParams(self, ctx:AppParser.FunctionParamsContext):
+        return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by AppParser#whiteSpace.

@@ -215,6 +215,15 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#functionParams.
+    def enterFunctionParams(self, ctx:AppParser.FunctionParamsContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#functionParams.
+    def exitFunctionParams(self, ctx:AppParser.FunctionParamsContext):
+        pass
+
+
     # Enter a parse tree produced by AppParser#functionArgument.
     def enterFunctionArgument(self, ctx:AppParser.FunctionArgumentContext):
         pass

@@ -3,6 +3,7 @@ from utils.Error import *
 from utils.Stack import *
 from utils.Function import *
 from front.PyturtleHandler import Force, PyturtleHandler
+import re
 
 class Programm:
 
@@ -13,6 +14,7 @@ class Programm:
     local_scopes = []
     scope_history = Stack() # empty stack of following scopes
     functions = {} # maps name to Function()
+    current_scope = None
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
@@ -183,3 +185,75 @@ class Programm:
     @staticmethod
     def addFunction(function):
         Programm.functions[function.name] = function
+    
+    '''
+        Returns instruction as a string
+    '''
+    @staticmethod
+    def getInstructionAsTxt(ctx):
+        output = ""
+        for child in ctx.children:
+            output += child.getText()
+        return output
+    
+    @staticmethod
+    def deleteFunctionsDefinitions(data: str) -> str:
+        idx = data.find('DEFINE FUNCTION')
+        while idx != -1:
+            data = re.sub("DEFINE FUNCTION .+ ENDFUNCTION;","",data)
+            idx = data.find('DEFINE FUNCTION')
+        return data
+
+    @staticmethod
+    def inputFunctionsDefinition(data: str) -> str:
+        # functions = {} # maps name to Function()
+        for name, function in Programm.functions.items():
+            start_idx = data.find(name+"(")
+            while start_idx != -1:
+                variables = {} # maps name in call to name in declaration
+                arg_list = Programm.getArguments(data, name)
+                if len(arg_list) != len(function.params):
+                    raise WrongNumberOfArguments(name, len(function.params), len(arg_list))
+
+                for idx in range(0,len(arg_list)):
+                    '''
+                    if Programm.getVariable(arg_list[idx], scope=Programm.current_scope) is None:
+                        if Programm.getVariable(arg_list[idx]) is None:
+                            raise UndefinedVariableReferenceError(arg_list[idx])
+                        if Programm.getVariable(arg_list[idx]).type != function.params[idx][1].type:
+                            raise UnallowedCasting(Programm.getVariable(arg_list[idx]).getTypeString(), 
+                                function.params[idx][1].getTypeString())
+                    else:
+                        if Programm.getVariable(arg_list[idx], Programm.current_scope).type != function.params[idx][1].type:
+                            raise UnallowedCasting(Programm.getVariable(arg_list[idx], Programm.current_scope).getTypeString(), 
+                                function.params[idx][1].getTypeString())
+                    '''
+                    variables[function.params[idx][0]] = arg_list[idx] # mapps name in func dec to real name
+                
+                # replace all accurance of name(args); with function body
+                f_body =  Programm.getFbodyWithInputedArgs(function.getBody(), variables)
+                data = re.sub(name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", f_body, data)
+                start_idx = data.find(name+"(")
+        return data
+    
+    '''
+    It gets string as 'funckja1(zmienna1, zmienna2)' and return list of parameters: ['zmienna1', 'zmienna2']
+    If function has no parameters it returns empty list
+    '''
+    @staticmethod
+    def getArguments(data: str, func_name: str):
+        list = []
+        str = re.search(func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);",data).group(0)
+        str = re.sub(func_name+"\(", "", str)
+        str = re.sub("\);", "", str)
+        str = str.replace(" ", "")
+        if str != "":
+            list = str.rsplit(",")
+        return list
+    
+    @staticmethod
+    def getFbodyWithInputedArgs(f_body: str, variables):
+        for key, value in variables.items():
+            f_body = f_body.replace(key, value)
+        f_body = "IF (1==1) THEN " + f_body + "ENDIF;"
+        return f_body
