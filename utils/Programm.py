@@ -200,7 +200,7 @@ class Programm:
     def deleteFunctionsDefinitions(data: str) -> str:
         idx = data.find('DEFINE FUNCTION')
         while idx != -1:
-            data = re.sub("^DEFINE FUNCTION .+ ENDFUNCTION;","",data)
+            data = re.sub("DEFINE FUNCTION .+ ENDFUNCTION;","",data)
             idx = data.find('DEFINE FUNCTION')
         return data
 
@@ -234,6 +234,7 @@ class Programm:
                 f_body =  Programm.getFbodyWithInputedArgs(function.getBody(), variables)
                 data = re.sub(name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", f_body, data)
                 idx = data.find(name+"(")
+        return data
     
     '''
     It gets string as 'funckja1(zmienna1, zmienna2)' and return list of parameters: ['zmienna1', 'zmienna2']
@@ -245,7 +246,7 @@ class Programm:
         str = re.search(func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);",data).group(0)
         print("string:", str)
         str = re.sub(func_name+"\(", "", str)
-        str = re.sub("\)", "", str)
+        str = re.sub("\);", "", str)
         str = str.replace(" ", "")
         if str != "":
             list = str.rsplit(",")

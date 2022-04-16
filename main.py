@@ -26,13 +26,21 @@ if __name__ == "__main__":
         output = visitor.visit(tree)
 
         AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
-        data.strdata = Programm.deleteFunctionsDefinitions(data.__str__())
-        print("WITH DELETED FUNCTION DECLARATIONS:", data)
+        new_data = Programm.deleteFunctionsDefinitions(data.__str__())
+        print("WITH DELETED FUNCTION DECLARATIONS:", new_data)
+        new_data = Programm.inputFunctionsDefinition(new_data)
+        print("WITH INPUT CODE:", new_data)
 
-        data.strdata = Programm.inputFunctionsDefinition(data.__str__())
-        print("WITH INPUT CODE:", data)
-        
+        data = InputStream(new_data)
+        # lexer
+        lexer = AppLexer(data)
+        stream = CommonTokenStream(lexer)
+        # parser
+        parser = AppParser(stream)
+        tree = parser.primaryExpression()
+        # evaluator
         output = visitor.visit(tree)
+        
         print(output)
         Programm.displayVariables()
         Programm.dispay_functions()
