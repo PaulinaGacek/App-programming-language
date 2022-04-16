@@ -303,14 +303,13 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitFunctionCall(self, ctx:AppParser.FunctionCallContext):
-        if ctx.f_name is None:
-            return
+        print("Function call visited")
         name = self.visit(ctx.f_name)
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)
         else:
-            # change user input
-            return self.visitChildren(ctx)
+            # check whether arguments are declared
+            return 
 
 
     def visitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):

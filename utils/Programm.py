@@ -232,8 +232,10 @@ class Programm:
                 
                 # replace all accurance of name(args); with function body
                 f_body =  Programm.getFbodyWithInputedArgs(function.getBody(), variables)
-                data = re.sub(name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", f_body, data)
-                start_idx = data.find(name+"(")
+                func_header = re.search(name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", data).group(0)
+                data = re.sub(name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", func_header + f_body, data)
+
+                start_idx = data.find(name+"(", start_idx+1)
         return data
     
     '''
