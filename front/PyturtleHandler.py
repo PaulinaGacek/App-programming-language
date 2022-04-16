@@ -269,13 +269,10 @@ class PyturtleHandler:
                     PyturtleHandler.change_velocity(value, value_)
             balls_copy[key] = value
 
-            # if PyturtleHandler.is_object_existing_there(value):
-            #     x = PyturtleHandler.collision_point(value)[0]
-            #     y = PyturtleHandler.collision_point(value)[1]
-            #
-            #     obj = PyturtleHandler.is_pixel_accessible(x, y, key)[1]
-            #
-            #     PyturtleHandler.change_velocity(value, obj)
+    """
+    Objects 1 and 2 have collided elastically: update their
+            velocities.
+    """
 
     @staticmethod
     def change_velocity(object1, object2):
@@ -286,10 +283,10 @@ class PyturtleHandler:
             d = np.linalg.norm(r1 - r2) ** 2
             v1 = np.array((object1.dx, object1.dy))
             v2 = np.array((object2.dx, object2.dy))
-            print("-------------------", v1, v2, r1, r2)
+            # print("-------------------", v1, v2, r1, r2)
             u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
             u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
-            print("-------------------", u1, u2)
+            # print("-------------------", u1, u2)
             object1.dx = u1[0]
             object1.dy = u1[1]
             object2.dx = u2[0]
