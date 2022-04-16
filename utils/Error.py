@@ -133,3 +133,31 @@ class Error(Exception):
 
     def __str__(self):
         return self.message
+
+
+class WrongNumberOfArguments(Exception):
+    """ 
+    Attributes:
+        name -- object's name
+        required -- nr of required args
+        privided -- nr of provided args
+        message -- explanation of the error
+    """
+
+    def __init__(self, name: str, required: int, provided: int, message=None):
+        if message is None:
+            self.message = "Wrong nr of arguments given to function {} -> {} required but {} were provided".format(name, required, provided)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
+class UnallowedCasting(Exception):
+
+    def __init__(self, type1, type2, message=None):
+        if message is None:
+            self.message = "Unallowed casting from {} to {} were".format(type1, type2)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message

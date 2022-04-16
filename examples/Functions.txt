@@ -8,3 +8,6 @@ funkcja1();DEFINE FUNCTION funkcja1() AS DEFINE TIME t AS 30; ENDFUNCTION;
 
 // odwołanie do nieistniejącej funkcji
 funkcja2();
+
+// test zczytywania argumentow
+funkcja2(zmienna); DEFINE FUNCTION funkcja2( TIME t) AS DEFINE TIME t AS 30; ENDFUNCTION;

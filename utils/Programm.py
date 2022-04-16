@@ -207,17 +207,42 @@ class Programm:
     @staticmethod
     def inputFunctionsDefinition(data: str) -> str:
         # functions = {} # maps name to Function()
-        for name, value in Programm.functions.items():
+        for name, function in Programm.functions.items():
             idx = data.find(name+"(")
             while idx != -1:
                 variables = {} # maps name in call to name in declaration
                 arg_list = Programm.getArguments(data, name)
+                if len(arg_list) != len(function.params):
+                    raise WrongNumberOfArguments(name, len(function.params), len(arg_list))
+
+                for idx in range(0,len(arg_list)):
+
+                    if Programm.getVariable(arg_list[idx], scope=Programm.current_scope) is None:
+                        if Programm.getVariable(arg_list[idx]) is None:
+                            raise UndefinedVariableReferenceError(arg_list[idx])
+                        if Programm.getVariable(arg_list[idx]).type != function.params[idx][1].type:
+                            raise UnallowedCasting(Programm.getVariable(arg_list[idx]).getTypeString(), 
+                                function.params[idx][1].getTypeString())
+                    else:
+                        if Programm.getVariable(arg_list[idx], Programm.current_scope).type != function.params[idx][1].type:
+                            raise UnallowedCasting(Programm.getVariable(arg_list[idx], Programm.current_scope).getTypeString(), 
+                                function.params[idx][1].getTypeString())
+                    
+                    variables[function.params[idx][1]] = arg_list[idx] # mapps name in func dec to real name
+                
+                # replace all accurance of name(args); with function body
+                f_body =  Programm.getFbodyWithInputedArgs(function.getBody(), variables)
+                data = re.sub(name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", f_body, data)
                 idx = data.find(name+"(")
     
+    '''
+    It gets string as 'funckja1(zmienna1, zmienna2)' and return list of parameters: ['zmienna1', 'zmienna2']
+    If function has no parameters it returns empty list
+    '''
     @staticmethod
     def getArguments(data: str, func_name: str):
         list = []
-        str = re.search(func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\)",data).group(0)
+        str = re.search(func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);",data).group(0)
         print("string:", str)
         str = re.sub(func_name+"\(", "", str)
         str = re.sub("\)", "", str)
@@ -226,3 +251,9 @@ class Programm:
             list = str.rsplit(",")
         print(list)
         return list
+    
+    @staticmethod
+    def getFbodyWithInputedArgs(f_body: str, variables):
+        for key, value in variables.items():
+            f_body = f_body.replace(key, value)
+        return f_body

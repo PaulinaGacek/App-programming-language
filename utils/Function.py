@@ -27,3 +27,9 @@ class Function:
         for action in self.actions:
             body += "\t" + action + "\n"
         return "params:" + variable_names + "\nbody: " + body
+    
+    def getBody(self) -> str:
+        body = ""
+        for action in self.actions:
+            body += "\t" + action + "\n"
+        return body
