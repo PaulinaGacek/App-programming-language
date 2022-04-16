@@ -16,6 +16,22 @@ class VariableRedefinitionError(Exception):
     def __str__(self):
         return self.message
 
+class FunctionRedefinitionError(Exception):
+    """ Raised when user tries to declare again existing function
+    
+    Attributes:
+        name: str -- name of the existing function which is tried to be redefined
+        type: str -- type of existing function
+        message -- explanation of the error
+    """
+    
+    def __init__(self, name: str, message=None):
+        self.name = name
+        self.message = "Redefinition of existing function {}".format(self.name)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
 
 class UndefinedVariableReferenceError(Exception):
     """ Raised when user tries to define not existing variable
@@ -32,6 +48,24 @@ class UndefinedVariableReferenceError(Exception):
 
     def __str__(self):
         return self.message
+
+
+class UndefinedFunctionReferenceError(Exception):
+    """ Raised when user tries to define not existing function
+    
+    Attributes:
+        name -- name of not existing function which is tried to be defined
+        message -- explanation of the error
+    """
+    
+    def __init__(self, name: str, message=None):
+        self.name = name
+        self.message = "Undefined reference to function {}".format(name)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
 
 class ParameterError(Exception):
     """ 
@@ -87,6 +121,42 @@ class ObjectCannotBeDrawn(Exception):
     def __init__(self, name: str, x: int, y: int, message=None):
         if message is None:
             self.message = "Object {} cannot be drawn at ({},{})".format(name,x,y)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+    
+class Error(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
+
+class WrongNumberOfArguments(Exception):
+    """ 
+    Attributes:
+        name -- object's name
+        required -- nr of required args
+        privided -- nr of provided args
+        message -- explanation of the error
+    """
+
+    def __init__(self, name: str, required: int, provided: int, message=None):
+        if message is None:
+            self.message = "Wrong nr of arguments given to function {} -> {} required but {} were provided".format(name, required, provided)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
+class UnallowedCasting(Exception):
+
+    def __init__(self, type1, type2, message=None):
+        if message is None:
+            self.message = "Unallowed casting from {} to {} were".format(type1, type2)
         super().__init__(self.message)
 
     def __str__(self):

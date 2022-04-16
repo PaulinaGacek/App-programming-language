@@ -1,7 +1,7 @@
 grammar App;
 
 primaryExpression
-	: (whiteSpace? instruction whiteSpace?)+
+	: (whiteSpace? (functionDeclaration|instruction) whiteSpace?)+
 	;
 
 instruction
@@ -10,16 +10,14 @@ instruction
 	| conditionalStatement
 	| parallelExpression
 	| loop
-	| function
+	| functionCall
 	| applyForce
 	;
 
-simpleVariableType
+variableType
 	: 'TIME'
-	| 'INT';
-
-complexVariableType
-    : 'FORCE'
+	| 'INT'
+    | 'FORCE'
     | 'OBJECT';
 
 variableName
@@ -35,66 +33,81 @@ integer
 	| ZERO
 	;
 
+force_type: '['angle=integer ',' power=integer ']';
+
+object_type: '('x_cor=integer ',' y_cor=integer ')';
+
 applyForce
-    : 'APPLY' whiteSpace force_=variableName whiteSpace 'TO' whiteSpace object_=variableName whiteSpace 
-		'FOR' whiteSpace time_=variableName (whiteSpace 'DELAY' whiteSpace delay_=variableName)? whiteSpace? ';'
+    : 'APPLY' whiteSpace (force_=variableName|force_val=force_type) whiteSpace 
+		'TO' whiteSpace object_=variableName whiteSpace 
+		'FOR' whiteSpace (time_=variableName|time_val=integer) 
+		(whiteSpace 'DELAY' whiteSpace (delay_=variableName|delay_val_=integer))? whiteSpace? ';'
     ;
 
 
 arithmeticalExpression
     : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
+	| force_type
+	| object_type
 	| variableName
     ;
 
 declaration
-	:   'DEFINE' whiteSpace type_sim=simpleVariableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
-	|   'DEFINE' whiteSpace type_com=complexVariableType whiteSpace name_=variableName whiteSpace 'AS' 
-		whiteSpace value1_=arithmeticalExpression whiteSpace? ',' whiteSpace? value2_=arithmeticalExpression whiteSpace? ';'
+	:   'DEFINE' whiteSpace type_sim=variableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
 	;
 
 definition
 	:   'SET' whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression ';'
-	|   'SET' whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value1_=arithmeticalExpression whiteSpace? 
-		',' whiteSpace? value2_=arithmeticalExpression ';'
 	;
 
 conditionalStatement
-    :   'IF' whiteSpace? '('whiteSpace? condition whiteSpace? ')' whiteSpace 'THEN' whiteSpace instruction+ whiteSpace 'ENDIF' whiteSpace? ';'
+    :   'IF' whiteSpace? '('whiteSpace? cond=condition whiteSpace? ')' whiteSpace 'THEN' whiteSpace con_body=conditionBody whiteSpace 'ENDIF' whiteSpace? ';'
     ;
 
 condition
-    :   variableName whiteSpace? '==' whiteSpace? arithmeticalExpression
-    |   variableName whiteSpace? '>' whiteSpace? arithmeticalExpression
-    |   variableName whiteSpace? '<' whiteSpace? arithmeticalExpression
-    |   variableName whiteSpace? '>=' whiteSpace? arithmeticalExpression
-    |   variableName whiteSpace? '<=' whiteSpace? arithmeticalExpression
-    |   variableName whiteSpace? '!=' whiteSpace? arithmeticalExpression
+    :   (left_expr=arithmeticalExpression|left_var=variableName) whiteSpace? 
+		op=('=='|'>' |'<' |'>=' |'<=' |'!=')
+		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
     ;
+
+conditionBody: (instruction whiteSpace?)+ ;
 
 parallelExpression
-    :   'PARALLEL' whiteSpace (app_force_=applyForce|parallel_=parallelExpression)+ whiteSpace 'ENDPARALLEL' whiteSpace? ';'
+    :   'PARALLEL' whiteSpace  par_body=parallelBody whiteSpace 'ENDPARALLEL' whiteSpace? ';'
     ;
+
+parallelBody: (app_force_=applyForce|parallel_=parallelExpression)+ ;
 
 loop
-    : 'LOOP' whiteSpace '(' whiteSpace? declaration whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')'whiteSpace instruction+ whiteSpace 'ENDLOOP' whiteSpace? ';'
-    | 'LOOP' whiteSpace '('whiteSpace?';' whiteSpace? condition whiteSpace? ';' whiteSpace? definition whiteSpace?')' whiteSpace instruction+ whiteSpace 'ENDLOOP' whiteSpace? ';'
+    : 'LOOP' whiteSpace? '(' whiteSpace? condition whiteSpace?')'whiteSpace l_body=loopBody whiteSpace 'ENDLOOP' whiteSpace? ';'
     ;
 
-function
-    :   'DEFINE FUNCTION' whiteSpace functionName '(' whiteSpace? functionArgs whiteSpace? ')' whiteSpace 'AS' whiteSpace functionBody whiteSpace 'ENDFUNCTION' whiteSpace? ';'
-    |   'DEFINE FUNCTION' whiteSpace functionName whiteSpace 'AS' whiteSpace functionBody whiteSpace 'ENDFUNCTION' whiteSpace? ';'
-    ;
+loopBody: instruction+ ;
+
+functionCall
+	:  f_name=functionName '(' whiteSpace? ')' whiteSpace? ';'
+	|  f_name=functionName '(' whiteSpace? f_args=functionParams whiteSpace? ')'whiteSpace? ';'
+	;
+
+functionDeclaration
+	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
+	| 'DEFINE FUNCTION' whiteSpace f_name=functionName '('whiteSpace? f_args=functionArgs whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
+	;
 
 functionBody
-    : instruction+ whiteSpace?
-    | instruction+ whiteSpace parallelExpression whiteSpace instruction+ whiteSpace?
-    ;
+    : (instruction whiteSpace?)+
+	;
 
 functionArgs
-    : declaration whiteSpace?
-    | declaration whiteSpace? ',' whiteSpace? functionArgs
+    : functionArgument (whiteSpace? ',' whiteSpace? functionArgument)*
     ;
+
+functionParams
+	: variableName (whiteSpace? ',' whiteSpace? variableName)*
+	;
+
+functionArgument: type_=variableType whiteSpace name_=variableName;
 
 whiteSpace
 	: WS+;
