@@ -195,7 +195,7 @@ class AppVisitor(AppParseTreeVisitor):
             name = self.visit(ctx.name_)
             type_ = self.visit(ctx.type_sim)
 
-            print("Type: {}".format(type_))
+            # print("Type: {}".format(type_))
 
             if type_ == 'INT' or type_ == 'TIME':
                 if type(self.visit(ctx.value_)) is not int:
@@ -263,7 +263,7 @@ class AppVisitor(AppParseTreeVisitor):
             self.visitChildren(ctx)
             Programm.displayVariables()
             Programm.local_scopes[Programm.scope_history.top()].clear() # deleting local variables
-            Programm.scope_history.pop()
+            scope = Programm.scope_history.pop()
         
         else: 
             return Programm.getInstructionAsTxt(ctx)

@@ -244,13 +244,11 @@ class Programm:
     def getArguments(data: str, func_name: str):
         list = []
         str = re.search(func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);",data).group(0)
-        print("string:", str)
         str = re.sub(func_name+"\(", "", str)
         str = re.sub("\);", "", str)
         str = str.replace(" ", "")
         if str != "":
             list = str.rsplit(",")
-        print(list)
         return list
     
     @staticmethod
