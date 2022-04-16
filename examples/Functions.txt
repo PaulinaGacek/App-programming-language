@@ -10,4 +10,5 @@ funkcja1();DEFINE FUNCTION funkcja1() AS DEFINE TIME t AS 30; ENDFUNCTION;
 funkcja2();
 
 // test zczytywania argumentow
+// dziala jesli jest wpisane na poczatku
 DEFINE TIME zmienna AS 20; funkcja2(zmienna); DEFINE FUNCTION funkcja2( TIME t) AS DEFINE TIME t AS 30; ENDFUNCTION;

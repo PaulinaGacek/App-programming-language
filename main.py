@@ -13,7 +13,7 @@ if __name__ == "__main__":
     PyturtleHandler.instantiate_board()
 
     while True: 
-        AppVisitor.current_scope = AppVisitorState.FUNC_DECLARATION_CHECKING
+        AppVisitor.current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
         data = InputStream(input(">>> "))
         # lexer
         lexer = AppLexer(data)
