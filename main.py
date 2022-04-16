@@ -28,6 +28,9 @@ if __name__ == "__main__":
         AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
         data.strdata = Programm.deleteFunctionsDefinitions(data.__str__())
         print("WITH DELETED FUNCTION DECLARATIONS:", data)
+
+        data.strdata = Programm.inputFunctionsDefinition(data.__str__())
+        print("WITH INPUT CODE:", data)
         
         output = visitor.visit(tree)
         print(output)

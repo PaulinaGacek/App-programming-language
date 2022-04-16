@@ -206,4 +206,23 @@ class Programm:
 
     @staticmethod
     def inputFunctionsDefinition(data: str) -> str:
-        pass
+        # functions = {} # maps name to Function()
+        for name, value in Programm.functions.items():
+            idx = data.find(name+"(")
+            while idx != -1:
+                variables = {} # maps name in call to name in declaration
+                arg_list = Programm.getArguments(data, name)
+                idx = data.find(name+"(")
+    
+    @staticmethod
+    def getArguments(data: str, func_name: str):
+        list = []
+        str = re.search(func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\)",data).group(0)
+        print("string:", str)
+        str = re.sub(func_name+"\(", "", str)
+        str = re.sub("\)", "", str)
+        str = str.replace(" ", "")
+        if str != "":
+            list = str.rsplit(",")
+        print(list)
+        return list

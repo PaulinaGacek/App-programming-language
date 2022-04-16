@@ -16,14 +16,13 @@ class Function:
 
     def __init__(self, name: str):
         self.name = name
-        self.params = {} # mapps variable names to Variables()
-        self.scopes = {} # mapps var names to their scopes, initialise when function is called
+        self.params = [] #tuple (variable names, Variables())
         self.actions = [] # actions which function makes
     
     def displayDetails(self):
         variable_names = ""
-        for item in self.params.values():
-            variable_names += "{" +item.name + ", " + item.getTypeString() +"}, "
+        for item in self.params:
+            variable_names += "{" +item[1].name + ", " + item[1].getTypeString() +"}, "
         body = ""
         for action in self.actions:
             body += "\t" + action + "\n"
