@@ -325,7 +325,6 @@ class PyturtleHandler:
                     super_power + force.power * math.cos((force.angle - super_angle) * math.pi / 180))
                 super_power = temp_power
                 super_angle = temp_angle
-            print("Super power: {}, angle: {}".format(super_power, super_angle))
             ret_forces.append(Force(super_angle, super_power, 1))
         return ret_forces
 
