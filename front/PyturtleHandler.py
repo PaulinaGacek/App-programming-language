@@ -9,12 +9,13 @@ import numpy as np
 
 
 class Force:
-    def __init__(self, angle: int, power: int, ticks: int):
+    def __init__(self, angle: int, power: int, ticks: int, delay: int = 0):
         if angle < 0:
             angle += 360 * int(1 - angle / 360)
         self.angle = angle - int(angle / 360)  # normalised angle in degrees
         self.power = power
         self.ticks = ticks
+        self.delay = delay
         # add checking if values are not negative
 
 
@@ -306,13 +307,16 @@ class PyturtleHandler:
         ret_forces = []
         max_length = 0
         for force in forces:
-            max_length = max(max_length, force.ticks)
+            max_length = max(max_length, force.ticks+force.delay)
         for i in range(max_length):
             current_forces = []
             super_power = 0
             super_angle = 0
             for force in forces:
                 if force.ticks == 0:
+                    continue
+                if force.delay > 0:
+                    force.delay -= 1
                     continue
                 else:
                     current_forces.append(force)
@@ -331,18 +335,13 @@ class PyturtleHandler:
     @staticmethod
     def add_forces(forces: dict):
         # forces - dict() name -> List[Force]
-        max_length = 0
-        for key, values in forces.items():
-            for force in values:
-                max_length = max(max_length, force.ticks)
-
         for key in PyturtleHandler.balls.keys():
             if key in forces.keys():
                 output_queue = PyturtleHandler.force_superposition(forces[key])
                 for item in output_queue:
                     PyturtleHandler.balls[key].event_queue.put(item)
                     PyturtleHandler.balls[key].queue_size += 1
-
+        max_length = PyturtleHandler.get_max_queue_len()
         for ball in PyturtleHandler.balls.values():
             if ball.queue_size < max_length:
                 for i in range(max_length - ball.queue_size):
@@ -351,12 +350,7 @@ class PyturtleHandler:
 
     @staticmethod
     def get_max_queue_len() -> int:
-        max = 0
-        for key, value in PyturtleHandler.balls.items():
-            if value.queue_size > max:
-                max = value.queue_size
-
-        return max
+        return max([ball.queue_size for ball in PyturtleHandler.balls.values()])
 
     @staticmethod
     def display_queues_len():
