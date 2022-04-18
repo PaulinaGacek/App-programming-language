@@ -1,11 +1,8 @@
-from platform import python_branch
 import turtle
 import queue
 import math
-import typing
-from itertools import combinations
-
 import numpy as np
+import time
 
 
 class Force:
@@ -85,6 +82,7 @@ class PyturtleHandler:
     HEIGHT = 400
     WIDTH = 400
     RADIUS = 11
+    TIME_DELAY = 0.2 # in secs
 
     win = None
     color = (205, 205, 205)
@@ -160,8 +158,7 @@ class PyturtleHandler:
     @staticmethod
     def is_pixel_accessible(x, y, name):
         balls_copy = PyturtleHandler.balls.copy()
-
-        balls_copy.pop(name)
+        balls_copy.pop(name) # don't check collision with itself
 
         for obj in balls_copy.values():
             if obj.is_pixel_inside(x, y) is True:
@@ -170,16 +167,16 @@ class PyturtleHandler:
         return [True, None]
 
     """
-    The function checks if the distance between the centers of two objects is less than the sum of their radii, 
-    if so, there is a collision.
+    Returns there is a collistion between object1 and object2 - if the distance between the centers of two objects is less than the sum of their radii.
     """
 
     @staticmethod
-    def collision_of_objects(object1, object2) -> bool:
-        x1, y1 = object1.turtle.xcor(), object1.turtle.ycor()
-        x2, y2 = object2.turtle.xcor(), object2.turtle.ycor()
+    def is_balls_collision(object1: Ball, object2: Ball) -> bool:
+        x1, y1 = object1.get_pos_x(), object1.get_pos_y()
+        x2, y2 = object2.get_pos_x(), object2.get_pos_y()
 
         if (abs(x1 - x2) <= 2 * PyturtleHandler.RADIUS) and (abs(y1 - y2) <= 2 * PyturtleHandler.RADIUS):
+            print("Collision between {} and {}".format(object1.name, object2.name))
             return True
 
         return False
@@ -266,14 +263,13 @@ class PyturtleHandler:
                 value.turtle.goto(value.turtle.xcor(), radius * 2)
 
             # check collision with other ball
-            balls_copy.pop(key)
+            balls_copy.pop(key) # don't check collision with itself
             for value_ in balls_copy.values():
-                if PyturtleHandler.collision_of_objects(value, value_):
+                if PyturtleHandler.is_balls_collision(value, value_):
                     PyturtleHandler.change_velocity(value, value_)
-            balls_copy[key] = value
 
     """
-    Objects 1 and 2 have collided elastically: update their velocities.
+    Updates velocities of object1 and object2 to simulate their ellastic collision
     """
 
     @staticmethod
@@ -301,6 +297,7 @@ class PyturtleHandler:
 
         for i in range(0, period):
             PyturtleHandler.update_positions_of_all_balls()
+            time.sleep(PyturtleHandler.TIME_DELAY)
             PyturtleHandler.win.update()
 
     @staticmethod
