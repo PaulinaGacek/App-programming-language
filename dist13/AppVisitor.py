@@ -20,7 +20,7 @@ class AppVisitorState(Enum):
 class AppVisitor(AppParseTreeVisitor):
     current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
     inside_function_dec = False
-    inside_sequence = False
+    inside_parallel = False
     forces = {} # mapps object name to forces applied to it str-> List[Force]
 
     def visitPrimaryExpression(self, ctx:AppParser.PrimaryExpressionContext):
@@ -113,12 +113,12 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             AppVisitor.forces[object_name].append(force_)
 
-        if not AppVisitor.inside_sequence:
+        if not AppVisitor.inside_parallel:
             print("IN APPLY FORCE not in sequence")
             PyturtleHandler.add_forces(AppVisitor.forces)
-            AppVisitor.forces.clear()
+            AppVisitor.forces.clear()  
 
-        return self.visitChildren(ctx)
+        # return self.visitChildren(ctx)
 
 
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
@@ -283,16 +283,13 @@ class AppVisitor(AppParseTreeVisitor):
     def visitConditionBody(self, ctx:AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
 
-    # [NOT IMPLEMENTED]
     def visitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
-        AppVisitor.inside_sequence = True
-        # do the work
-        AppVisitor.inside_sequence = False
+        AppVisitor.inside_parallel = True
+        self.visit(ctx.par_body)
+        AppVisitor.inside_parallel = False
+        PyturtleHandler.add_forces(AppVisitor.forces)
         AppVisitor.forces.clear()
-        # return self.visitChildren(ctx)
 
-
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#parallelBody.
     def visitParallelBody(self, ctx:AppParser.ParallelBodyContext):
         return self.visitChildren(ctx)
 
