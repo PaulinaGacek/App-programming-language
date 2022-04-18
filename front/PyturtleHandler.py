@@ -18,7 +18,8 @@ class Force:
 
 
 class Ball:
-    colors = [(101, 93, 138), (120, 151, 171), (216, 133, 163), (253, 206, 185)]
+    colors = [(101, 93, 138), (120, 151, 171),
+              (216, 133, 163), (253, 206, 185)]
     FACTOR = 5
 
     def __init__(self, name, x, y, dx, dy):
@@ -33,7 +34,8 @@ class Ball:
         self.turtle.hideturtle()
         self.turtle.penup()
         self.turtle.goto(x, y)
-        self.turtle.color(Ball.colors[len(PyturtleHandler.balls.keys()) % len(Ball.colors)])
+        self.turtle.color(
+            Ball.colors[len(PyturtleHandler.balls.keys()) % len(Ball.colors)])
         self.turtle.showturtle()
 
         self.event_queue = queue.Queue()
@@ -44,13 +46,16 @@ class Ball:
             print("Queue is empty!!!")
         force = self.event_queue.get()
         self.queue_size -= 1
-        self.acc_x = math.cos(force.angle * math.pi / 180) * force.power/Ball.FACTOR
-        self.acc_y = math.sin(force.angle * math.pi / 180) * force.power/Ball.FACTOR
+        self.acc_x = math.cos(force.angle * math.pi /
+                              180) * force.power/Ball.FACTOR
+        self.acc_y = math.sin(force.angle * math.pi /
+                              180) * force.power/Ball.FACTOR
 
         self.dy += self.acc_y
         self.dx += self.acc_x
 
-        self.turtle.goto(self.turtle.xcor() + self.dx, self.turtle.ycor() + self.dy)
+        self.turtle.goto(self.turtle.xcor() + self.dx,
+                         self.turtle.ycor() + self.dy)
 
     '''
         Checks if given pixel (x_, y_) is inside self
@@ -71,10 +76,10 @@ class Ball:
 
         return True
 
-    def get_pos_x(self) -> int:
+    def get_pos_x(self):
         return self.turtle.xcor()
 
-    def get_pos_y(self) -> int:
+    def get_pos_y(self):
         return self.turtle.ycor()
 
 
@@ -82,7 +87,7 @@ class PyturtleHandler:
     HEIGHT = 400
     WIDTH = 400
     RADIUS = 11
-    TIME_DELAY = 0.2 # in secs
+    TIME_DELAY = 0  # in secs
 
     win = None
     color = (205, 205, 205)
@@ -158,7 +163,7 @@ class PyturtleHandler:
     @staticmethod
     def is_pixel_accessible(x, y, name):
         balls_copy = PyturtleHandler.balls.copy()
-        balls_copy.pop(name) # don't check collision with itself
+        balls_copy.pop(name)  # don't check collision with itself
 
         for obj in balls_copy.values():
             if obj.is_pixel_inside(x, y) is True:
@@ -176,7 +181,8 @@ class PyturtleHandler:
         x2, y2 = object2.get_pos_x(), object2.get_pos_y()
 
         if (abs(x1 - x2) <= 2 * PyturtleHandler.RADIUS) and (abs(y1 - y2) <= 2 * PyturtleHandler.RADIUS):
-            print("Collision between {} and {}".format(object1.name, object2.name))
+            print("Collision between {} and {}".format(
+                object1.name, object2.name))
             return True
 
         return False
@@ -187,13 +193,15 @@ class PyturtleHandler:
         PyturtleHandler.win.colormode(255)
         PyturtleHandler.win.bgcolor("white")
         PyturtleHandler.win.title("A++")
-        PyturtleHandler.win.setup(PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
-        turtle.setworldcoordinates(0, 0, PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
+        PyturtleHandler.win.setup(
+            PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
+        turtle.setworldcoordinates(
+            0, 0, PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
         PyturtleHandler.isBoardInstantiated = True
 
     @staticmethod
     def add_new_object(name, x, y):
-        PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0)  
+        PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0)
 
     @staticmethod
     def update_positions_of_all_balls():
@@ -213,19 +221,21 @@ class PyturtleHandler:
                 value.dy *= -1
 
             if value.turtle.xcor() > PyturtleHandler.WIDTH - radius:
-                value.turtle.goto(PyturtleHandler.WIDTH - radius * 2, value.turtle.ycor())
+                value.turtle.goto(PyturtleHandler.WIDTH -
+                                  radius * 2, value.turtle.ycor())
 
             if value.turtle.xcor() < radius:
                 value.turtle.goto(radius * 2, value.turtle.ycor())
 
             if value.turtle.ycor() > PyturtleHandler.HEIGHT - radius:
-                value.turtle.goto(value.turtle.xcor(), PyturtleHandler.HEIGHT - radius * 2)
+                value.turtle.goto(value.turtle.xcor(),
+                                  PyturtleHandler.HEIGHT - radius * 2)
 
             if value.turtle.ycor() < radius:
                 value.turtle.goto(value.turtle.xcor(), radius * 2)
 
             # check collision with other ball
-            balls_copy.pop(key) # don't check collision with itself
+            balls_copy.pop(key)  # don't check collision with itself
             for value_ in balls_copy.values():
                 if PyturtleHandler.is_balls_collision(value, value_):
                     PyturtleHandler.change_velocity(value, value_)
@@ -237,20 +247,24 @@ class PyturtleHandler:
     @staticmethod
     def change_velocity(object1, object2):
 
-        if object2 is not None:
-            r1 = np.array((object1.turtle.xcor(), object1.turtle.ycor()))
-            r2 = np.array((object2.turtle.xcor(), object2.turtle.ycor()))
-            d = np.linalg.norm(r1 - r2) ** 2
-            v1 = np.array((object1.dx, object1.dy))
-            v2 = np.array((object2.dx, object2.dy))
-            # print("-------------------", v1, v2, r1, r2)
-            u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
-            u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
-            # print("-------------------", u1, u2)
-            object1.dx = u1[0]
-            object1.dy = u1[1]
-            object2.dx = u2[0]
-            object2.dy = u2[1]
+        r1 = np.array((object1.get_pos_x(), object1.get_pos_y()))
+        r2 = np.array((object2.get_pos_x(), object2.get_pos_x()))
+        d = np.linalg.norm(r1 - r2) ** 2
+        v1 = np.array((object1.dx, object1.dy))
+        v2 = np.array((object2.dx, object2.dy))
+
+        u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
+        u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
+
+        print("Object {}: v1:{},{} -> v2:{},{}".format(object1.name,
+              object1.dx, object1.dy, u1[0], u1[1]))
+        print("Object {}: v1:{},{} -> v2:{},{}".format(object2.name,
+              object2.dx, object2.dy, u2[0], u2[1]))
+        object1.dx = u1[0]
+        object1.dy = u1[1]
+        object2.dx = u2[0]
+        object2.dy = u2[1]
+        PyturtleHandler.escape_collision(object1,object2)
 
     @staticmethod
     def display_visualisation(period: int):
@@ -285,7 +299,8 @@ class PyturtleHandler:
                 temp_power = math.sqrt(super_power ** 2 + force.power ** 2 - 2 * super_power * force.power * math.cos(
                     (force.angle - super_angle)) * math.pi / 180)
                 temp_angle = super_angle + PyturtleHandler.atan2(
-                    force.power * math.sin((force.angle - super_angle) * math.pi / 180),
+                    force.power *
+                    math.sin((force.angle - super_angle) * math.pi / 180),
                     super_power + force.power * math.cos((force.angle - super_angle) * math.pi / 180))
                 super_power = temp_power
                 super_angle = temp_angle
@@ -316,3 +331,27 @@ class PyturtleHandler:
     def display_queues_len():
         for key, value in PyturtleHandler.balls.items():
             print("Name:{}, Queue len: {}".format(key, value.queue_size))
+    
+    '''
+    When velocities are too small there were cases when balls couldn't escape from collision situation in one iteration, so they were
+    keeping to collide and in some cases they even became one ball. This method prevents from these situation - it makes sure that 
+    ball will escape collision state in one iteration
+    '''
+    @staticmethod
+    def escape_collision(object1: Ball, object2: Ball):
+        
+        # sitaution after collision
+        after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
+        after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
+
+        # checking if after one iteration they will escape collision state
+        while abs(after_x_1- after_x_2) <= PyturtleHandler.RADIUS * 2 and abs(after_y_1- after_y_2) <= PyturtleHandler.RADIUS * 2:
+            print("--------Escape collision-------")
+
+            object1.turtle.goto(object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy)
+            object2.turtle.goto(object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy)
+
+            after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
+            after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
+
+
