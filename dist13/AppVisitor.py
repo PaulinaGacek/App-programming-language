@@ -97,11 +97,16 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             time_val = self.visit(ctx.time_val)
         
-        force_ = Force(angle, power, time_val)
+        
         delay = 0
         if ctx.delay_:
             delay = self.visit(ctx.delay_)
             print(delay)
+        elif ctx.delay_val_:
+            delay = self.visit(ctx.delay_val_)
+            print(delay)
+        
+        force_ = Force(angle, power, time_val, delay)
 
         if AppVisitor.forces.get(object_name) is None:
             AppVisitor.forces[object_name] = [force_]

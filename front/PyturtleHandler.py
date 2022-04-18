@@ -16,6 +16,7 @@ class Force:
         self.power = power
         self.ticks = ticks
         self.delay = delay
+        # print("New force with angle {}, power {}, ticks {}, delay {}".format(self.angle, power, ticks, delay))
         # add checking if values are not negative
 
 
