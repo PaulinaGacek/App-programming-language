@@ -5,6 +5,7 @@ from antlr4 import *
 from dist14.AppLexer import AppLexer
 from dist14.AppParser import AppParser
 from dist14.AppVisitor import *
+from dist14.AppErrorListener import *
 from utils.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
 
@@ -20,6 +21,7 @@ if __name__ == "__main__":
         stream = CommonTokenStream(lexer)
         # parser
         parser = AppParser(stream)
+        parser.addErrorListener(AppErrorListener()) # add error listener
         tree = parser.primaryExpression()
         # evaluator
         visitor = AppVisitor()
@@ -52,3 +54,4 @@ if __name__ == "__main__":
             print("display visualisation ended")
 
         PyturtleHandler.win.update()
+
