@@ -181,44 +181,6 @@ class PyturtleHandler:
 
         return False
 
-    '''
-        Returns point of the collision.
-    '''
-
-    @staticmethod
-    def collision_point(object_):
-
-        for x_ in range(0, PyturtleHandler.RADIUS + 2):
-            x1 = object_.turtle.xcor() + x_
-            x2 = object_.turtle.xcor() - x_
-            y1 = int(math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - object_.turtle.xcor()) ** 2) + object_.turtle.ycor())
-            y2 = - int(math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - object_.turtle.xcor()) ** 2) + object_.turtle.ycor())
-
-            if not PyturtleHandler.is_pixel_accessible(int(x1), int(y1), object_.name)[0]:
-                return [int(x1), int(y1)]
-
-            elif not PyturtleHandler.is_pixel_accessible(int(x1), int(y2), object_.name)[0]:
-                return [int(x1), int(y2)]
-
-            elif not PyturtleHandler.is_pixel_accessible(int(x2), int(y1), object_.name)[0]:
-                return [int(x2), int(y1)]
-
-            elif not PyturtleHandler.is_pixel_accessible(int(x2), int(y2), object_.name)[0]:
-                return [int(x2), int(y2)]
-
-            return None
-
-    '''
-        Checks if all points on the perimeter of given object are not taken by any other object.
-    '''
-
-    @staticmethod
-    def is_object_existing_there(object_) -> bool:
-        if PyturtleHandler.collision_point(object_) is None:
-            return False
-        else:
-            return True
-
     @staticmethod
     def instantiate_board():
         PyturtleHandler.win = turtle.Screen()
