@@ -77,7 +77,7 @@ parallelExpression
     :   'PARALLEL' whiteSpace  par_body=parallelBody whiteSpace 'ENDPARALLEL' whiteSpace? ';'
     ;
 
-parallelBody: (app_force_=applyForce|parallel_=parallelExpression)+ ;
+parallelBody: (app_force_=applyForce whiteSpace?)+ ;
 
 loop
     : 'LOOP' whiteSpace? '(' whiteSpace? condition whiteSpace?')'whiteSpace l_body=loopBody whiteSpace 'ENDLOOP' whiteSpace? ';'
