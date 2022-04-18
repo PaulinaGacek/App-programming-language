@@ -20,6 +20,7 @@ class Force:
 
 class Ball:
     colors = [(101, 93, 138), (120, 151, 171), (216, 133, 163), (253, 206, 185)]
+    FACTOR = 5
 
     def __init__(self, name, x, y, dx, dy):
         self.name = name
@@ -44,8 +45,8 @@ class Ball:
             print("Queue is empty!!!")
         force = self.event_queue.get()
         self.queue_size -= 1
-        self.acc_x = math.cos(force.angle * math.pi / 180) * force.power/5
-        self.acc_y = math.sin(force.angle * math.pi / 180) * force.power/5
+        self.acc_x = math.cos(force.angle * math.pi / 180) * force.power/Ball.FACTOR
+        self.acc_y = math.sin(force.angle * math.pi / 180) * force.power/Ball.FACTOR
 
         self.dy += self.acc_y
         self.dx += self.acc_x
@@ -163,7 +164,6 @@ class PyturtleHandler:
         for obj in balls_copy.values():
             if obj.is_pixel_inside(x, y) is True:
                 print("{} has collission with {}".format(name, obj.name))
-                # PyturtleHandler.change_velocity(PyturtleHandler.balls[name], obj)
                 return [False, obj]
         return [True, None]
 
@@ -232,7 +232,7 @@ class PyturtleHandler:
 
     @staticmethod
     def add_new_object(name, x, y):
-        PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0)  # should be 0,0
+        PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0)  
 
     @staticmethod
     def update_positions_of_all_balls():
@@ -263,6 +263,7 @@ class PyturtleHandler:
             if value.turtle.ycor() < radius:
                 value.turtle.goto(value.turtle.xcor(), radius * 2)
 
+            # check collision with other ball
             balls_copy.pop(key)
             for value_ in balls_copy.values():
                 if PyturtleHandler.collision_of_objects(value, value_):
@@ -270,8 +271,7 @@ class PyturtleHandler:
             balls_copy[key] = value
 
     """
-    Objects 1 and 2 have collided elastically: update their
-            velocities.
+    Objects 1 and 2 have collided elastically: update their velocities.
     """
 
     @staticmethod
@@ -297,7 +297,7 @@ class PyturtleHandler:
         if period <= 0:
             return
 
-        for i in range(0, period):  # maybe should be from 0
+        for i in range(0, period):
             PyturtleHandler.update_positions_of_all_balls()
             PyturtleHandler.win.update()
 
