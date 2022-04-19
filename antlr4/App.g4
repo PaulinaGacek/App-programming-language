@@ -12,6 +12,7 @@ instruction
 	| loop
 	| functionCall
 	| applyForce
+	| comment
 	;
 
 variableType
@@ -112,10 +113,14 @@ functionArgument: type_=variableType whiteSpace name_=variableName;
 whiteSpace
 	: WS+;
 
+comment
+	: '/*' .*? '*/';
+
 WS
 	: '\n'
 	| ' '
 	| '\t'
+	| '\r'
 	;
 
 LOWERCASELETTER

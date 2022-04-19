@@ -1,11 +1,11 @@
-// rzut poziomy
+/* rzut poziomy*/
 DEFINE OBJECT o AS (20,300); PARALLEL APPLY [0,5] TO o FOR 1; APPLY [270,1] TO o FOR 400; ENDPARALLEL;
 
-// bilard
+/* bilard */
 DEFINE OBJECT o1 AS (200,20); DEFINE OBJECT o2 AS (200,100); DEFINE OBJECT o3 AS (185,124); DEFINE OBJECT o4 AS (160,154); 
 APPLY [90,5] TO o1 FOR 10;
 APPLY [0,0] TO o1 FOR 200;
 
-// parallel - jednoczesny rzut poziomy i spadek swobodny
+/* parallel - jednoczesny rzut poziomy i spadek swobodny */
 DEFINE OBJECT o AS (20,300); DEFINE OBJECT w  AS (200,250);
 PARALLEL APPLY [0,5] TO o FOR 1; APPLY [270,1] TO o FOR 400; APPLY [270,1] TO w FOR 400; ENDPARALLEL;

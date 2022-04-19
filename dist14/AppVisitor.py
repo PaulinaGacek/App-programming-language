@@ -279,6 +279,7 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
     def visitParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
+        print("Parallel")
         AppVisitor.inside_parallel = True
         self.visit(ctx.par_body)
         AppVisitor.inside_parallel = False
@@ -388,6 +389,11 @@ class AppVisitor(AppParseTreeVisitor):
     # Visit a parse tree produced by AppParser#whiteSpace.
     def visitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
         return self.visitChildren(ctx)
+    
+    # Visit a parse tree produced by AppParser#comment.
+    def visitComment(self, ctx:AppParser.CommentContext):
+        print("comment")
+        return # does nothing
 
 
 

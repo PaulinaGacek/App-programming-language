@@ -242,5 +242,14 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#comment.
+    def enterComment(self, ctx:AppParser.CommentContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#comment.
+    def exitComment(self, ctx:AppParser.CommentContext):
+        pass
+
+
 
 del AppParser
