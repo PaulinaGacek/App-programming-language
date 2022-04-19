@@ -163,3 +163,13 @@ class UnallowedCasting(Exception):
 
     def __str__(self):
         return self.message
+
+class OperatorNotDefininedForType(Exception):
+
+    def __init__(self, operator, type, message=None):
+        if message is None:
+            self.message = "Operator {} is not defined for {}".format(operator, type)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
