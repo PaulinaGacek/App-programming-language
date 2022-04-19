@@ -156,7 +156,7 @@ class UnallowedCasting(Exception):
 
     def __init__(self, type1, type2, message=None):
         if message is None:
-            self.message = "Unallowed casting from {} to {} were".format(type1, type2)
+            self.message = "Unallowed casting from {} to {}".format(type1, type2)
         super().__init__(self.message)
 
     def __str__(self):

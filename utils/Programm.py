@@ -259,3 +259,13 @@ class Programm:
             f_body = f_body.replace(key, value)
         f_body = "IF (1==1) THEN " + f_body + "ENDIF;"
         return f_body
+    
+    @staticmethod
+    def getRepeatedVariableName(variables):
+        # variables -> list((str, Variable()))
+        variable_set = set()
+        for item in variables:
+            if item[0] in variable_set:
+                return item[0]
+            variable_set.add(item[0])
+        return None

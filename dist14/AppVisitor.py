@@ -4,9 +4,8 @@ from utils.Programm import Programm
 from utils.Variable import *
 from utils.Error import *
 from utils.Function import Function
-from front.PygameHandler import PyGameHandler
 from front.PyturtleHandler import *
-from queue import LifoQueue
+import itertools 
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
@@ -71,48 +70,51 @@ class AppVisitor(AppParseTreeVisitor):
         if ctx.object_ is None or (ctx.force_ is None and ctx.force_val is None) or (ctx.time_ is None and ctx.time_val is None):
             return
         
-        object_name = self.visit(ctx.object_)
-        if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
-            raise UndefinedVariableReferenceError(object_name)
+        if not AppVisitor.inside_function_dec:
         
-        angle = None
-        power = None
-        if ctx.force_ is not None: # force is variable
-            force_name = self.visit(ctx.force_)
-            if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
-                raise UndefinedVariableReferenceError(force_name)
-            angle = Programm.getVariable(force_name).value
-            power = Programm.getVariable(force_name).value2
-        
-        else: # force is value
-            angle, power = self.visit(ctx.force_val)
+            object_name = self.visit(ctx.object_)
+            if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
+                raise UndefinedVariableReferenceError(object_name)
+            
+            angle = None
+            power = None
+            if ctx.force_ is not None: # force is variable
+                force_name = self.visit(ctx.force_)
+                if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
+                    raise UndefinedVariableReferenceError(force_name)
+                angle = Programm.getVariable(force_name).value
+                power = Programm.getVariable(force_name).value2
+            
+            else: # force is value
+                angle, power = self.visit(ctx.force_val)
 
-        time_val = None
-        if ctx.time_ is not None:
-            time_name = self.visit(ctx.time_)
-            if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
-                raise UndefinedVariableReferenceError(time_name)
-            time_val = Programm.getVariable(time_name).value
+            time_val = None
+            if ctx.time_ is not None:
+                time_name = self.visit(ctx.time_)
+                if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
+                    raise UndefinedVariableReferenceError(time_name)
+                time_val = Programm.getVariable(time_name).value
+            else:
+                time_val = self.visit(ctx.time_val)
+            
+            delay = 0
+            if ctx.delay_:
+                delay = self.visit(ctx.delay_)
+            elif ctx.delay_val_:
+                delay = self.visit(ctx.delay_val_)
+            
+            force_ = Force(angle, power, time_val, delay)
+
+            if AppVisitor.forces.get(object_name) is None:
+                AppVisitor.forces[object_name] = [force_]
+            else:
+                AppVisitor.forces[object_name].append(force_)
+
+            if not AppVisitor.inside_parallel: # not in parallel block
+                PyturtleHandler.add_forces(AppVisitor.forces)
+                AppVisitor.forces.clear()  
         else:
-            time_val = self.visit(ctx.time_val)
-        
-        delay = 0
-        if ctx.delay_:
-            delay = self.visit(ctx.delay_)
-        elif ctx.delay_val_:
-            delay = self.visit(ctx.delay_val_)
-        
-        force_ = Force(angle, power, time_val, delay)
-
-        if AppVisitor.forces.get(object_name) is None:
-            AppVisitor.forces[object_name] = [force_]
-        else:
-            AppVisitor.forces[object_name].append(force_)
-
-        if not AppVisitor.inside_parallel: # not in parallel block
-            PyturtleHandler.add_forces(AppVisitor.forces)
-            AppVisitor.forces.clear()  
-
+            return Programm.getInstructionAsTxt(ctx)
 
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
@@ -302,8 +304,28 @@ class AppVisitor(AppParseTreeVisitor):
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)
         else:
-            # check whether arguments are declared
-            return 
+            # check whether arguments are of the correct type
+            declared_types = Programm.functions.get(name).params # list[(name,Variable())]
+            given_arguments = []
+            if ctx.f_args is not None: # function with arguemnts
+                given_arguments = self.visit(ctx.f_args)
+            
+            # checking number of arguments:
+            if len(declared_types) != len(given_arguments):
+                raise WrongNumberOfArguments(len(declared_types), len(given_arguments))
+            
+            repeated_name = Programm.getRepeatedVariableName(declared_types)
+            if repeated_name is not None:
+                raise Error("Function arguments cannot have the same name - {}".format(repeated_name))
+            
+            repeated_name = Programm.getRepeatedVariableName(given_arguments)
+            if repeated_name is not None:
+                raise Error("Function arguments cannot have the same name - {}".format(repeated_name))
+            
+            # checking types of arguments:
+            for declared, given in zip(declared_types, given_arguments):
+                if declared[1].type != given[1].type:
+                    raise UnallowedCasting(given[1].type, declared[1].type)
 
 
     def visitFunctionDeclaration(self, ctx:AppParser.FunctionDeclarationContext):
@@ -347,9 +369,20 @@ class AppVisitor(AppParseTreeVisitor):
         return name, var
     
     
-    # Visit a parse tree produced by AppParser#functionParams.
     def visitFunctionParams(self, ctx:AppParser.FunctionParamsContext):
-        return self.visitChildren(ctx)
+        # in use when function is called, not when declared!
+        given_arguments = [] # list((name, Variable()))
+        for child in ctx.children:
+            if type(child).__name__ == "VariableNameContext":
+                name = self.visit(child)
+                if Programm.getVariable(name, scope=Programm.current_scope) is None: # not in local scope
+                    if Programm.getVariable(name) is None: # not in global scope
+                        raise UndefinedVariableReferenceError(name)
+                    else: # declared in global scope
+                        given_arguments.append((name, Programm.getVariable(name)))
+                else: # in local
+                    given_arguments.append((name, Programm.getVariable(name, scope=Programm.current_scope)))
+        return given_arguments
 
 
     # Visit a parse tree produced by AppParser#whiteSpace.
