@@ -269,3 +269,10 @@ class Programm:
                 return item[0]
             variable_set.add(item[0])
         return None
+    
+    @staticmethod
+    def updateObjectsPositionsInVariableSet():
+        for name, obj in Programm.variables.items():
+            if obj.type == Type.OBJECT:
+                obj.value = int(PyturtleHandler.balls.get(name).get_pos_x())
+                obj.value2 = int(PyturtleHandler.balls.get(name).get_pos_y())
