@@ -346,7 +346,7 @@ class PyturtleHandler:
 
         # checking if after one iteration they will escape collision state
         while abs(after_x_1- after_x_2) <= PyturtleHandler.RADIUS * 2 and abs(after_y_1- after_y_2) <= PyturtleHandler.RADIUS * 2:
-            print("--------Escape collision-------")
+            # print("--------Escape collision-------")
 
             object1.turtle.goto(object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy)
             object2.turtle.goto(object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy)

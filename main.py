@@ -42,7 +42,7 @@ if __name__ == "__main__":
         visitor = AppVisitor()
         output = visitor.visit(tree)
         
-        print(output)
+        # print(output)
         Programm.displayVariables()
         Programm.dispay_functions()
         

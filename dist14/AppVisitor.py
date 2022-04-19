@@ -36,7 +36,6 @@ class AppVisitor(AppParseTreeVisitor):
                 if type(child).__name__ != "FunctionDeclarationContext":
                     self.visit(child)
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#instruction.
     def visitInstruction(self, ctx:AppParser.InstructionContext):
         return self.visitChildren(ctx)
 
@@ -97,14 +96,11 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             time_val = self.visit(ctx.time_val)
         
-        
         delay = 0
         if ctx.delay_:
             delay = self.visit(ctx.delay_)
-            print(delay)
         elif ctx.delay_val_:
             delay = self.visit(ctx.delay_val_)
-            print(delay)
         
         force_ = Force(angle, power, time_val, delay)
 
@@ -113,12 +109,9 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             AppVisitor.forces[object_name].append(force_)
 
-        if not AppVisitor.inside_parallel:
-            print("IN APPLY FORCE not in sequence")
+        if not AppVisitor.inside_parallel: # not in parallel block
             PyturtleHandler.add_forces(AppVisitor.forces)
             AppVisitor.forces.clear()  
-
-        # return self.visitChildren(ctx)
 
 
     def visitArithmeticalExpression(self, ctx:AppParser.ArithmeticalExpressionContext):
@@ -305,7 +298,6 @@ class AppVisitor(AppParseTreeVisitor):
 
 
     def visitFunctionCall(self, ctx:AppParser.FunctionCallContext):
-        print("Function call visited")
         name = self.visit(ctx.f_name)
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)

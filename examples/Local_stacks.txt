@@ -5,7 +5,7 @@ IF (3<6) THEN DEFINE TIME t AS 20; ENDIF;
 // Redifinicja zmiennej t w localnym scopie -> VariableRedefinitionError
 IF (3<6) THEN DEFINE TIME t AS 20; DEFINE TIME t AS 20; ENDIF;
 
-// Definicja zmiennej lokalnej i globalnej, modyfikacja globalnej i potem lokalnej
+// Definicja zmiennej lokalnej i globalnej, modyfikacja lokalnej i potem globalnej
 DEFINE TIME t AS 2137;
 IF (3<6) THEN DEFINE TIME t AS 20; SET t AS t + 20; ENDIF;
 SET t AS t * t;
@@ -14,3 +14,6 @@ SET t AS t * t;
 DEFINE TIME t AS 2137;
 IF (3<6) THEN SET t AS t + 20; DEFINE TIME t AS 30; SET t AS t + 1; ENDIF;
 SET t AS t * t;
+
+// redefinicja zmiennej w bloku globalnym - wyrzuca error
+DEFINE OBJECT o AS (200,200); DEFINE OBJECT o AS (200,230);
