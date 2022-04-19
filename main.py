@@ -5,6 +5,7 @@ from antlr4 import *
 from dist14.AppLexer import AppLexer
 from dist14.AppParser import AppParser
 from dist14.AppVisitor import *
+from dist14.AppErrorListener import *
 from utils.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
 
@@ -20,7 +21,13 @@ if __name__ == "__main__":
         stream = CommonTokenStream(lexer)
         # parser
         parser = AppParser(stream)
-        tree = parser.primaryExpression()
+        parser.addErrorListener(AppErrorListener())  # add error listener
+        try:
+            tree = parser.primaryExpression()
+        except Exception as e:
+            print(e)
+            continue
+
         # evaluator
         visitor = AppVisitor()
         output = visitor.visit(tree)
@@ -30,7 +37,7 @@ if __name__ == "__main__":
         print("WITH DELETED FUNCTION DECLARATIONS:", new_data)
         new_data = Programm.inputFunctionsDefinition(new_data)
         print("WITH INPUT CODE:", new_data)
-        
+
         data = InputStream(new_data)
         # lexer
         lexer = AppLexer(data)
@@ -46,10 +53,11 @@ if __name__ == "__main__":
         Programm.updateObjectsPositionsInVariableSet()
         Programm.displayVariables()
         Programm.dispay_functions()
-        
+
         if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
             PyturtleHandler.display_queues_len()
             PyturtleHandler.display_visualisation(PyturtleHandler.get_max_queue_len())
             print("display visualisation ended")
         
         PyturtleHandler.win.update()
+
