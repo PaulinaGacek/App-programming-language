@@ -17,3 +17,7 @@ SET t AS t * t;
 
 // redefinicja zmiennej w bloku globalnym - wyrzuca error
 DEFINE OBJECT o AS (200,200); DEFINE OBJECT o AS (200,230);
+
+// próba porównania dwóch obiektów - wyrzuca error
+DEFINE OBJECT o AS (200,200); DEFINE OBJECT o1 AS (200,230);
+IF (o > o1) THEN DEFINE TIME t AS 20; SET t AS t + 20; ENDIF;
