@@ -48,8 +48,9 @@ if __name__ == "__main__":
         # evaluator
         visitor = AppVisitor()
         output = visitor.visit(tree)
-
-        print(output)
+        
+        # print(output)
+        Programm.updateObjectsPositionsInVariableSet()
         Programm.displayVariables()
         Programm.dispay_functions()
 
@@ -57,6 +58,6 @@ if __name__ == "__main__":
             PyturtleHandler.display_queues_len()
             PyturtleHandler.display_visualisation(PyturtleHandler.get_max_queue_len())
             print("display visualisation ended")
-
+        
         PyturtleHandler.win.update()
 

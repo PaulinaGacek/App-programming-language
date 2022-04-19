@@ -180,9 +180,8 @@ class PyturtleHandler:
         x1, y1 = object1.get_pos_x(), object1.get_pos_y()
         x2, y2 = object2.get_pos_x(), object2.get_pos_y()
 
-        if (abs(x1 - x2) <= 2 * PyturtleHandler.RADIUS) and (abs(y1 - y2) <= 2 * PyturtleHandler.RADIUS):
-            print("Collision between {} and {}".format(
-                object1.name, object2.name))
+        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < 2 * PyturtleHandler.RADIUS):
+            print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
             return True
 
         return False
@@ -346,7 +345,7 @@ class PyturtleHandler:
 
         # checking if after one iteration they will escape collision state
         while abs(after_x_1- after_x_2) <= PyturtleHandler.RADIUS * 2 and abs(after_y_1- after_y_2) <= PyturtleHandler.RADIUS * 2:
-            print("--------Escape collision-------")
+            # print("--------Escape collision-------")
 
             object1.turtle.goto(object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy)
             object2.turtle.goto(object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy)

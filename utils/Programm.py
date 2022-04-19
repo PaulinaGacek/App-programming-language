@@ -259,3 +259,20 @@ class Programm:
             f_body = f_body.replace(key, value)
         f_body = "IF (1==1) THEN " + f_body + "ENDIF;"
         return f_body
+    
+    @staticmethod
+    def getRepeatedVariableName(variables):
+        # variables -> list((str, Variable()))
+        variable_set = set()
+        for item in variables:
+            if item[0] in variable_set:
+                return item[0]
+            variable_set.add(item[0])
+        return None
+    
+    @staticmethod
+    def updateObjectsPositionsInVariableSet():
+        for name, obj in Programm.variables.items():
+            if obj.type == Type.OBJECT:
+                obj.value = int(PyturtleHandler.balls.get(name).get_pos_x())
+                obj.value2 = int(PyturtleHandler.balls.get(name).get_pos_y())
