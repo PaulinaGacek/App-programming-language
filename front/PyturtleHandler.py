@@ -180,9 +180,8 @@ class PyturtleHandler:
         x1, y1 = object1.get_pos_x(), object1.get_pos_y()
         x2, y2 = object2.get_pos_x(), object2.get_pos_y()
 
-        if (abs(x1 - x2) <= 2 * PyturtleHandler.RADIUS) and (abs(y1 - y2) <= 2 * PyturtleHandler.RADIUS):
-            print("Collision between {} and {}".format(
-                object1.name, object2.name))
+        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < 2 * PyturtleHandler.RADIUS):
+            print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
             return True
 
         return False
