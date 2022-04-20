@@ -278,8 +278,48 @@ class AppVisitor(AppParseTreeVisitor):
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
     def visitCondition(self, ctx: AppParser.ConditionContext):
-        # returns always true or false
-        return True
+
+        type1 = type(self.getNodesChild(ctx.left_expr, 0)).__name__
+        val1 = self.getNodesChild(ctx.left_expr, 0).getText()
+        type2 = type(self.getNodesChild(ctx.right_expr, 0)).__name__
+        val2 = self.getNodesChild(ctx.right_expr, 0).getText()
+
+        if not Programm.areTypesCompatible(type1, type2, val1, val2):
+            raise Error(
+                "Conditional statements on different types are not allowed: {}, {} -> {},{}".format(type1, type2, val1,
+                                                                                                    val2))
+        cond_type = None
+        if type1 == "VariableNameContext":
+            cond_type = Programm.getVariable(
+                val1, Programm.current_scope).type
+        elif type1 == "IntegerContext":
+            cond_type = Type.INT
+        elif type1 == "Object_typeContext":
+            raise OperatorNotDefininedForType(ctx.op.text, type1)
+        elif type1 == "Force_typeContext":
+            raise OperatorNotDefininedForType(ctx.op.text, type1)
+
+        if cond_type == Type.OBJECT or cond_type == Type.FORCE:
+            raise OperatorNotDefininedForType(ctx.op.text, cond_type)
+
+        if cond_type == Type.INT or cond_type == Type.TIME:
+            l = self.visit(ctx.left_expr)
+            r = self.visit(ctx.right_expr)
+
+        op = ctx.op.text
+        operation = {
+            '==': lambda l, r: (l == r),
+            '>': lambda l, r: (l > r),
+            '<': lambda l, r: (l < r),
+            '>=': lambda l, r: (l >= r),
+            '<=': lambda l, r: (l <= r),
+            '!=': lambda l, r: (l != r),
+        }
+
+        if operation[op](l, r):
+            return True
+
+        return False
 
     def visitConditionBody(self, ctx: AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
