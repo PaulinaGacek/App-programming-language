@@ -126,7 +126,8 @@ class AppVisitor(AppParseTreeVisitor):
                 name = self.visitChildren(ctx)
 
                 if Programm.getVariable(name, Programm.current_scope) is None:
-                    raise UndefinedVariableReferenceError(name)
+                    if Programm.getVariable(name) is None:
+                        raise UndefinedVariableReferenceError(name)
 
                 if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name, Programm.current_scope).type == Type.TIME:
                     return Programm.getVariable(name, Programm.current_scope).value
@@ -276,28 +277,51 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             return Programm.getInstructionAsTxt(ctx)
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#condition.
+
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
-        type1 = type(self.getNodesChild(ctx.left_expr, 0)).__name__
-        val1 = self.getNodesChild(ctx.left_expr, 0).getText()
-        type2 = type(self.getNodesChild(ctx.right_expr, 0)).__name__
-        val2 = self.getNodesChild(ctx.right_expr, 0).getText()
+        name1, val1, type1 = None, None, None
+        if ctx.left_expr is not None:
+            name1 = ctx.left_expr.getText()
+            val1 = self.visit(ctx.left_expr)
+            type1 = type(self.getNodesChild(ctx.left_expr, 0)).__name__
+        else:
+            name1 = self.visit(ctx.left_var)
+            if Programm.getVariable(name1, scope=Programm.current_scope) is None:
+                if Programm.getVariable(name1) is None:
+                    raise UndefinedVariableReferenceError(name1)
+            type1 = Programm.getVariable(name1).type
+            val1 = Programm.getVariable(name1).value
+        print("Name1: {}, type1: {}, val1: {}".format(name1, type1, val1))
+        
+        name2, val2, type2 = None, None, None
+        if ctx.right_expr is not None:
+            name2 = ctx.right_expr.getText()
+            val2 = self.visit(ctx.right_expr)
+            type2 = type(self.getNodesChild(ctx.right_expr, 0)).__name__
+        else:
+            name2 = self.visit(ctx.right_var)
+            if Programm.getVariable(name2, scope=Programm.current_scope) is None:
+                if Programm.getVariable(name2) is None:
+                    raise UndefinedVariableReferenceError(name2)
+            type2 = Programm.getVariable(name2).type
+            val2 = Programm.getVariable(name2).value
+        print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
 
-        if not Programm.areTypesCompatible(type1, type2, val1, val2):
-            raise Error(
-                "Conditional statements on different types are not allowed: {}, {} -> {},{}".format(type1, type2, val1,
-                                                                                                    val2))
+        if not Programm.areTypesComparable(type1, type2, name1, name2):
+            raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1), Programm.getTypeFromNodeType(type2, name2))
         cond_type = None
         if type1 == "VariableNameContext":
-            cond_type = Programm.getVariable(
-                val1, Programm.current_scope).type
+            if Programm.getVariable(name1, Programm.current_scope) is not None:
+                cond_type = Programm.getVariable(name1, Programm.current_scope).type
+            else:
+                cond_type = Programm.getVariable(name1).type
         elif type1 == "IntegerContext":
             cond_type = Type.INT
         elif type1 == "Object_typeContext":
-            raise OperatorNotDefininedForType(ctx.op.text, type1)
+            raise OperatorNotDefininedForType(ctx.op.text, Programm.getTypeFromNodeType(type1))
         elif type1 == "Force_typeContext":
-            raise OperatorNotDefininedForType(ctx.op.text, type1)
+            raise OperatorNotDefininedForType(ctx.op.text, Programm.getTypeFromNodeType(type1))
 
         if cond_type == Type.OBJECT or cond_type == Type.FORCE:
             raise OperatorNotDefininedForType(ctx.op.text, cond_type)
@@ -320,6 +344,7 @@ class AppVisitor(AppParseTreeVisitor):
             return True
 
         return False
+
 
     def visitConditionBody(self, ctx: AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)

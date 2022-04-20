@@ -146,35 +146,78 @@ class Programm:
     
     
     @staticmethod
-    def areTypesCompatible(type1, type2, value1, value2) -> bool:
+    def areTypesCompatible(type1, type2, name1, name2) -> bool:
         if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
             return True
 
         if type1 == "VariableNameContext":
-            if Programm.variables[value1].type == Type.INT:
+            if Programm.variables[name1].type == Type.INT:
                 type1 = "IntegerContext"
-            elif Programm.variables[value1].type == Type.TIME:
+            elif Programm.variables[name1].type == Type.TIME:
                 type1 = "IntegerContext"
-            elif Programm.variables[value1].type == Type.OBJECT:
+            elif Programm.variables[name1].type == Type.FORCE:
                 type1 = "Force_typeContext"
-            elif Programm.variables[value1].type == Type.FORCE:
+            elif Programm.variables[name1].type == Type.OBJECT:
                 type1 = "Object_typeContext"
         
         if type2 == "VariableNameContext":
-            if Programm.variables[value2].type == Type.INT:
+            if Programm.variables[name2].type == Type.INT:
                 type2 = "IntegerContext"
-            elif Programm.variables[value2].type == Type.TIME:
+            elif Programm.variables[name2].type == Type.TIME:
                 type2 = "IntegerContext"
-            elif Programm.variables[value2].type == Type.OBJECT:
+            elif Programm.variables[name2].type == Type.FORCE:
                 type2 = "Force_typeContext"
-            elif Programm.variables[value2].type == Type.FORCE:
+            elif Programm.variables[name2].type == Type.OBJECT:
                 type2 = "Object_typeContext"
-        
+
         if type1 == type2:
             return True
 
         return False
     
+    @staticmethod
+    def areTypesComparable(type1, type2, name1, name2) -> bool:
+        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
+            return True
+        print("type1: {}, type2: {}".format(type1, type2))
+        if type1 == "VariableNameContext":
+            if Programm.variables[name1].type == Type.INT:
+                type1 = "IntegerContext"
+            elif Programm.variables[name1].type == Type.TIME:
+                type1 = "TimeContext"
+            elif Programm.variables[name1].type == Type.FORCE:
+                type1 = "Force_typeContext"
+            elif Programm.variables[name1].type == Type.OBJECT:
+                type1 = "Object_typeContext"
+        
+        if type2 == "VariableNameContext":
+            if Programm.variables[name2].type == Type.INT:
+                type2 = "IntegerContext"
+            elif Programm.variables[name2].type == Type.TIME:
+                type2 = "TimeContext"
+            elif Programm.variables[name2].type == Type.FORCE:
+                type2 = "Force_typeContext"
+            elif Programm.variables[name2].type == Type.OBJECT:
+                type2 = "Object_typeContext"
+        print("type1: {}, type2: {}".format(type1, type2))
+
+        if type1 == type2:
+            return True
+
+        return False
+    
+    @staticmethod
+    def getTypeFromNodeType(node_type: str, name: str=None):
+        if node_type == "VariableNameContext":
+            return Programm.variables[name].type
+        if node_type == "IntegerContext":
+            return Type.INT
+        if node_type == "Object_typeContext":
+            return Type.OBJECT
+        if node_type == "Force_typeContext":
+            return Type.FORCE
+
+
     '''
         Returns Function() object with given name
     '''
