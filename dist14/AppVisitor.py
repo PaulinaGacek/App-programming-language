@@ -55,8 +55,7 @@ class AppVisitor(AppParseTreeVisitor):
         return int(value)
 
     def visitForce_type(self, ctx: AppParser.Force_typeContext):
-        print("Angle:{}, power: {}".format(
-            ctx.angle.getText(), ctx.power.getText()))
+        # print("Angle:{}, power: {}".format(ctx.angle.getText(), ctx.power.getText()))
         return int(ctx.angle.getText()), int(ctx.power.getText())
 
     def visitObject_type(self, ctx: AppParser.Object_typeContext):
@@ -292,7 +291,7 @@ class AppVisitor(AppParseTreeVisitor):
                     raise UndefinedVariableReferenceError(name1)
             type1 = Programm.getVariable(name1).type
             val1 = Programm.getVariable(name1).value
-        print("Name1: {}, type1: {}, val1: {}".format(name1, type1, val1))
+        # print("Name1: {}, type1: {}, val1: {}".format(name1, type1, val1))
         
         name2, val2, type2 = None, None, None
         if ctx.right_expr is not None:
@@ -306,7 +305,7 @@ class AppVisitor(AppParseTreeVisitor):
                     raise UndefinedVariableReferenceError(name2)
             type2 = Programm.getVariable(name2).type
             val2 = Programm.getVariable(name2).value
-        print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
+        # print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
 
         if not Programm.areTypesComparable(type1, type2, name1, name2):
             raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1), Programm.getTypeFromNodeType(type2, name2))

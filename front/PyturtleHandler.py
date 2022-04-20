@@ -181,7 +181,7 @@ class PyturtleHandler:
         x2, y2 = object2.get_pos_x(), object2.get_pos_y()
 
         if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < 2 * PyturtleHandler.RADIUS):
-            print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
+            # print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
             return True
 
         return False
@@ -255,10 +255,8 @@ class PyturtleHandler:
         u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
         u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
 
-        print("Object {}: v1:{},{} -> v2:{},{}".format(object1.name,
-              object1.dx, object1.dy, u1[0], u1[1]))
-        print("Object {}: v1:{},{} -> v2:{},{}".format(object2.name,
-              object2.dx, object2.dy, u2[0], u2[1]))
+        # print("Object {}: v1:{},{} -> v2:{},{}".format(object1.name,object1.dx, object1.dy, u1[0], u1[1]))
+        # print("Object {}: v1:{},{} -> v2:{},{}".format(object2.name,object2.dx, object2.dy, u2[0], u2[1]))
         object1.dx = u1[0]
         object1.dy = u1[1]
         object2.dx = u2[0]

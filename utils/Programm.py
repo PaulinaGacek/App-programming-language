@@ -179,7 +179,7 @@ class Programm:
     def areTypesComparable(type1, type2, name1, name2) -> bool:
         if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
             return True
-        print("type1: {}, type2: {}".format(type1, type2))
+        # print("type1: {}, type2: {}".format(type1, type2))
         if type1 == "VariableNameContext":
             if Programm.variables[name1].type == Type.INT:
                 type1 = "IntegerContext"
@@ -199,7 +199,7 @@ class Programm:
                 type2 = "Force_typeContext"
             elif Programm.variables[name2].type == Type.OBJECT:
                 type2 = "Object_typeContext"
-        print("type1: {}, type2: {}".format(type1, type2))
+        # print("type1: {}, type2: {}".format(type1, type2))
 
         if type1 == type2:
             return True
