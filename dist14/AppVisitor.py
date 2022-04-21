@@ -258,21 +258,9 @@ class AppVisitor(AppParseTreeVisitor):
 
         if not AppVisitor.inside_function_dec:
             if self.visit(ctx.cond):
-                id = Programm.scope_history.getSize()
-                Programm.scope_history.push(id)
-
-                if len(Programm.local_scopes) <= id:
-                    local_variables = {}
-                    # adding new variable scope
-                    Programm.local_scopes.append(local_variables)
-
-                Programm.current_scope = Programm.scope_history.top()
+                Programm.addNewVariableScope()
                 self.visit(ctx.con_body)
-                Programm.displayVariables()
-                # deleting local variables
-                Programm.local_scopes[Programm.scope_history.top()].clear()
-                scope = Programm.scope_history.pop()
-
+                Programm.deleteTopVariableScope()
         else:
             return Programm.getInstructionAsTxt(ctx)
 
