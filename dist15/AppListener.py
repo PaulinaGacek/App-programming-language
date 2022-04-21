@@ -233,21 +233,48 @@ class AppListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by AppParser#whiteSpace.
-    def enterWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
-        pass
-
-    # Exit a parse tree produced by AppParser#whiteSpace.
-    def exitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
-        pass
-
-
     # Enter a parse tree produced by AppParser#comment.
     def enterComment(self, ctx:AppParser.CommentContext):
         pass
 
     # Exit a parse tree produced by AppParser#comment.
     def exitComment(self, ctx:AppParser.CommentContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#scopeName.
+    def enterScopeName(self, ctx:AppParser.ScopeNameContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#scopeName.
+    def exitScopeName(self, ctx:AppParser.ScopeNameContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#scopeSequence.
+    def enterScopeSequence(self, ctx:AppParser.ScopeSequenceContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#scopeSequence.
+    def exitScopeSequence(self, ctx:AppParser.ScopeSequenceContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#scopeDeclaration.
+    def enterScopeDeclaration(self, ctx:AppParser.ScopeDeclarationContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#scopeDeclaration.
+    def exitScopeDeclaration(self, ctx:AppParser.ScopeDeclarationContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#whiteSpace.
+    def enterWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#whiteSpace.
+    def exitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
         pass
 
 

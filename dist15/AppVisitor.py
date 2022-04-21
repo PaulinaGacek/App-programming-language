@@ -452,6 +452,20 @@ class AppVisitor(AppParseTreeVisitor):
     def visitComment(self, ctx: AppParser.CommentContext):
         print("comment")
         return  # does nothing
+    
+    # Visit a parse tree produced by AppParser#scopeName.
+    def visitScopeName(self, ctx:AppParser.ScopeNameContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AppParser#scopeSequence.
+    def visitScopeSequence(self, ctx:AppParser.ScopeSequenceContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AppParser#scopeDeclaration.
+    def visitScopeDeclaration(self, ctx:AppParser.ScopeDeclarationContext):
+        return self.visitChildren(ctx)
 
 
 del AppParser

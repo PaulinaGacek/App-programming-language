@@ -1,7 +1,7 @@
 grammar App;
 
 primaryExpression
-	: (whiteSpace? (functionDeclaration|instruction) whiteSpace?)+
+	: (whiteSpace? (functionDeclaration|instruction|scopeDeclaration) whiteSpace?)+
 	;
 
 instruction
@@ -13,7 +13,6 @@ instruction
 	| functionCall
 	| applyForce
 	| comment
-	| scopeDeclaration
 	;
 
 variableType
@@ -23,7 +22,7 @@ variableType
     | 'OBJECT';
 
 variableName
-	: (scopeName'::')* LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
+	: scope_seq=scopeSequence? LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
 	;
 
 functionName
@@ -53,6 +52,7 @@ arithmeticalExpression
 	| force_type
 	| object_type
 	| variableName
+	| functionCall
     ;
 
 declaration
@@ -88,12 +88,11 @@ loop
 loopBody: instruction+ ;
 
 functionCall
-	:  f_name=functionName '(' whiteSpace? ')' whiteSpace? ';'
-	|  f_name=functionName '(' whiteSpace? f_args=functionParams whiteSpace? ')'whiteSpace? ';'
+	:   scope_seq=scopeSequence? f_name=functionName '(' whiteSpace? (f_args=functionParams whiteSpace?)? ')' whiteSpace? ';'
 	;
 
 functionDeclaration
-	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? f_args=functionArgs? whiteSpace? ')' (whiteSpace? -> whiteSpace?variableType whiteSpace?)? whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
+	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? f_args=functionArgs? whiteSpace? ')' (whiteSpace? '->' whiteSpace? return_type=variableType whiteSpace?)? whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
 	;
 
 functionBody
@@ -110,17 +109,20 @@ functionParams
 
 functionArgument: type_=variableType whiteSpace name_=variableName;
 
-whiteSpace
-	: WS+;
-
 comment
 	: '/*' .*? '*/';
 
 scopeName
 	: UPPERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*;
 
+scopeSequence
+	: (scopeName'::')+;
+
 scopeDeclaration
-	: scopeName whiteSpace? '{' (scopeDeclaration|declaration)+'}'whiteSpace? ';' ;
+	: scopeName whiteSpace? '{' whiteSpace? (scopeDeclaration|declaration)+'}'whiteSpace? ';' ;
+
+whiteSpace
+	: WS+;
 
 WS
 	: '\n'
