@@ -101,6 +101,7 @@ class Programm:
                 else:
                     for key, value in Programm.local_scopes[scope].items():
                         print("     Name: {} -> details: {}".format(key,value.displayDetails()))
+        print("---- Named scopes -----")
         if len(Programm.named_scopes) > 0:
             for name, scope in Programm.named_scopes.items():
                 print("Named scope: {}".format(name))

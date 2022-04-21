@@ -197,6 +197,9 @@ class AppVisitor(AppParseTreeVisitor):
             name = self.visit(ctx.name_)
             type_ = self.visit(ctx.type_sim)
 
+            if ctx.name_.scope_seq is not None:
+                raise Error("Access operator not allowed during declaration")
+
             # print("Type: {}".format(type_))
 
             if type_ == 'INT' or type_ == 'TIME':
@@ -452,17 +455,12 @@ class AppVisitor(AppParseTreeVisitor):
     def visitComment(self, ctx: AppParser.CommentContext):
         return  # does nothing
     
-    # Visit a parse tree produced by AppParser#scopeName.
     def visitScopeName(self, ctx:AppParser.ScopeNameContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
-
-    # Visit a parse tree produced by AppParser#scopeSequence.
     def visitScopeSequence(self, ctx:AppParser.ScopeSequenceContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
 
-
-    # Visit a parse tree produced by AppParser#scopeDeclaration.
     def visitScopeDeclaration(self, ctx:AppParser.ScopeDeclarationContext):
         name = self.getNodesChild(ctx, 0).getText()
         self.current_named_scope.append(name)
@@ -470,7 +468,5 @@ class AppVisitor(AppParseTreeVisitor):
         self.visitChildren(ctx)
         Programm.deleteTopVariableScope()
         self.current_named_scope.remove(name)
-
-
 
 del AppParser
