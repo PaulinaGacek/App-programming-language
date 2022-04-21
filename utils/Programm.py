@@ -13,6 +13,7 @@ class Programm:
     '''
     variables = {}
     local_scopes = []
+    local_scope_names = {} # mapps scopes id to scopes name
     scope_history = Stack()  # empty stack of following scopes
     functions = {}  # maps name to Function()
     current_scope = None

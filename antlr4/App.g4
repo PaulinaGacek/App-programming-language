@@ -13,6 +13,7 @@ instruction
 	| functionCall
 	| applyForce
 	| comment
+	| scopeDeclaration
 	;
 
 variableType
@@ -22,7 +23,7 @@ variableType
     | 'OBJECT';
 
 variableName
-	: LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
+	: (scopeName'::')* LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
 	;
 
 functionName
@@ -115,6 +116,12 @@ whiteSpace
 
 comment
 	: '/*' .*? '*/';
+
+scopeName
+	: UPPERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*;
+
+scopeDeclaration
+	: scopeName whiteSpace? '{' (scopeDeclaration|declaration)+'}'whiteSpace? ';' ;
 
 WS
 	: '\n'
