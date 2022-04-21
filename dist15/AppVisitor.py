@@ -444,13 +444,11 @@ class AppVisitor(AppParseTreeVisitor):
                         (name, Programm.getVariable(name, scope=Programm.current_scope)))
         return given_arguments
 
-    # Visit a parse tree produced by AppParser#whiteSpace.
+
     def visitWhiteSpace(self, ctx: AppParser.WhiteSpaceContext):
         return self.visitChildren(ctx)
 
-    # Visit a parse tree produced by AppParser#comment.
     def visitComment(self, ctx: AppParser.CommentContext):
-        print("comment")
         return  # does nothing
     
     # Visit a parse tree produced by AppParser#scopeName.
@@ -465,7 +463,11 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#scopeDeclaration.
     def visitScopeDeclaration(self, ctx:AppParser.ScopeDeclarationContext):
-        return self.visitChildren(ctx)
+        name = self.getNodesChild(ctx, 0).getText()
+        Programm.addNewNamedVariableScope(name)
+        self.visitChildren(ctx)
+        Programm.deleteTopVariableScope()
+
 
 
 del AppParser

@@ -13,40 +13,46 @@ class Programm:
     '''
     variables = {}
     local_scopes = []
-    local_scope_names = {} # mapps scopes id to scopes name
     scope_history = Stack()  # empty stack of following scopes
     functions = {}  # maps name to Function()
     current_scope = None
+
+    named_scopes = {}
+    scope_name_to_idx = {} # mapps scope's name to its idx
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
     if variable was already defined.
     '''
     @staticmethod
-    def defineNewVariable(name: str, type: Type, value: int, value2=None, scope=None):
-
+    def defineNewVariable(name: str, type_: Type, value: int, value2=None, scope=None):
         if scope is None:  # scope is gloabal
             # variable exists in global scope
             if Programm.variables.get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type))
+                raise VariableRedefinitionError(name, Programm.typeToStr(type_))
 
             # drawn object would collide with different object
-            if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
+            if type_ == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
                 raise ObjectCannotBeDrawn(name, value, value2)
 
-            new_var = Variable(name, type, value, value2)
+            new_var = Variable(name, type_, value, value2)
             Programm.variables[name] = new_var
 
         else:  # scope is local
-            if Programm.local_scopes[scope].get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type))
+            if type(scope) is int and Programm.local_scopes[scope].get(name) is not None:
+                raise VariableRedefinitionError(name, Programm.typeToStr(type_))
+            if type(scope) is str and Programm.named_scopes[scope].get(name) is not None:
+                raise VariableRedefinitionError(name, Programm.typeToStr(type_))  
 
             # drawn object would collide with different object
             if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
                 raise ObjectCannotBeDrawn(name, value, value2)
 
-            new_var = Variable(name, type, value, value2)
-            Programm.local_scopes[scope][name] = new_var
+            new_var = Variable(name, type_, value, value2)
+            if type(scope) is int: 
+                Programm.local_scopes[scope][name] = new_var
+            else:
+                Programm.named_scopes[scope][name] = new_var
 
     '''
     Handles definition of declared object, e.g. SET zmienna AS 100;
@@ -87,13 +93,20 @@ class Programm:
         if Programm.scope_history.getSize() == 0:
             print("There are no local variables declared")
         else:
-            id = 0
-            for scope in Programm.local_scopes:
-                print("Local scope nr {}".format(id))
-                id += 1
+            for scope in Programm.scope_history.stack:
+                print("Local scope nr {}".format(scope))
+                if type(scope) is str:
+                    for key, value in Programm.named_scopes[scope].items():
+                        print("     Name: {} -> details: {}".format(key,value.displayDetails()))
+                else:
+                    for key, value in Programm.local_scopes[scope].items():
+                        print("     Name: {} -> details: {}".format(key,value.displayDetails()))
+        if len(Programm.named_scopes) > 0:
+            for name, scope in Programm.named_scopes.items():
+                print("Named scope: {}".format(name))
                 for key, value in scope.items():
-                    print("     Name: {} -> details: {}".format(key,
-                          value.displayDetails()))
+                        print("     Name: {} -> details: {}".format(key,value.displayDetails()))
+        print("---------------------------------------------------")
 
     @staticmethod
     def dispay_functions():
@@ -333,11 +346,24 @@ class Programm:
         if len(Programm.local_scopes) <= id:
             local_variables = {}
             Programm.local_scopes.append(local_variables)
-
+ 
         Programm.current_scope = Programm.scope_history.top()
     
     @staticmethod
     def deleteTopVariableScope():
         Programm.displayVariables()
-        Programm.local_scopes.remove(Programm.local_scopes[Programm.scope_history.top()])
+        # Programm.local_scopes.remove(Programm.local_scopes[Programm.scope_history.top()])
+        if type(Programm.scope_history.top()) is int:
+            Programm.local_scopes[Programm.scope_history.top()].clear()
         Programm.scope_history.pop()
+    
+    @staticmethod
+    def addNewNamedVariableScope(name: str):
+        if Programm.scope_name_to_idx.get(name) is None: # new name
+            id = len(Programm.named_scopes)
+            Programm.scope_name_to_idx[name] = id
+            local_variables = {}
+            Programm.named_scopes[name] = local_variables
+        
+        Programm.scope_history.push(name)
+        Programm.current_scope = Programm.scope_history.top()

@@ -119,7 +119,7 @@ scopeSequence
 	: (scopeName'::')+;
 
 scopeDeclaration
-	: scopeName whiteSpace? '{' whiteSpace? (scopeDeclaration|declaration)+'}'whiteSpace? ';' ;
+	: name=scopeName whiteSpace? '{' whiteSpace? (scopeDeclaration|declaration)+ whiteSpace?'}'whiteSpace? ';' ;
 
 whiteSpace
 	: WS+;

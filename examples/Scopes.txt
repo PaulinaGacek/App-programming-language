@@ -1,0 +1,5 @@
+/*Poki co nie moze byc white space po definicji - pojawi sie po wygenerowaniu nowej gramatyki*/
+DEFINE TIME t AS 213; 
+IF (3<=6) THEN DEFINE TIME t AS 20; IF (3<=6) THEN DEFINE TIME t AS 30; ENDIF; ENDIF;
+MyScope{DEFINE TIME zmienna AS 420;};
+IF (3<=6) THEN DEFINE TIME t AS 111; IF (3<=6) THEN DEFINE TIME t AS 301; ENDIF; ENDIF;
