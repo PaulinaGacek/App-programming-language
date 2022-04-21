@@ -24,6 +24,7 @@ class AppVisitor(AppParseTreeVisitor):
     inside_function_dec = False
     inside_parallel = False
     forces = {}  # mapps object name to forces applied to it str-> List[Force]
+    current_named_scope = []
 
     def visitPrimaryExpression(self, ctx: AppParser.PrimaryExpressionContext):
 
@@ -464,9 +465,11 @@ class AppVisitor(AppParseTreeVisitor):
     # Visit a parse tree produced by AppParser#scopeDeclaration.
     def visitScopeDeclaration(self, ctx:AppParser.ScopeDeclarationContext):
         name = self.getNodesChild(ctx, 0).getText()
-        Programm.addNewNamedVariableScope(name)
+        self.current_named_scope.append(name)
+        Programm.addNewNamedVariableScope(name, self.current_named_scope)
         self.visitChildren(ctx)
         Programm.deleteTopVariableScope()
+        self.current_named_scope.remove(name)
 
 
 

@@ -358,12 +358,19 @@ class Programm:
         Programm.scope_history.pop()
     
     @staticmethod
-    def addNewNamedVariableScope(name: str):
-        if Programm.scope_name_to_idx.get(name) is None: # new name
+    def addNewNamedVariableScope(name: str, previos_scopes):
+        full_name = ""
+        if len(previos_scopes) == 1:
+            full_name = name
+        else:
+            for idx in range (0, len(previos_scopes)-1):
+                full_name += previos_scopes[idx] + "::"
+            full_name += name
+        if Programm.scope_name_to_idx.get(full_name) is None: # new name
             id = len(Programm.named_scopes)
-            Programm.scope_name_to_idx[name] = id
+            Programm.scope_name_to_idx[full_name] = id
             local_variables = {}
-            Programm.named_scopes[name] = local_variables
+            Programm.named_scopes[full_name] = local_variables
         
-        Programm.scope_history.push(name)
+        Programm.scope_history.push(full_name)
         Programm.current_scope = Programm.scope_history.top()
