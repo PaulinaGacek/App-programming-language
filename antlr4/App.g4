@@ -93,8 +93,7 @@ functionCall
 	;
 
 functionDeclaration
-	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
-	| 'DEFINE FUNCTION' whiteSpace f_name=functionName '('whiteSpace? f_args=functionArgs whiteSpace? ')' whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
+	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? f_args=functionArgs? whiteSpace? ')' (whiteSpace? -> whiteSpace?variableType whiteSpace?)? whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
 	;
 
 functionBody
