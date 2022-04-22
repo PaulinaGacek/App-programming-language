@@ -63,11 +63,6 @@ class AppVisitor(AppParseTreeVisitor):
         return int(ctx.x_cor.getText()), int(ctx.y_cor.getText())
 
     def visitApplyForce(self, ctx: AppParser.ApplyForceContext):
-        NR_OF_CHILDREN = self.getNrOfChildren(ctx)
-        if NR_OF_CHILDREN < 11:
-            return
-        if ctx.object_ is None or (ctx.force_ is None and ctx.force_val is None) or (ctx.time_ is None and ctx.time_val is None):
-            return
 
         if not AppVisitor.inside_function_dec:
             print("visit force")
@@ -204,7 +199,7 @@ class AppVisitor(AppParseTreeVisitor):
 
             # print("Type: {}".format(type_))
 
-            if type_ == 'INT' or type_ == 'TIME':
+            if type_ == 'INT' or type_ == 'TIME' or type_ == 'FLOAT':
                 if type(self.visit(ctx.value_)) is not int:
                     raise Error("Bad casting: {}".format(
                         type(self.visit(ctx.value_))))
@@ -473,7 +468,8 @@ class AppVisitor(AppParseTreeVisitor):
     
     # Visit a parse tree produced by AppParser#float_type.
     def visitFloat_type(self, ctx:AppParser.Float_typeContext):
-        return self.visitChildren(ctx)
+        value = ctx.getText()
+        return 2137
     
     # Visit a parse tree produced by AppParser#getAngle.
     def visitGetAngle(self, ctx:AppParser.GetAngleContext):
@@ -496,7 +492,8 @@ class AppVisitor(AppParseTreeVisitor):
     
     # Visit a parse tree produced by AppParser#time_type.
     def visitTime_type(self, ctx:AppParser.Time_typeContext):
-        return self.visitChildren(ctx)
+        # zwraca ilosc sekund (int)
+        return 333
 
 
 del AppParser

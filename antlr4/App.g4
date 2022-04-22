@@ -37,8 +37,8 @@ integer
 	;
 
 float_type
-	: (minus='-')? NONZERODIGIT (NONZERODIGIT|ZERO)* '.' (NONZERODIGIT|ZERO)*
-	| ZERO '.' (NONZERODIGIT|ZERO)*
+	: (minus='-')? NONZERODIGIT (NONZERODIGIT|ZERO)* '.' (NONZERODIGIT|ZERO)+
+	| ZERO '.' (NONZERODIGIT|ZERO)+
 	;
 
 time_type
@@ -98,7 +98,7 @@ parallelExpression
 parallelBody: (app_force_=applyForce whiteSpace?)+ ;
 
 loop
-    : 'LOOP' whiteSpace? '(' whiteSpace? condition whiteSpace?')'whiteSpace l_body=loopBody whiteSpace 'ENDLOOP' whiteSpace? ';'
+    : 'LOOP' whiteSpace? '(' whiteSpace? condition=condition whiteSpace?')'whiteSpace l_body=loopBody whiteSpace 'ENDLOOP' whiteSpace? ';'
     ;
 
 loopBody: instruction+ ;
