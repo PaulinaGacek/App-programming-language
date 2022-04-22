@@ -41,6 +41,9 @@ float_type
 	| ZERO '.' (NONZERODIGIT|ZERO)*
 	;
 
+time_type
+	: integer':'integer':'integer':';
+
 force_type: '['angle=integer ',' power=integer ']';
 
 object_type: '('x_cor=integer ',' y_cor=integer ')';
@@ -48,8 +51,8 @@ object_type: '('x_cor=integer ',' y_cor=integer ')';
 applyForce
     : 'APPLY' whiteSpace (force_=variableName|force_val=force_type) whiteSpace 
 		'TO' whiteSpace object_=variableName whiteSpace 
-		'FOR' whiteSpace (time_=variableName|time_val=integer) 
-		(whiteSpace 'DELAY' whiteSpace (delay_=variableName|delay_val_=integer))? whiteSpace? ';'
+		'FOR' whiteSpace (time_=variableName|time_val=integer|time_type_val=time_type) 
+		(whiteSpace 'DELAY' whiteSpace (delay_=variableName|delay_val_=integer|delay_time_type_val=time_type))? whiteSpace? ';'
     ;
 
 
@@ -59,6 +62,7 @@ arithmeticalExpression
 	| float_type
 	| force_type
 	| object_type
+	| time_type
 	| variableName
 	| functionCall
 	| getAngle

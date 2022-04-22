@@ -491,6 +491,10 @@ class AppVisitor(AppParseTreeVisitor):
     # Visit a parse tree produced by AppParser#getVelocity.
     def visitGetVelocity(self, ctx:AppParser.GetVelocityContext):
         return self.visitChildren(ctx)
+    
+    # Visit a parse tree produced by AppParser#time_type.
+    def visitTime_type(self, ctx:AppParser.Time_typeContext):
+        return self.visitChildren(ctx)
 
 
 del AppParser

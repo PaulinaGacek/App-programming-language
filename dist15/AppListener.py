@@ -71,6 +71,15 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#time_type.
+    def enterTime_type(self, ctx:AppParser.Time_typeContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#time_type.
+    def exitTime_type(self, ctx:AppParser.Time_typeContext):
+        pass
+
+
     # Enter a parse tree produced by AppParser#force_type.
     def enterForce_type(self, ctx:AppParser.Force_typeContext):
         pass
