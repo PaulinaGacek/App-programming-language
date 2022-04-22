@@ -468,8 +468,10 @@ class AppVisitor(AppParseTreeVisitor):
     
     # Visit a parse tree produced by AppParser#float_type.
     def visitFloat_type(self, ctx:AppParser.Float_typeContext):
+        print("float")
         value = ctx.getText()
-        return 2137
+        value = float(value)
+        return value
     
     # Visit a parse tree produced by AppParser#getAngle.
     def visitGetAngle(self, ctx:AppParser.GetAngleContext):
