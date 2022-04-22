@@ -7,10 +7,13 @@ from utils.Error import *
 from utils.Function import Function
 from front.PyturtleHandler import *
 import itertools
+
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
 else:
     from AppParser import AppParser
+
+
 # This class defines a complete generic visitor for a parse tree produced by AppParser.
 
 
@@ -126,7 +129,8 @@ class AppVisitor(AppParseTreeVisitor):
                     if Programm.getVariable(name) is None:
                         raise UndefinedVariableReferenceError(name)
 
-                if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name, Programm.current_scope).type == Type.TIME:
+                if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name,
+                                                                                                               Programm.current_scope).type == Type.TIME:
                     return Programm.getVariable(name, Programm.current_scope).value
             else:
                 return self.visitChildren(ctx)
@@ -139,7 +143,8 @@ class AppVisitor(AppParseTreeVisitor):
 
             if not Programm.areTypesCompatible(type1, type2, val1, val2):
                 raise Error(
-                    "Arithmetical operation on different types are not allowed: {}, {} -> {},{}".format(type1, type2, val1, val2))
+                    "Arithmetical operation on different types are not allowed: {}, {} -> {},{}".format(type1, type2,
+                                                                                                        val1, val2))
 
             artm_type = None
             if type1 == "VariableNameContext":
@@ -265,7 +270,6 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             return Programm.getInstructionAsTxt(ctx)
 
-
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
         name1, val1, type1 = None, None, None
@@ -281,7 +285,7 @@ class AppVisitor(AppParseTreeVisitor):
             type1 = Programm.getVariable(name1).type
             val1 = Programm.getVariable(name1).value
         # print("Name1: {}, type1: {}, val1: {}".format(name1, type1, val1))
-        
+
         name2, val2, type2 = None, None, None
         if ctx.right_expr is not None:
             name2 = ctx.right_expr.getText()
@@ -297,7 +301,8 @@ class AppVisitor(AppParseTreeVisitor):
         # print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
 
         if not Programm.areTypesComparable(type1, type2, name1, name2):
-            raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1), Programm.getTypeFromNodeType(type2, name2))
+            raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
+                                   Programm.getTypeFromNodeType(type2, name2))
         cond_type = None
         if type1 == "VariableNameContext":
             if Programm.getVariable(name1, Programm.current_scope) is not None:
@@ -333,7 +338,6 @@ class AppVisitor(AppParseTreeVisitor):
 
         return False
 
-
     def visitConditionBody(self, ctx: AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
 
@@ -350,7 +354,10 @@ class AppVisitor(AppParseTreeVisitor):
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loop.
     def visitLoop(self, ctx: AppParser.LoopContext):
-        return self.visitChildren(ctx)
+
+        while self.visitCondition(ctx.cond):
+            self.visitLoopBody(ctx.l_body)
+
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loopBody.
     def visitLoopBody(self, ctx: AppParser.LoopBodyContext):
@@ -445,53 +452,49 @@ class AppVisitor(AppParseTreeVisitor):
                         (name, Programm.getVariable(name, scope=Programm.current_scope)))
         return given_arguments
 
-
     def visitWhiteSpace(self, ctx: AppParser.WhiteSpaceContext):
         return self.visitChildren(ctx)
 
     def visitComment(self, ctx: AppParser.CommentContext):
         return  # does nothing
-    
-    def visitScopeName(self, ctx:AppParser.ScopeNameContext):
+
+    def visitScopeName(self, ctx: AppParser.ScopeNameContext):
         return ctx.getText()
 
-    def visitScopeSequence(self, ctx:AppParser.ScopeSequenceContext):
+    def visitScopeSequence(self, ctx: AppParser.ScopeSequenceContext):
         return ctx.getText()
 
-    def visitScopeDeclaration(self, ctx:AppParser.ScopeDeclarationContext):
+    def visitScopeDeclaration(self, ctx: AppParser.ScopeDeclarationContext):
         name = self.getNodesChild(ctx, 0).getText()
         self.current_named_scope.append(name)
         Programm.addNewNamedVariableScope(name, self.current_named_scope)
         self.visitChildren(ctx)
         Programm.deleteTopVariableScope()
         self.current_named_scope.remove(name)
-    
+
     # Visit a parse tree produced by AppParser#float_type.
-    def visitFloat_type(self, ctx:AppParser.Float_typeContext):
+    def visitFloat_type(self, ctx: AppParser.Float_typeContext):
         value = ctx.getText()
         return 2137
-    
-    # Visit a parse tree produced by AppParser#getAngle.
-    def visitGetAngle(self, ctx:AppParser.GetAngleContext):
-        return self.visitChildren(ctx)
 
+    # Visit a parse tree produced by AppParser#getAngle.
+    def visitGetAngle(self, ctx: AppParser.GetAngleContext):
+        return self.visitChildren(ctx)
 
     # Visit a parse tree produced by AppParser#getCoordinate.
-    def visitGetCoordinate(self, ctx:AppParser.GetCoordinateContext):
+    def visitGetCoordinate(self, ctx: AppParser.GetCoordinateContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by AppParser#getDistance.
-    def visitGetDistance(self, ctx:AppParser.GetDistanceContext):
+    def visitGetDistance(self, ctx: AppParser.GetDistanceContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by AppParser#getVelocity.
-    def visitGetVelocity(self, ctx:AppParser.GetVelocityContext):
+    def visitGetVelocity(self, ctx: AppParser.GetVelocityContext):
         return self.visitChildren(ctx)
-    
+
     # Visit a parse tree produced by AppParser#time_type.
-    def visitTime_type(self, ctx:AppParser.Time_typeContext):
+    def visitTime_type(self, ctx: AppParser.Time_typeContext):
         # zwraca ilosc sekund (int)
         return 333
 
