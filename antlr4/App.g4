@@ -36,7 +36,7 @@ integer
 	| ZERO
 	;
 
-float
+float_type
 	: (minus='-')? NONZERODIGIT (NONZERODIGIT|ZERO)* '.' (NONZERODIGIT|ZERO)*
 	| ZERO '.' (NONZERODIGIT|ZERO)*
 	;
@@ -56,7 +56,7 @@ applyForce
 arithmeticalExpression
     : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
-	| float
+	| float_type
 	| force_type
 	| object_type
 	| variableName
@@ -137,16 +137,16 @@ whiteSpace
 	: WS+;
 
 getAngle
-	: 'ANGLE BETWEEN' whiteSpace? (name_1=variableName|object_1=object_type) whiteSpace? ',' whiteSpace? (name_2=variableName|object_2=object_type) whiteSpace? ';'
+	: 'ANGLE BETWEEN' whiteSpace? (name_1=variableName|object_1=object_type) whiteSpace? ',' whiteSpace? (name_2=variableName|object_2=object_type) whiteSpace? ';';
 
 getCoordinate
-	: 'COORDINATE' whiteSpace? axis=('X'|'Y') whiteSpace? 'OF' whiteSpace? name_=variableName whiteSpace? ';'
+	: 'COORDINATE' whiteSpace? axis=('X'|'Y') whiteSpace? 'OF' whiteSpace? name_=variableName whiteSpace? ';';
 
 getDistance
-	: 'DISTANCE BETWEEN' whiteSpace? (name_1=variableName|object_1=object_type) whiteSpace? ',' whiteSpace? (name_2=variableName|object_2=object_type) whiteSpace? ';'
+	: 'DISTANCE BETWEEN' whiteSpace? (name_1=variableName|object_1=object_type) whiteSpace? ',' whiteSpace? (name_2=variableName|object_2=object_type) whiteSpace? ';';
 
 getVelocity
-	: 'VELOCITY' whiteSpace? axis=('X'|'Y'|'VALUE') whiteSpace? 'OF' whiteSpace? name_=variableName whiteSpace? ';'
+	: 'VELOCITY' whiteSpace? axis=('X'|'Y'|'VALUE') whiteSpace? 'OF' whiteSpace? name_=variableName whiteSpace? ';';
 
 WS
 	: '\n'

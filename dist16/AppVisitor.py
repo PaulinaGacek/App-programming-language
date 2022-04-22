@@ -468,5 +468,29 @@ class AppVisitor(AppParseTreeVisitor):
         self.visitChildren(ctx)
         Programm.deleteTopVariableScope()
         self.current_named_scope.remove(name)
+    
+    # Visit a parse tree produced by AppParser#float_type.
+    def visitFloat_type(self, ctx:AppParser.Float_typeContext):
+        return self.visitChildren(ctx)
+    
+    # Visit a parse tree produced by AppParser#getAngle.
+    def visitGetAngle(self, ctx:AppParser.GetAngleContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AppParser#getCoordinate.
+    def visitGetCoordinate(self, ctx:AppParser.GetCoordinateContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AppParser#getDistance.
+    def visitGetDistance(self, ctx:AppParser.GetDistanceContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AppParser#getVelocity.
+    def visitGetVelocity(self, ctx:AppParser.GetVelocityContext):
+        return self.visitChildren(ctx)
+
 
 del AppParser

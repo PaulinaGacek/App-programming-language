@@ -62,6 +62,15 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#float_type.
+    def enterFloat_type(self, ctx:AppParser.Float_typeContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#float_type.
+    def exitFloat_type(self, ctx:AppParser.Float_typeContext):
+        pass
+
+
     # Enter a parse tree produced by AppParser#force_type.
     def enterForce_type(self, ctx:AppParser.Force_typeContext):
         pass
@@ -275,6 +284,42 @@ class AppListener(ParseTreeListener):
 
     # Exit a parse tree produced by AppParser#whiteSpace.
     def exitWhiteSpace(self, ctx:AppParser.WhiteSpaceContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#getAngle.
+    def enterGetAngle(self, ctx:AppParser.GetAngleContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#getAngle.
+    def exitGetAngle(self, ctx:AppParser.GetAngleContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#getCoordinate.
+    def enterGetCoordinate(self, ctx:AppParser.GetCoordinateContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#getCoordinate.
+    def exitGetCoordinate(self, ctx:AppParser.GetCoordinateContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#getDistance.
+    def enterGetDistance(self, ctx:AppParser.GetDistanceContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#getDistance.
+    def exitGetDistance(self, ctx:AppParser.GetDistanceContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#getVelocity.
+    def enterGetVelocity(self, ctx:AppParser.GetVelocityContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#getVelocity.
+    def exitGetVelocity(self, ctx:AppParser.GetVelocityContext):
         pass
 
 
