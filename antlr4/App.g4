@@ -19,7 +19,9 @@ variableType
 	: 'TIME'
 	| 'INT'
     | 'FORCE'
-    | 'OBJECT';
+    | 'OBJECT'
+	| 'FLOAT' 
+	;
 
 variableName
 	: scope_seq=scopeSequence? LOWERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*
@@ -32,6 +34,11 @@ functionName
 integer
 	: NONZERODIGIT (NONZERODIGIT|ZERO)*
 	| ZERO
+	;
+
+float
+	: (minus='-')? NONZERODIGIT (NONZERODIGIT|ZERO)* '.' (NONZERODIGIT|ZERO)*
+	| ZERO '.' (NONZERODIGIT|ZERO)*
 	;
 
 force_type: '['angle=integer ',' power=integer ']';
@@ -49,10 +56,15 @@ applyForce
 arithmeticalExpression
     : left=arithmeticalExpression whiteSpace? op=('+'|'-'|'/'|'*') whiteSpace? right=arithmeticalExpression
 	| integer
+	| float
 	| force_type
 	| object_type
 	| variableName
 	| functionCall
+	| getAngle
+	| getCoordinate
+	| getDistance
+	| getVelocity
     ;
 
 declaration
@@ -123,6 +135,18 @@ scopeDeclaration
 
 whiteSpace
 	: WS+;
+
+getAngle
+	: 'ANGLE BETWEEN' whiteSpace? (name_1=variableName|object_1=object_type) whiteSpace? ',' whiteSpace? (name_2=variableName|object_2=object_type) whiteSpace? ';'
+
+getCoordinate
+	: 'COORDINATE' whiteSpace? axis=('X'|'Y') whiteSpace? 'OF' whiteSpace? name_=variableName whiteSpace? ';'
+
+getDistance
+	: 'DISTANCE BETWEEN' whiteSpace? (name_1=variableName|object_1=object_type) whiteSpace? ',' whiteSpace? (name_2=variableName|object_2=object_type) whiteSpace? ';'
+
+getVelocity
+	: 'VELOCITY' whiteSpace? axis=('X'|'Y'|'VALUE') whiteSpace? 'OF' whiteSpace? name_=variableName whiteSpace? ';'
 
 WS
 	: '\n'
