@@ -70,6 +70,7 @@ class AppVisitor(AppParseTreeVisitor):
             return
 
         if not AppVisitor.inside_function_dec:
+            print("visit force")
 
             object_name = self.visit(ctx.object_)
             if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
@@ -93,9 +94,10 @@ class AppVisitor(AppParseTreeVisitor):
                 if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
                     raise UndefinedVariableReferenceError(time_name)
                 time_val = Programm.getVariable(time_name).value
-            else:
+            elif ctx.time_val is not None:
                 time_val = self.visit(ctx.time_val)
-
+            else:
+                time_val = self.visit(ctx.time_type_val)
             delay = 0
             if ctx.delay_:
                 delay = self.visit(ctx.delay_)

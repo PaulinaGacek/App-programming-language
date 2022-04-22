@@ -42,7 +42,7 @@ float_type
 	;
 
 time_type
-	: integer':'integer':'integer':';
+	: (NONZERODIGIT|ZERO)+':'(NONZERODIGIT|ZERO)(NONZERODIGIT|ZERO)':'(NONZERODIGIT|ZERO)(NONZERODIGIT|ZERO);
 
 force_type: '['angle=integer ',' power=integer ']';
 
