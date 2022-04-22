@@ -354,7 +354,7 @@ class AppVisitor(AppParseTreeVisitor):
 
     # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loop.
     def visitLoop(self, ctx: AppParser.LoopContext):
-
+        print("loop")
         while self.visitCondition(ctx.cond):
             self.visitLoopBody(ctx.l_body)
 
