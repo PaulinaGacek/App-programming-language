@@ -49,9 +49,9 @@ force_type: '['angle=integer ',' power=integer ']';
 object_type: '('x_cor=integer ',' y_cor=integer ')';
 
 applyForce
-    : 'APPLY' whiteSpace (force_=variableName|force_val=force_type) whiteSpace 
-		'TO' whiteSpace object_=variableName whiteSpace 
-		'FOR' whiteSpace (time_=variableName|time_val=integer|time_type_val=time_type) 
+    : 'APPLY' whiteSpace (force_=variableName|force_val=force_type) whiteSpace
+		'TO' whiteSpace object_=variableName whiteSpace
+		'FOR' whiteSpace (time_=variableName|time_val=integer|time_type_val=time_type)
 		(whiteSpace 'DELAY' whiteSpace (delay_=variableName|delay_val_=integer|delay_time_type_val=time_type))? whiteSpace? ';'
     ;
 
@@ -84,7 +84,7 @@ conditionalStatement
     ;
 
 condition
-    :   (left_expr=arithmeticalExpression|left_var=variableName) whiteSpace? 
+    :   (left_expr=arithmeticalExpression|left_var=variableName) whiteSpace?
 		op=('=='|'>' |'<' |'>=' |'<=' |'!=')
 		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
     ;
@@ -101,7 +101,9 @@ loop
     : 'LOOP' whiteSpace? '(' whiteSpace? cond=condition whiteSpace?')'whiteSpace l_body=loopBody whiteSpace 'ENDLOOP' whiteSpace? ';'
     ;
 
-loopBody: instruction+ ;
+loopBody
+    : (instruction whiteSpace?)+
+	;
 
 functionCall
 	:   scope_seq=scopeSequence? f_name=functionName '(' whiteSpace? (f_args=functionParams whiteSpace?)? ')' whiteSpace? ';'
