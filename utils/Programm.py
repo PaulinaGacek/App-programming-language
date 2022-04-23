@@ -26,7 +26,7 @@ class Programm:
     '''
     @staticmethod
     def defineNewVariable(name: str, type_: Type, value: int, value2=None, scope=None):
-        if scope is None:  # scope is gloabal
+        if scope is None:  # scope is global
             # variable exists in global scope
             if Programm.variables.get(name) is not None:
                 raise VariableRedefinitionError(name, Programm.typeToStr(type_))
@@ -130,6 +130,8 @@ class Programm:
             return Type.INT
         elif type == "OBJECT":
             return Type.OBJECT
+        elif type == "FLOAT":
+            return Type.FLOAT
         else:
             return Type.FORCE
 
@@ -146,6 +148,8 @@ class Programm:
             return "OBJECT"
         elif type == Type.FORCE:
             return "FORCE"
+        elif type == Type.FLOAT:
+            return "FLOAT"
         return None
 
     '''

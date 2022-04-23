@@ -6,6 +6,7 @@ class Type(Enum):
     INT = 2
     OBJECT = 3
     FORCE = 4
+    FLOAT = 5
 
 class Variable:
 
@@ -34,5 +35,7 @@ class Variable:
             return "INT"
         elif self.type == Type.OBJECT:
             return "OBJECT"
+        elif self.type == Type.FLOAT:
+            return "FLOAT"
         else:
             return "FORCE"
