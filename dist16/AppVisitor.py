@@ -409,10 +409,14 @@ class AppVisitor(AppParseTreeVisitor):
 
         f_name = self.visit(ctx.f_name)
 
+        f_return_type = None
+        if self.visit(ctx.return_type) is not None:
+            f_return_type = Programm.strToType(self.visit(ctx.return_type))
+
         if Programm.getFunction(f_name) is not None:
             raise FunctionRedefinitionError(f_name)
 
-        func = Function(f_name)
+        func = Function(f_name, f_return_type)
         if ctx.f_args is not None:  # function has params
             # function args returns dict of variables
             func.params = self.visit(ctx.f_args)
