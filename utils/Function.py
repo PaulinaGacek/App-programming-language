@@ -2,12 +2,12 @@ from utils.Variable import *
 
 class Function:
 
-    def __init__(self, name: str, return_type: Type = None):
+    def __init__(self, name: str, return_type: Type = None, return_stat = None):
         self.name = name
         self.params = [] #tuple (variable names, Variables())
         self.actions = [] # actions which function makes
         self.return_type = return_type
-        self.return_value
+        self.return_statement = return_stat
     
     def displayDetails(self):
         variable_names = ""
@@ -16,7 +16,10 @@ class Function:
         body = ""
         for action in self.actions:
             body += "\t" + action + "\n"
-        return "params:" + variable_names + "\nbody: " + body + "\nreturns: " + str(self.return_type)
+        output = "params:" + variable_names + "\nbody: " + body
+        if self.return_type:
+            output += "\nreturns: " + str(self.return_type) + " -> " + str(self.return_statement)
+        return output
     
     def getBody(self) -> str:
         body = ""

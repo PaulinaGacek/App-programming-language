@@ -413,10 +413,19 @@ class AppVisitor(AppParseTreeVisitor):
         if self.visit(ctx.return_type) is not None:
             f_return_type = Programm.strToType(self.visit(ctx.return_type))
 
+            if ctx.return_stat is None:
+                raise FunctionHasToReturnSomething(f_name, f_return_type)
+
+            context = self.visit(ctx.return_stat)
+            print(context)
+            type = Programm.getTypeFromContext(context)
+            if type != f_return_type:
+                raise UnallowedCasting(f_return_type, type)
+
         if Programm.getFunction(f_name) is not None:
             raise FunctionRedefinitionError(f_name)
 
-        func = Function(f_name, f_return_type)
+        func = Function(f_name, f_return_type, context)
         if ctx.f_args is not None:  # function has params
             # function args returns dict of variables
             func.params = self.visit(ctx.f_args)
@@ -515,6 +524,10 @@ class AppVisitor(AppParseTreeVisitor):
             tab[i] = int(tab[i])
 
         return 3600 * tab[0] + 60 * tab[1] + tab[2]
+    
+    # Not implemented
+    def visitReturn_statement(self, ctx:AppParser.Return_statementContext):
+        return 10
 
 
 del AppParser

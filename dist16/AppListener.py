@@ -251,6 +251,15 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#return_statement.
+    def enterReturn_statement(self, ctx:AppParser.Return_statementContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#return_statement.
+    def exitReturn_statement(self, ctx:AppParser.Return_statementContext):
+        pass
+
+
     # Enter a parse tree produced by AppParser#comment.
     def enterComment(self, ctx:AppParser.CommentContext):
         pass

@@ -173,3 +173,13 @@ class OperatorNotDefininedForType(Exception):
 
     def __str__(self):
         return self.message
+
+class FunctionHasToReturnSomething(Exception):
+
+    def __init__(self, function, type, message=None):
+        if message is None:
+            self.message = "Function {} has to return {}".format(function, type)
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message

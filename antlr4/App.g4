@@ -110,11 +110,11 @@ functionCall
 	;
 
 functionDeclaration
-	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? f_args=functionArgs? whiteSpace? ')' (whiteSpace? '->' whiteSpace? return_type=variableType whiteSpace?)? whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
+	: 'DEFINE FUNCTION' whiteSpace f_name=functionName '(' whiteSpace? f_args=functionArgs? whiteSpace? ')' (whiteSpace? '->' whiteSpace? return_type=variableType whiteSpace?)? whiteSpace 'AS'  whiteSpace? f_body=functionBody  whiteSpace? return_stat=return_statement? whiteSpace? 'ENDFUNCTION' whiteSpace? ';'
 	;
 
 functionBody
-    : (instruction whiteSpace?)+ return_statement? whiteSpace?
+    : (instruction whiteSpace?)+ 
 	;
 
 functionArgs

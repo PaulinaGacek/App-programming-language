@@ -233,6 +233,14 @@ class Programm:
             return Type.OBJECT
         if node_type == "Force_typeContext":
             return Type.FORCE
+    
+    @staticmethod 
+    def getTypeFromContext(context):
+        if type(context) is int:
+            return Type.INT
+        if type(context) is float:
+            return Type.FLOAT
+        # add checking FORCE, OBJECT, TIME
 
     '''
         Returns Function() object with given name
