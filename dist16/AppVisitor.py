@@ -492,11 +492,15 @@ class AppVisitor(AppParseTreeVisitor):
     # Visit a parse tree produced by AppParser#getVelocity.
     def visitGetVelocity(self, ctx: AppParser.GetVelocityContext):
         return self.visitChildren(ctx)
+    
+    def visitTime_type(self, ctx:AppParser.Time_typeContext):
+        value = ctx.getText()
+        tab = value.split(":")
 
-    # Visit a parse tree produced by AppParser#time_type.
-    def visitTime_type(self, ctx: AppParser.Time_typeContext):
-        # zwraca ilosc sekund (int)
-        return 333
+        for i in range(0, len(tab)):
+            tab[i] = int(tab[i])
+
+        return 3600 * tab[0] + 60 * tab[1] + tab[2]
 
 
 del AppParser
