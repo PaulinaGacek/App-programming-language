@@ -114,7 +114,7 @@ functionDeclaration
 	;
 
 functionBody
-    : (instruction whiteSpace?)+
+    : (instruction whiteSpace?)+ return_statement? whiteSpace?
 	;
 
 functionArgs
@@ -126,6 +126,9 @@ functionParams
 	;
 
 functionArgument: type_=variableType whiteSpace name_=variableName;
+
+return_statement
+	: 'RETURN' whiteSpace expr=arithmeticalExpression whiteSpace? ';' ;
 
 comment
 	: '/*' .*? '*/';
