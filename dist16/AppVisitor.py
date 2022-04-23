@@ -197,16 +197,22 @@ class AppVisitor(AppParseTreeVisitor):
             if ctx.name_.scope_seq is not None:
                 raise Error("Access operator not allowed during declaration")
 
-            # print("Type: {}".format(type_))
+            print("Type: {}".format(type_))
 
-            if type_ == 'INT' or type_ == 'TIME' or type_ == 'FLOAT':
+            if type_ == 'INT' or type_ == 'TIME':
                 if type(self.visit(ctx.value_)) is not int:
                     raise Error("Bad casting: {}".format(
                         type(self.visit(ctx.value_))))
                 value = self.visit(ctx.value_)
                 Programm.defineNewVariable(name, Programm.strToType(
                     type_), value, scope=Programm.scope_history.top())
-
+            elif type_ == 'FLOAT':
+                if type(self.visit(ctx.value_)) is not float:
+                    raise Error("Bad casting: {}".format(
+                        type(self.visit(ctx.value_))))
+                value = self.visit(ctx.value_)
+                Programm.defineNewVariable(name, Programm.strToType(
+                    type_), value, scope=Programm.scope_history.top())
             elif type_ == 'FORCE':
                 value1, value2 = self.visit(ctx.value_)
                 Programm.defineNewVariable(name, Programm.strToType(
@@ -468,7 +474,6 @@ class AppVisitor(AppParseTreeVisitor):
     
     # Visit a parse tree produced by AppParser#float_type.
     def visitFloat_type(self, ctx:AppParser.Float_typeContext):
-        print("float")
         value = ctx.getText()
         value = float(value)
         return value
