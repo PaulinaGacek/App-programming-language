@@ -68,7 +68,6 @@ class AppVisitor(AppParseTreeVisitor):
     def visitApplyForce(self, ctx: AppParser.ApplyForceContext):
 
         if not AppVisitor.inside_function_dec:
-            print("visit force")
 
             object_name = self.visit(ctx.object_)
             if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
@@ -128,10 +127,13 @@ class AppVisitor(AppParseTreeVisitor):
                 if Programm.getVariable(name, Programm.current_scope) is None:
                     if Programm.getVariable(name) is None:
                         raise UndefinedVariableReferenceError(name)
-
-                if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name,
-                                                                                                               Programm.current_scope).type == Type.TIME:
-                    return Programm.getVariable(name, Programm.current_scope).value
+                    else:
+                        if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
+                            return Programm.getVariable(name).value
+                else:
+                    if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name,
+                                                                                                                   Programm.current_scope).type == Type.TIME:
+                        return Programm.getVariable(name, Programm.current_scope).value
             else:
                 return self.visitChildren(ctx)
 
@@ -202,7 +204,7 @@ class AppVisitor(AppParseTreeVisitor):
             if ctx.name_.scope_seq is not None:
                 raise Error("Access operator not allowed during declaration")
 
-            print("Type: {}".format(type_))
+            # print("Type: {}".format(type_))
 
             if type_ == 'INT' or type_ == 'TIME':
                 if type(self.visit(ctx.value_)) is not int:
@@ -312,15 +314,18 @@ class AppVisitor(AppParseTreeVisitor):
         cond_type = None
         if type1 == "VariableNameContext":
             if Programm.getVariable(name1, Programm.current_scope) is not None:
-                cond_type = Programm.getVariable(name1, Programm.current_scope).type
+                cond_type = Programm.getVariable(
+                    name1, Programm.current_scope).type
             else:
                 cond_type = Programm.getVariable(name1).type
         elif type1 == "IntegerContext":
             cond_type = Type.INT
         elif type1 == "Object_typeContext":
-            raise OperatorNotDefininedForType(ctx.op.text, Programm.getTypeFromNodeType(type1))
+            raise OperatorNotDefininedForType(
+                ctx.op.text, Programm.getTypeFromNodeType(type1))
         elif type1 == "Force_typeContext":
-            raise OperatorNotDefininedForType(ctx.op.text, Programm.getTypeFromNodeType(type1))
+            raise OperatorNotDefininedForType(
+                ctx.op.text, Programm.getTypeFromNodeType(type1))
 
         if cond_type == Type.OBJECT or cond_type == Type.FORCE:
             raise OperatorNotDefininedForType(ctx.op.text, cond_type)
@@ -358,14 +363,13 @@ class AppVisitor(AppParseTreeVisitor):
     def visitParallelBody(self, ctx: AppParser.ParallelBodyContext):
         return self.visitChildren(ctx)
 
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loop.
     def visitLoop(self, ctx: AppParser.LoopContext):
         print("loop")
         while self.visitCondition(ctx.cond):
+            Programm.addNewVariableScope()
             self.visitLoopBody(ctx.l_body)
+            Programm.deleteTopVariableScope()
 
-
-    # [NOT IMPLEMENTED] Visit a parse tree produced by AppParser#loopBody.
     def visitLoopBody(self, ctx: AppParser.LoopBodyContext):
         return self.visitChildren(ctx)
 
@@ -478,12 +482,11 @@ class AppVisitor(AppParseTreeVisitor):
         Programm.deleteTopVariableScope()
         self.current_named_scope.remove(name)
 
-    # Visit a parse tree produced by AppParser#float_type.
     def visitFloat_type(self, ctx: AppParser.Float_typeContext):
         value = ctx.getText()
         value = float(value)
         return value
-    
+
     # Visit a parse tree produced by AppParser#getAngle.
     def visitGetAngle(self, ctx: AppParser.GetAngleContext):
         return self.visitChildren(ctx)
@@ -499,8 +502,8 @@ class AppVisitor(AppParseTreeVisitor):
     # Visit a parse tree produced by AppParser#getVelocity.
     def visitGetVelocity(self, ctx: AppParser.GetVelocityContext):
         return self.visitChildren(ctx)
-    
-    def visitTime_type(self, ctx:AppParser.Time_typeContext):
+
+    def visitTime_type(self, ctx: AppParser.Time_typeContext):
         value = ctx.getText()
         tab = value.split(":")
 
