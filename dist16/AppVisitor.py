@@ -115,6 +115,10 @@ class AppVisitor(AppParseTreeVisitor):
             return Programm.getInstructionAsTxt(ctx)
 
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
+
+        if AppVisitor.inside_function_dec: # function definition
+            return Programm.getInstructionAsTxt(ctx)
+
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
         if NR_OF_CHILDREN == 1:  # variable name or INT
@@ -406,10 +410,14 @@ class AppVisitor(AppParseTreeVisitor):
                     raise UnallowedCasting(given[1].type, declared[1].type)
 
     def visitFunctionDeclaration(self, ctx: AppParser.FunctionDeclarationContext):
+        AppVisitor.inside_function_dec = True
 
         f_name = self.visit(ctx.f_name)
+        if Programm.getFunction(f_name) is not None:
+            raise FunctionRedefinitionError(f_name)
 
         f_return_type = None
+        context = None
         if self.visit(ctx.return_type) is not None:
             f_return_type = Programm.strToType(self.visit(ctx.return_type))
 
@@ -417,13 +425,6 @@ class AppVisitor(AppParseTreeVisitor):
                 raise FunctionHasToReturnSomething(f_name, f_return_type)
 
             context = self.visit(ctx.return_stat)
-            print(context)
-            type = Programm.getTypeFromContext(context)
-            if type != f_return_type:
-                raise UnallowedCasting(f_return_type, type)
-
-        if Programm.getFunction(f_name) is not None:
-            raise FunctionRedefinitionError(f_name)
 
         func = Function(f_name, f_return_type, context)
         if ctx.f_args is not None:  # function has params
@@ -431,15 +432,15 @@ class AppVisitor(AppParseTreeVisitor):
             func.params = self.visit(ctx.f_args)
         # modify func
         func.actions = self.visit(ctx.f_body)
+        AppVisitor.inside_function_dec = False
         Programm.addFunction(func)
 
     def visitFunctionBody(self, ctx: AppParser.FunctionBodyContext):
-        AppVisitor.inside_function_dec = True
+        
         action_list = []
         for child in ctx.children:
             if type(child).__name__ == "InstructionContext":
                 action_list.append(self.visit(child))
-        AppVisitor.inside_function_dec = False
         return action_list
 
     def visitFunctionArgs(self, ctx: AppParser.FunctionArgsContext):
@@ -527,7 +528,7 @@ class AppVisitor(AppParseTreeVisitor):
     
     # Not implemented
     def visitReturn_statement(self, ctx:AppParser.Return_statementContext):
-        return 10
+        return self.visit(ctx.expr)
 
 
 del AppParser
