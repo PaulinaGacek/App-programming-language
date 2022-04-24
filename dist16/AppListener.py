@@ -161,6 +161,24 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#elifStatement.
+    def enterElifStatement(self, ctx:AppParser.ElifStatementContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#elifStatement.
+    def exitElifStatement(self, ctx:AppParser.ElifStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#elseStatement.
+    def enterElseStatement(self, ctx:AppParser.ElseStatementContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#elseStatement.
+    def exitElseStatement(self, ctx:AppParser.ElseStatementContext):
+        pass
+
+
     # Enter a parse tree produced by AppParser#parallelExpression.
     def enterParallelExpression(self, ctx:AppParser.ParallelExpressionContext):
         pass

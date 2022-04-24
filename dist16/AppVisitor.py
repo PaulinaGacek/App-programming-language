@@ -134,6 +134,7 @@ class AppVisitor(AppParseTreeVisitor):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
         if NR_OF_CHILDREN == 1:  # variable name or INT
+            print("one child")
             if type(self.getNodesChild(ctx, 0)).__name__ == "IntegerContext":
                 return self.visitChildren(ctx)
 
@@ -372,11 +373,10 @@ class AppVisitor(AppParseTreeVisitor):
         given_arguments = []
         if ctx.f_args is not None:  # function with arguemnts
             given_arguments = self.visit(ctx.f_args)
-
+        print(given_arguments)
         # checking number of arguments:
         if len(declared_types) != len(given_arguments):
-            raise WrongNumberOfArguments(
-                len(declared_types), len(given_arguments))
+            raise WrongNumberOfArguments(name, required=len(declared_types), provided=len(given_arguments))
 
         # checking if arguments names are not repeated
         repeated_name = Programm.getRepeatedVariableName(declared_types)
@@ -455,6 +455,7 @@ class AppVisitor(AppParseTreeVisitor):
         # in use when function is called, not when declared!
         given_arguments = []  # list((name, Variable()))
         for child in ctx.children:
+            # print(type(child).__name__)
             if type(child).__name__ == "VariableNameContext":
                 name = self.visit(child)
                 # not in local scope
@@ -467,6 +468,8 @@ class AppVisitor(AppParseTreeVisitor):
                 else:  # in local
                     given_arguments.append(
                         (name, Programm.getVariable(name, scope=Programm.current_scope)))
+            elif type(child).__name__ == "ArithmeticalExpressionContext":
+                print(self.visit(child))
         return given_arguments
 
     def visitWhiteSpace(self, ctx: AppParser.WhiteSpaceContext):

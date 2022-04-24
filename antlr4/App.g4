@@ -131,7 +131,7 @@ functionArgs
     ;
 
 functionParams
-	: arithmeticalExpression (whiteSpace? ',' whiteSpace? arithmeticalExpression)*
+	: variableName|arithmeticalExpression (whiteSpace? ',' whiteSpace? variableName|arithmeticalExpression)*
 	;
 
 functionArgument: type_=variableType whiteSpace name_=variableName;
