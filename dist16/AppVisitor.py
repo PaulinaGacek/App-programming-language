@@ -134,23 +134,26 @@ class AppVisitor(AppParseTreeVisitor):
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
         if NR_OF_CHILDREN == 1:  # variable name or INT
-            print("one child")
             if type(self.getNodesChild(ctx, 0)).__name__ == "IntegerContext":
                 return self.visitChildren(ctx)
 
             elif type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
 
-                if Programm.getVariable(name, Programm.current_scope) is None:
+                if Programm.getVariable(name, Programm.current_scope) is None: # not defined in current scope
                     if Programm.getVariable(name) is None:
                         raise UndefinedVariableReferenceError(name)
                     else:
                         if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
                             return Programm.getVariable(name).value
+                        else:
+                            return Programm.getVariable(name).value, Programm.getVariable(name).value2
                 else:
                     if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name,
                                                                                                                    Programm.current_scope).type == Type.TIME:
                         return Programm.getVariable(name, Programm.current_scope).value
+                    else:
+                        return Programm.getVariable(name, Programm.current_scope).value, Programm.getVariable(name, Programm.current_scope).value2
             else:
                 return self.visitChildren(ctx)
 
