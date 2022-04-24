@@ -210,7 +210,7 @@ class AppVisitor(AppParseTreeVisitor):
     def visitDeclaration(self, ctx: AppParser.DeclarationContext):
 
         name = self.visit(ctx.name_)
-        type_ = self.visit(ctx.type_sim)
+        type_ = self.visit(ctx.type_)
 
         if ctx.name_.scope_seq is not None:
             raise Error("Access operator not allowed during declaration")

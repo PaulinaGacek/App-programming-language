@@ -10,7 +10,7 @@ instruction
 	| conditionalStatement
 	| parallelExpression
 	| loop
-	| functionCall
+	| functionCall whiteSpace? ';'
 	| applyForce
 	| comment
 	;
@@ -84,9 +84,9 @@ conditionalStatement
     ;
 
 condition
-    :   (left_expr=arithmeticalExpression|left_var=variableName) whiteSpace?
+    :   left_expr=arithmeticalExpression whiteSpace?
 		op=('=='|'>' |'<' |'>=' |'<=' |'!=')
-		whiteSpace? (right_expr=arithmeticalExpression|right_var=variableName)
+		whiteSpace? right_expr=arithmeticalExpression
     ;
 
 conditionBody: (instruction whiteSpace?)+ ;
@@ -106,7 +106,7 @@ loopBody
 	;
 
 functionCall
-	:   scope_seq=scopeSequence? f_name=functionName '(' whiteSpace? (f_args=functionParams whiteSpace?)? ')' whiteSpace? ';'
+	:   scope_seq=scopeSequence? f_name=functionName '(' whiteSpace? (f_args=functionParams whiteSpace?)? ')'
 	;
 
 functionDeclaration
@@ -131,7 +131,8 @@ return_statement
 	: 'RETURN' whiteSpace expr=arithmeticalExpression whiteSpace? ';' ;
 
 comment
-	: '/*' .*? '*/';
+	: '/*' .*? '*/'
+	| EOF;
 
 scopeName
 	: UPPERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*;
