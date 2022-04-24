@@ -166,7 +166,8 @@ class Programm:
     def areTypesCompatible(type1, type2, name1, name2) -> bool:
         if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
             return True
-
+        '''
+        Types has also be checked in local scopes
         if type1 == "VariableNameContext":
             if Programm.variables[name1].type == Type.INT:
                 type1 = "IntegerContext"
@@ -189,8 +190,8 @@ class Programm:
 
         if type1 == type2:
             return True
-
-        return False
+        '''
+        return True
 
     @staticmethod
     def areTypesComparable(type1, type2, name1, name2) -> bool:

@@ -367,33 +367,41 @@ class AppVisitor(AppParseTreeVisitor):
         name = self.visit(ctx.f_name)
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)
-        else: # validate arguments
-            declared_types = Programm.functions.get(
-                name).params  # list[(name,Variable())]
-            given_arguments = []
-            if ctx.f_args is not None:  # function with arguemnts
-                given_arguments = self.visit(ctx.f_args)
+        
+        declared_types = Programm.functions.get(name).params  # list[(name,Variable())]
+        given_arguments = []
+        if ctx.f_args is not None:  # function with arguemnts
+            given_arguments = self.visit(ctx.f_args)
 
-            # checking number of arguments:
-            if len(declared_types) != len(given_arguments):
-                raise WrongNumberOfArguments(
-                    len(declared_types), len(given_arguments))
+        # checking number of arguments:
+        if len(declared_types) != len(given_arguments):
+            raise WrongNumberOfArguments(
+                len(declared_types), len(given_arguments))
 
-            # checking if arguments names are not repeated
-            repeated_name = Programm.getRepeatedVariableName(declared_types)
-            if repeated_name is not None:
-                raise Error(
-                    "Function arguments cannot have the same name - {}".format(repeated_name))
+        # checking if arguments names are not repeated
+        repeated_name = Programm.getRepeatedVariableName(declared_types)
+        if repeated_name is not None:
+            raise Error(
+                "Function arguments cannot have the same name - {}".format(repeated_name))
 
-            # checking types of arguments:
-            for declared, given in zip(declared_types, given_arguments):
-                if declared[1].type != given[1].type:
-                    raise UnallowedCasting(given[1].type, declared[1].type)
+        # checking types of arguments:
+        for declared, given in zip(declared_types, given_arguments):
+            if declared[1].type != given[1].type:
+                raise UnallowedCasting(given[1].type, declared[1].type)
+
         # execute function body
+        Programm.addNewVariableScope()
+        # adding all params to scope
+        for declared, given in zip(declared_types, given_arguments):
+            Programm.defineNewVariable(declared[0], given[1].type, given[1].value, given[1].value2, scope=Programm.scope_history.top())
         self.visit(Programm.getFunction(name).body_ctx)
 
+        return_val = None
         if Programm.getFunction(name).return_statement is not None:
-            return self.visit(Programm.functions.get(name).return_ctx)
+            return_val = self.visit(Programm.functions.get(name).return_ctx)
+        Programm.deleteTopVariableScope()
+
+        return return_val
 
     def visitFunctionDeclaration(self, ctx: AppParser.FunctionDeclarationContext):
         AppVisitor.inside_function_dec = True
