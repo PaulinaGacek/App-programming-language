@@ -396,9 +396,7 @@ class AppVisitor(AppParseTreeVisitor):
                     raise UnallowedCasting(given[1].type, declared[1].type)
 
         if Programm.getFunction(name).return_statement is not None:
-            ret_name, ret_type = Programm.getFunction(name).return_statement
-            if ret_name is not None:
-                return self.visit(Programm.functions.get(name).return_ctx)
+            return self.visit(Programm.functions.get(name).return_ctx)
             '''
             print(ret_name)
             if ret_type == "VariableNameContext":
@@ -513,10 +511,10 @@ class AppVisitor(AppParseTreeVisitor):
     def visitGetVelocity(self, ctx: AppParser.GetVelocityContext):
         return self.visitChildren(ctx)
 
-    # Not implemented
     def visitReturn_statement(self, ctx: AppParser.Return_statementContext):
-        # returns art expression and type of the node
-        return self.visit(ctx.expr), type(self.getNodesChild(ctx.expr, 0)).__name__
+        if AppVisitor.inside_function_dec:
+            return Programm.getInstructionAsTxt(ctx)
+        return self.visit(ctx.expr)
 
 
 del AppParser
