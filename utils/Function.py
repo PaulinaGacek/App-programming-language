@@ -2,12 +2,13 @@ from utils.Variable import *
 
 class Function:
 
-    def __init__(self, name: str, return_type: Type = None, return_stat = None):
+    def __init__(self, name: str, return_type: Type = None, return_stat = None, return_ctx = None):
         self.name = name
         self.params = [] #tuple (variable names, Variables())
         self.actions = [] # actions which function makes
         self.return_type = return_type
         self.return_statement = return_stat
+        self.return_ctx = return_ctx # node to return statemaent
     
     def displayDetails(self):
         variable_names = ""

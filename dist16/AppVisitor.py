@@ -408,6 +408,21 @@ class AppVisitor(AppParseTreeVisitor):
             for declared, given in zip(declared_types, given_arguments):
                 if declared[1].type != given[1].type:
                     raise UnallowedCasting(given[1].type, declared[1].type)
+        
+        ret_name, ret_type = Programm.getFunction(name).return_statement
+        if ret_name is not None:
+            return self.visit(Programm.functions.get(name).return_ctx)
+            '''
+            print(ret_name)
+            if ret_type == "VariableNameContext":
+                variable = Programm.getVariable(ret_name)
+                if variable.type == 'OBJECT' or variable.type == 'FORCE':
+                    return variable.value, variable.value2
+                else:
+                    return variable.value
+            else:
+                return self.visit(Programm.functions.get(name).return_ctx)
+            '''
 
     def visitFunctionDeclaration(self, ctx: AppParser.FunctionDeclarationContext):
         AppVisitor.inside_function_dec = True
@@ -426,7 +441,7 @@ class AppVisitor(AppParseTreeVisitor):
 
             context = self.visit(ctx.return_stat)
 
-        func = Function(f_name, f_return_type, context)
+        func = Function(f_name, f_return_type, context, ctx.return_stat)
         if ctx.f_args is not None:  # function has params
             # function args returns dict of variables
             func.params = self.visit(ctx.f_args)
@@ -436,7 +451,6 @@ class AppVisitor(AppParseTreeVisitor):
         Programm.addFunction(func)
 
     def visitFunctionBody(self, ctx: AppParser.FunctionBodyContext):
-        
         action_list = []
         for child in ctx.children:
             if type(child).__name__ == "InstructionContext":
@@ -528,7 +542,7 @@ class AppVisitor(AppParseTreeVisitor):
     
     # Not implemented
     def visitReturn_statement(self, ctx:AppParser.Return_statementContext):
-        return self.visit(ctx.expr)
+        return self.visit(ctx.expr), type(self.getNodesChild(ctx.expr, 0)).__name__
 
 
 del AppParser

@@ -269,6 +269,7 @@ class Programm:
         while idx != -1:
             data = re.sub("DEFINE FUNCTION .+ ENDFUNCTION;", "", data)
             idx = data.find('DEFINE FUNCTION')
+        data = re.sub(";;", ";", data)
         return data
 
     @staticmethod
@@ -321,6 +322,7 @@ class Programm:
         str = re.search(
             func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", data).group(0)
         str = re.sub(func_name+"\(", "", str)
+        str = re.sub("\);;", "", str)
         str = re.sub("\);", "", str)
         str = str.replace(" ", "")
         if str != "":
