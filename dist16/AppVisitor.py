@@ -473,6 +473,7 @@ class AppVisitor(AppParseTreeVisitor):
                         (name, Programm.getVariable(name, scope=Programm.current_scope)))
             elif type(child).__name__ == "ArithmeticalExpressionContext":
                 print(self.visit(child))
+                param_var = Variable()
         return given_arguments
 
     def visitWhiteSpace(self, ctx: AppParser.WhiteSpaceContext):
