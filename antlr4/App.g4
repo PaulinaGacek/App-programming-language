@@ -131,8 +131,7 @@ return_statement
 	: 'RETURN' whiteSpace expr=arithmeticalExpression whiteSpace? ';' ;
 
 comment
-	: '/*' .*? '*/'
-	| EOF;
+	: '/*' .*? '*/';
 
 scopeName
 	: UPPERCASELETTER (LOWERCASELETTER|UPPERCASELETTER|'_'| NONZERODIGIT | ZERO)*;
