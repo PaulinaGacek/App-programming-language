@@ -20,5 +20,5 @@ DEFINE FORCE sila AS [0,1]; funkcja2(sila); DEFINE FUNCTION funkcja2(TIME t) AS 
 DEFINE TIME t AS 200; DEFINE INT i AS 30; DEFINE FORCE f AS [120,3]; DEFINE OBJECT o AS (200,200); DEFINE FUNCTION applyforce(FORCE f, TIME t, OBJECT o) AS APPLY f TO o FOR t; ENDFUNCTION; applyforce(f, t, o);
 applyforce(f, t, i);
 
-// funkcja zwracajaca argument
-DEFINE TIME t AS 30; DEFINE INT zmienna AS funkcja2(t);; DEFINE FUNCTION funkcja2(TIME t)-> INT AS SET t AS t + 30; RETURN t; ENDFUNCTION;
+// funkcja zwracajaca argument - works
+DEFINE TIME t AS 30; DEFINE INT zmienna AS funkcja2(t); DEFINE FUNCTION funkcja2(TIME t)-> INT AS SET t AS t + 30; RETURN t; ENDFUNCTION;

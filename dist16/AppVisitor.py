@@ -367,8 +367,7 @@ class AppVisitor(AppParseTreeVisitor):
         name = self.visit(ctx.f_name)
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)
-        else:
-            # check whether arguments are of the correct type
+        else: # validate arguments
             declared_types = Programm.functions.get(
                 name).params  # list[(name,Variable())]
             given_arguments = []
@@ -380,12 +379,8 @@ class AppVisitor(AppParseTreeVisitor):
                 raise WrongNumberOfArguments(
                     len(declared_types), len(given_arguments))
 
+            # checking if arguments names are not repeated
             repeated_name = Programm.getRepeatedVariableName(declared_types)
-            if repeated_name is not None:
-                raise Error(
-                    "Function arguments cannot have the same name - {}".format(repeated_name))
-
-            repeated_name = Programm.getRepeatedVariableName(given_arguments)
             if repeated_name is not None:
                 raise Error(
                     "Function arguments cannot have the same name - {}".format(repeated_name))
@@ -394,20 +389,11 @@ class AppVisitor(AppParseTreeVisitor):
             for declared, given in zip(declared_types, given_arguments):
                 if declared[1].type != given[1].type:
                     raise UnallowedCasting(given[1].type, declared[1].type)
+        # execute function body
+        self.visit(Programm.getFunction(name).body_ctx)
 
         if Programm.getFunction(name).return_statement is not None:
             return self.visit(Programm.functions.get(name).return_ctx)
-            '''
-            print(ret_name)
-            if ret_type == "VariableNameContext":
-                variable = Programm.getVariable(ret_name)
-                if variable.type == 'OBJECT' or variable.type == 'FORCE':
-                    return variable.value, variable.value2
-                else:
-                    return variable.value
-            else:
-                return self.visit(Programm.functions.get(name).return_ctx)
-            '''
 
     def visitFunctionDeclaration(self, ctx: AppParser.FunctionDeclarationContext):
         AppVisitor.inside_function_dec = True
@@ -426,7 +412,7 @@ class AppVisitor(AppParseTreeVisitor):
 
             context = self.visit(ctx.return_stat)
 
-        func = Function(f_name, f_return_type, context, ctx.return_stat)
+        func = Function(f_name, f_return_type, context, ctx.return_stat, ctx.f_body)
         if ctx.f_args is not None:  # function has params
             # function args returns dict of variables
             func.params = self.visit(ctx.f_args)

@@ -29,7 +29,7 @@ def interprateInput(data):
     AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
     new_data = Programm.deleteFunctionsDefinitions(data.__str__())
     print("WITH DELETED FUNCTION DECLARATIONS:", new_data)
-    new_data = Programm.inputFunctionsDefinition(new_data)
+    # new_data = Programm.inputFunctionsDefinition(new_data)
     print("WITH INPUT CODE:", new_data)
 
     data = InputStream(new_data)
