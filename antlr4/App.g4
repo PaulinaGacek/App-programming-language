@@ -72,7 +72,7 @@ arithmeticalExpression
     ;
 
 declaration
-	:   'DEFINE' whiteSpace type_sim=variableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
+	:   'DEFINE' whiteSpace type_=variableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
 	;
 
 definition

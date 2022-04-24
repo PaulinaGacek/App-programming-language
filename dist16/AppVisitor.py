@@ -219,11 +219,12 @@ class AppVisitor(AppParseTreeVisitor):
 
         if type_ == 'INT' or type_ == 'TIME':
             if type(self.visit(ctx.value_)) is not int:
-                raise Error("Bad casting: {}".format(
-                    type(self.visit(ctx.value_))))
+                raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
+
             value = self.visit(ctx.value_)
             Programm.defineNewVariable(name, Programm.strToType(
                 type_), value, scope=Programm.scope_history.top())
+
         elif type_ == 'FLOAT':
             if type(self.visit(ctx.value_)) is not float:
                 raise Error("Bad casting: {}".format(
@@ -231,6 +232,7 @@ class AppVisitor(AppParseTreeVisitor):
             value = self.visit(ctx.value_)
             Programm.defineNewVariable(name, Programm.strToType(
                 type_), value, scope=Programm.scope_history.top())
+
         elif type_ == 'FORCE':
             value1, value2 = self.visit(ctx.value_)
             Programm.defineNewVariable(name, Programm.strToType(
@@ -241,7 +243,6 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineNewVariable(name, Programm.strToType(
                 type_), value1, value2, scope=Programm.scope_history.top())
             PyturtleHandler.add_new_object(name, value1, value2)
-
 
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
 
@@ -260,13 +261,6 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineExistingVariable(
                 name, value, scope=Programm.current_scope)
 
-        else:  # complex type
-            value1 = self.visit(ctx.value1_)
-            value2 = self.visit(ctx.value2_)
-
-            Programm.defineExistingVariable(
-                name, value1, value2, Programm.current_scope)
-
         Programm.current_scope = Programm.scope_history.top()
 
     def visitConditionalStatement(self, ctx: AppParser.ConditionalStatementContext):
@@ -275,7 +269,6 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.addNewVariableScope()
             self.visit(ctx.con_body)
             Programm.deleteTopVariableScope()
-
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
@@ -352,7 +345,6 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
     def visitParallelExpression(self, ctx: AppParser.ParallelExpressionContext):
-        print("Parallel")
         AppVisitor.inside_parallel = True
         self.visit(ctx.par_body)
         AppVisitor.inside_parallel = False
@@ -486,7 +478,7 @@ class AppVisitor(AppParseTreeVisitor):
         return given_arguments
 
     def visitWhiteSpace(self, ctx: AppParser.WhiteSpaceContext):
-        return # does nothing
+        return  # does nothing
 
     def visitComment(self, ctx: AppParser.CommentContext):
         return  # does nothing
