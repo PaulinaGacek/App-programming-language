@@ -80,7 +80,10 @@ definition
 	;
 
 conditionalStatement
-    :   'IF' whiteSpace? '('whiteSpace? cond=condition whiteSpace? ')' whiteSpace 'THEN' whiteSpace con_body=conditionBody whiteSpace 'ENDIF' whiteSpace? ';'
+    :   'IF' whiteSpace? '('whiteSpace? cond=condition whiteSpace? ')' whiteSpace? 'THEN' whiteSpace con_body=conditionBody whiteSpace?
+	(elif_stat=elifStatement)*
+	(else_stat=elseStatement)?
+	'ENDIF' whiteSpace? ';'
     ;
 
 condition
@@ -90,6 +93,12 @@ condition
     ;
 
 conditionBody: (instruction whiteSpace?)+ ;
+
+elifStatement
+	: 'ELIF' whiteSpace? '('whiteSpace? cond=condition whiteSpace? ')'whiteSpace? 'THEN' whiteSpace con_body=conditionBody whiteSpace? ;
+
+elseStatement
+	: 'ELSE' whiteSpace? whiteSpace con_body=conditionBody whiteSpace? ;
 
 parallelExpression
     :   'PARALLEL' whiteSpace  par_body=parallelBody whiteSpace 'ENDPARALLEL' whiteSpace? ';'
@@ -122,7 +131,7 @@ functionArgs
     ;
 
 functionParams
-	: variableName (whiteSpace? ',' whiteSpace? variableName)*
+	: arithmeticalExpression (whiteSpace? ',' whiteSpace? arithmeticalExpression)*
 	;
 
 functionArgument: type_=variableType whiteSpace name_=variableName;
