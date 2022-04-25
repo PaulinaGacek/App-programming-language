@@ -8,7 +8,7 @@ funkcja2();
 DEFINE TIME zmienna AS 20; funkcja2(zmienna); DEFINE FUNCTION funkcja2( TIME t) AS DEFINE TIME t AS 30; ENDFUNCTION;
 
 // test zczytywania argumentow
-DEFINE TIME zmienna AS 20; funkcja2(zmienna); DEFINE FUNCTION funkcja2( TIME t) AS SET t AS t + 30; ENDFUNCTION;
+DEFINE TIME zmienna AS 10; DEFINE TIME zmienna2 AS 20;funkcja2(zmienna , zmienna2); DEFINE FUNCTION funkcja2( TIME t, TIME t2) AS SET t AS t + 30; ENDFUNCTION;
 
 // nie przyjmowanie jako argument funkcji niezadeklarowanej zmiennej
 DEFINE TIME zmienna AS 20; funkcja2(zmienna2); DEFINE FUNCTION funkcja2( TIME t) AS SET t AS t + 30; ENDFUNCTION;

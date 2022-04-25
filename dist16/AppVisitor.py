@@ -347,6 +347,12 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitConditionBody(self, ctx: AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
+    
+    def visitElifStatement(self, ctx: AppParser.ElifStatementContext):
+        return self.visitChildren(ctx)
+    
+    def visitElseStatement(self, ctx: AppParser.ElseStatementContext):
+        return self.visitChildren(ctx)
 
     def visitParallelExpression(self, ctx: AppParser.ParallelExpressionContext):
         AppVisitor.inside_parallel = True

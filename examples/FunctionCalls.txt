@@ -1,3 +1,2 @@
-DEFINE TIME t AS 30; DEFINE INT zmienna AS funkcja2(t); 
-DEFINE FUNCTION funkcja1()->INT AS DEFINE TIME w AS 20; RETURN 2137; ENDFUNCTION; 
-DEFINE FUNCTION funkcja2(TIME tim)-> INT AS SET tim AS tim + 30; RETURN funkcja1(); ENDFUNCTION;
+DEFINE INT zmienna AS 3;
+DEFINE FUNCTION silnia(INT n)-> INT AS DEFINE INT w AS 0; IF(n <= 1) THEN SET wynik AS 1; ENDIF; IF (n > 1) THEN SET wynik AS silnia(n-1) * n; ENDIF; RETURN wynik;
