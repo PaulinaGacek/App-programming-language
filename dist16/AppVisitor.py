@@ -230,7 +230,7 @@ class AppVisitor(AppParseTreeVisitor):
                 type_), value, scope=Programm.scope_history.top())
 
         elif type_ == 'FLOAT':
-            if type(self.visit(ctx.value_)) is not float:
+            if type(self.visit(ctx.value_)).__name__ != 'float':
                 raise Error("Bad casting: {}".format(
                     type(self.visit(ctx.value_))))
             value = self.visit(ctx.value_)
@@ -514,9 +514,30 @@ class AppVisitor(AppParseTreeVisitor):
     def visitGetDistance(self, ctx: AppParser.GetDistanceContext):
         return self.visitChildren(ctx)
 
-    # Visit a parse tree produced by AppParser#getVelocity.
     def visitGetVelocity(self, ctx: AppParser.GetVelocityContext):
-        return self.visitChildren(ctx)
+        text_value = ctx.axis.text
+        name = self.visit(ctx.name_)
+        curr_object = None
+        if Programm.getVariable(name, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+            if Programm.getVariable(name) is None:  # nie ma w globalnym
+                raise UndefinedVariableReferenceError(name)
+            else:
+                curr_object = Programm.getVariable(name)
+        else:
+            curr_object = Programm.getVariable(name, Programm.current_scope)
+
+        if curr_object.type != Type.OBJECT:
+            raise TypeError("Variable is not an object")
+
+        ball = PyturtleHandler.balls[curr_object.name]
+        if text_value == "X":
+            return float(ball.dx)
+        elif text_value == "Y":
+            return float(ball.dy)
+        elif text_value == "VALUE":
+            return math.sqrt(ball.dx**2 + ball.dy**2)
+        else:
+            return 2137
 
     def visitReturn_statement(self, ctx: AppParser.Return_statementContext):
         if AppVisitor.inside_function_dec:
