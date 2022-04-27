@@ -116,8 +116,8 @@ class Programm:
         else:
             print("Users functions:")
             for key, value in Programm.functions.items():
-                print("     Name: {} -> details: {}".format(key,
-                      value.displayDetails()))
+                print("     Name: {} -> details: {}".format(key, value.displayDetails()))
+                print("********")
 
     '''
     Converts given string to Type object
@@ -161,6 +161,16 @@ class Programm:
             return Programm.variables.get(name)
         else:
             return Programm.local_scopes[scope].get(name)
+    
+    @staticmethod
+    def getVaribaleFromProperScope(name: str):
+        size = Programm.scope_history.getSize()
+        for i in range (0,size):
+            if Programm.local_scopes[size-1-i].get(name) is not None:
+                return Programm.local_scopes[size-1-i].get(name)
+        if  Programm.variables.get(name) is not None:
+            return Programm.variables.get(name)
+        return UndefinedVariableReferenceError(name)
 
     @staticmethod
     def areTypesCompatible(type1, type2, name1, name2) -> bool:
@@ -364,6 +374,7 @@ class Programm:
             Programm.local_scopes.append(local_variables)
  
         Programm.current_scope = Programm.scope_history.top()
+        print("New variable scope was added, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def deleteTopVariableScope():
@@ -372,6 +383,7 @@ class Programm:
         if type(Programm.scope_history.top()) is int:
             Programm.local_scopes[Programm.scope_history.top()].clear()
         Programm.scope_history.pop()
+        print("Top scope was deleted, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def addNewNamedVariableScope(name: str, previos_scopes):
