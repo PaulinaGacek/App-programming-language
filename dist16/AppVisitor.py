@@ -508,7 +508,28 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#getCoordinate.
     def visitGetCoordinate(self, ctx: AppParser.GetCoordinateContext):
-        return self.visitChildren(ctx)
+        text_value = ctx.axis.text
+        name = self.visit(ctx.name_)
+        curr_object = None
+        if Programm.getVariable(name, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+            if Programm.getVariable(name) is None:  # nie ma w globalnym
+                raise UndefinedVariableReferenceError(name)
+            else:
+                curr_object = Programm.getVariable(name)
+        else:
+            curr_object = Programm.getVariable(name, Programm.current_scope)
+
+        if curr_object.type != Type.OBJECT:
+            raise TypeError("Variable is not an object")
+
+        ball = PyturtleHandler.balls[curr_object.name]
+        if text_value == "X":
+            return float(ball.get_pos_x())
+        elif text_value == "Y":
+            return float(ball.get_pos_y())
+        else:
+            return 2137
+
 
     # Visit a parse tree produced by AppParser#getDistance.
     def visitGetDistance(self, ctx: AppParser.GetDistanceContext):
