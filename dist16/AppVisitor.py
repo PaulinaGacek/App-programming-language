@@ -504,7 +504,11 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#getAngle.
     def visitGetAngle(self, ctx: AppParser.GetAngleContext):
-        return self.visitChildren(ctx)
+        x1, y1, x2, y2 = self.getDistancecoords(ctx)
+        degree = math.atan2(y2 - y1, x2 - x1) * 180 / math.pi
+        if degree < 0:
+            degree += 360
+        return degree
 
     # Visit a parse tree produced by AppParser#getCoordinate.
     def visitGetCoordinate(self, ctx: AppParser.GetCoordinateContext):
