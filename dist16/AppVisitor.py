@@ -530,10 +530,42 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             return 2137
 
-
     # Visit a parse tree produced by AppParser#getDistance.
     def visitGetDistance(self, ctx: AppParser.GetDistanceContext):
-        return self.visitChildren(ctx)
+        if ctx.name_1 is None:
+            object1 = self.visit(ctx.object_1)
+            x1 = object1[0]
+            y1 = object1[1]
+        else:
+            name1 = self.visit(ctx.name_1)
+            if Programm.getVariable(name1, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+                if Programm.getVariable(name1) is None:  # nie ma w globalnym
+                    raise UndefinedVariableReferenceError(name1)
+                else:
+                    object1 = Programm.getVariable(name1)
+            else:
+                object1 = Programm.getVariable(name1, Programm.current_scope)
+            x1 = object1.value
+            y1 = object1.value2
+        if ctx.name_2 is None:
+            object2 = self.visit(ctx.object_2)
+            x2 = object2[0]
+            y2 = object2[1]
+        else:
+            name2 = self.visit(ctx.name_2)
+            if Programm.getVariable(name2, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+                if Programm.getVariable(name2) is None:  # nie ma w globalnym
+                    raise UndefinedVariableReferenceError(name2)
+                else:
+                    object2 = Programm.getVariable(name2)
+            else:
+                object2 = Programm.getVariable(name2, Programm.current_scope)
+            x2 = object2.value
+            y2 = object2.value2
+
+        diff_x = abs(x1 - x2)
+        diff_y = abs(y1 - y2)
+        return math.sqrt(diff_x ** 2 + diff_y ** 2)
 
     def visitGetVelocity(self, ctx: AppParser.GetVelocityContext):
         text_value = ctx.axis.text
