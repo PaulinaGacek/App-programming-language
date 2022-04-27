@@ -140,7 +140,7 @@ class AppVisitor(AppParseTreeVisitor):
             elif type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
 
-                if Programm.getVariable(name, Programm.current_scope) is None: # not defined in current scope
+                if Programm.getVariable(name, Programm.current_scope) is None:  # not defined in current scope
                     if Programm.getVariable(name) is None:
                         raise UndefinedVariableReferenceError(name)
                     else:
@@ -153,7 +153,8 @@ class AppVisitor(AppParseTreeVisitor):
                                                                                                                    Programm.current_scope).type == Type.TIME:
                         return Programm.getVariable(name, Programm.current_scope).value
                     else:
-                        return Programm.getVariable(name, Programm.current_scope).value, Programm.getVariable(name, Programm.current_scope).value2
+                        return Programm.getVariable(name, Programm.current_scope).value, Programm.getVariable(name,
+                                                                                                              Programm.current_scope).value2
             else:
                 return self.visitChildren(ctx)
 
@@ -268,10 +269,11 @@ class AppVisitor(AppParseTreeVisitor):
         Programm.current_scope = Programm.scope_history.top()
 
     def visitConditionalStatement(self, ctx: AppParser.ConditionalStatementContext):
-
         if self.visit(ctx.cond):
             Programm.addNewVariableScope()
             self.visit(ctx.con_body)
+            Programm.deleteTopVariableScope()
+        elif ctx.elif_stat is not None and self.visit(ctx.elif_stat):
             Programm.deleteTopVariableScope()
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
@@ -347,10 +349,15 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitConditionBody(self, ctx: AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
-    
+
     def visitElifStatement(self, ctx: AppParser.ElifStatementContext):
-        return self.visitChildren(ctx)
-    
+
+        if not self.visit(ctx.parentCtx.cond) and self.visit(ctx.cond):
+            self.visit(ctx.con_body)
+            return True
+        else:
+            return False
+
     def visitElseStatement(self, ctx: AppParser.ElseStatementContext):
         return self.visitChildren(ctx)
 
@@ -377,7 +384,7 @@ class AppVisitor(AppParseTreeVisitor):
         name = self.visit(ctx.f_name)
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)
-        
+
         declared_types = Programm.functions.get(name).params  # list[(name,Variable())]
         given_arguments = []
         if ctx.f_args is not None:  # function with arguemnts
@@ -402,7 +409,8 @@ class AppVisitor(AppParseTreeVisitor):
         Programm.addNewVariableScope()
         # adding all params to scope
         for declared, given in zip(declared_types, given_arguments):
-            Programm.defineNewVariable(declared[0], given[1].type, given[1].value, given[1].value2, scope=Programm.scope_history.top())
+            Programm.defineNewVariable(declared[0], given[1].type, given[1].value, given[1].value2,
+                                       scope=Programm.scope_history.top())
         self.visit(Programm.getFunction(name).body_ctx)
 
         return_val = None
