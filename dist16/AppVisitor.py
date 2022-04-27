@@ -269,6 +269,7 @@ class AppVisitor(AppParseTreeVisitor):
         Programm.current_scope = Programm.scope_history.top()
 
     def visitConditionalStatement(self, ctx: AppParser.ConditionalStatementContext):
+
         if self.visit(ctx.cond):
             Programm.addNewVariableScope()
             self.visit(ctx.con_body)
@@ -278,6 +279,7 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             if ctx.else_stat is not None:
                 self.visit(ctx.else_stat)
+                Programm.deleteTopVariableScope()
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
@@ -356,6 +358,7 @@ class AppVisitor(AppParseTreeVisitor):
     def visitElifStatement(self, ctx: AppParser.ElifStatementContext):
 
         if not self.visit(ctx.parentCtx.cond) and self.visit(ctx.cond):
+            Programm.addNewVariableScope()
             self.visit(ctx.con_body)
             return True
         else:
@@ -365,8 +368,10 @@ class AppVisitor(AppParseTreeVisitor):
 
         if not self.visit(ctx.parentCtx.cond):
             if ctx.parentCtx.elif_stat is not None and not self.visit(ctx.parentCtx.elif_stat):
+                Programm.addNewVariableScope()
                 self.visit(ctx.con_body)
             elif ctx.parentCtx.elif_stat is None:
+                Programm.addNewVariableScope()
                 self.visit(ctx.con_body)
 
     def visitParallelExpression(self, ctx: AppParser.ParallelExpressionContext):
