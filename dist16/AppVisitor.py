@@ -130,14 +130,13 @@ class AppVisitor(AppParseTreeVisitor):
             AppVisitor.forces.clear()
 
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
+        print(ctx.getText())
 
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
-        if NR_OF_CHILDREN == 1:  # variable name or INT
-            if type(self.getNodesChild(ctx, 0)).__name__ == "IntegerContext":
-                return self.visitChildren(ctx)
+        if NR_OF_CHILDREN == 1:  # variable name or value
 
-            elif type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
+            if type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
                 var = Programm.getVaribaleFromProperScope(name)
                 if var.type == Type.INT or var.type == Type.TIME or var.type == Type.FLOAT:
@@ -159,21 +158,18 @@ class AppVisitor(AppParseTreeVisitor):
                                                                                                         val1, val2))
 
             artm_type = None
-            if type1 == "VariableNameContext":
-                artm_type = Programm.getVariable(
-                    val1, Programm.current_scope).type
-            elif type1 == "IntegerContext":
+            if type2 == "VariableNameContext":
+                artm_type = Programm.getVariable(val1, Programm.current_scope).type
+            elif type2 == "IntegerContext":
                 artm_type = Type.INT
-            elif type1 == "Object_typeContext":
+            elif type2 == "Object_typeContext":
                 artm_type = Type.OBJECT
-            elif type1 == "Force_typeContext":
+            elif type2 == "Force_typeContext":
                 artm_type = Type.FORCE
             else:
                 artm_type = 'ARITM_EXPR'
 
-            # print("Artm type: {}".format(artm_type))
-
-            if artm_type == Type.INT or artm_type == Type.TIME:
+            if artm_type == Type.INT or artm_type == Type.TIME or artm_type == Type.FLOAT:
                 l = self.visit(ctx.left)
                 r = self.visit(ctx.right)
 
