@@ -159,8 +159,10 @@ class AppVisitor(AppParseTreeVisitor):
 
             artm_type = None
             if type2 == "VariableNameContext":
-                artm_type = Programm.getVariable(val1, Programm.current_scope).type
+                artm_type = Programm.getVaribaleFromProperScope(val2).type
             elif type2 == "IntegerContext":
+                artm_type = Type.INT
+            elif type2 == "Float_typeContext":
                 artm_type = Type.INT
             elif type2 == "Object_typeContext":
                 artm_type = Type.OBJECT
@@ -209,9 +211,10 @@ class AppVisitor(AppParseTreeVisitor):
 
         if type_ == 'INT' or type_ == 'TIME':
             value = self.visit(ctx.value_)
-            if type(value) is not int:
-                raise Error("Bad casting: {}".format(type(value)))
-            
+            if type(value) is not int and  type(value) is not float:
+                raise Error("Bad casting: {}".format(type(value).__name__))
+            if type(value) is float:
+                value = int(value)
             Programm.defineNewVariable(name, Programm.strToType(
                 type_), value, scope=Programm.scope_history.top())
 

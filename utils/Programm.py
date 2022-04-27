@@ -174,33 +174,17 @@ class Programm:
 
     @staticmethod
     def areTypesCompatible(type1, type2, name1, name2) -> bool:
+        # unfinished - checks only situation when both args are variable names
         if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
             return True
-        '''
-        Types has also be checked in local scopes
-        if type1 == "VariableNameContext":
-            if Programm.variables[name1].type == Type.INT:
-                type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.TIME:
-                type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.FORCE:
-                type1 = "Force_typeContext"
-            elif Programm.variables[name1].type == Type.OBJECT:
-                type1 = "Object_typeContext"
+    
+        if type1 == "VariableNameContext" and type2 == "VariableNameContext":
+            if Programm.getVaribaleFromProperScope(name1).type != Programm.getVaribaleFromProperScope(name2).type:
+                return False
+        
+        if (type1 == "IntegerContext" or type2 != "Float_typeContext") and type2 != "IntegerContext" and type2 != "Float_typeContext":
+            return False
 
-        if type2 == "VariableNameContext":
-            if Programm.variables[name2].type == Type.INT:
-                type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.TIME:
-                type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.FORCE:
-                type2 = "Force_typeContext"
-            elif Programm.variables[name2].type == Type.OBJECT:
-                type2 = "Object_typeContext"
-
-        if type1 == type2:
-            return True
-        '''
         return True
 
     @staticmethod
