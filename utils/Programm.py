@@ -175,12 +175,13 @@ class Programm:
     @staticmethod
     def areTypesCompatible(type1, type2, name1, name2) -> bool:
         # unfinished - checks only situation when both args are variable names
-        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
+        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext" or type1 == "FunctionCallContext" or type2 == "FunctionCallContext":
             return True
     
         if type1 == "VariableNameContext" and type2 == "VariableNameContext":
             if Programm.getVaribaleFromProperScope(name1).type != Programm.getVaribaleFromProperScope(name2).type:
                 return False
+            return True
         
         if (type1 == "IntegerContext" or type2 != "Float_typeContext") and type2 != "IntegerContext" and type2 != "Float_typeContext":
             return False

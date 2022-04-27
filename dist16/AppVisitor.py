@@ -130,7 +130,7 @@ class AppVisitor(AppParseTreeVisitor):
             AppVisitor.forces.clear()
 
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
-        print(ctx.getText())
+        # print(ctx.getText())
 
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
 
@@ -168,6 +168,9 @@ class AppVisitor(AppParseTreeVisitor):
                 artm_type = Type.OBJECT
             elif type2 == "Force_typeContext":
                 artm_type = Type.FORCE
+            elif type2 == "FunctionCallContext":
+                name = self.visit(self.getNodesChild(ctx.right, 0).f_name) # function name
+                artm_type = Programm.getFunction(name).return_type
             else:
                 artm_type = 'ARITM_EXPR'
 
@@ -371,7 +374,7 @@ class AppVisitor(AppParseTreeVisitor):
         given_arguments = []
         if ctx.f_args is not None:  # function with arguemnts
             given_arguments = self.visit(ctx.f_args)
-        print(given_arguments)
+        # print(given_arguments)
         # checking number of arguments:
         if len(declared_types) != len(given_arguments):
             raise WrongNumberOfArguments(name, required=len(declared_types), provided=len(given_arguments))
@@ -392,6 +395,7 @@ class AppVisitor(AppParseTreeVisitor):
         # adding all params to scope
         for declared, given in zip(declared_types, given_arguments):
             Programm.defineNewVariable(declared[0], given[1].type, given[1].value, given[1].value2, scope=Programm.scope_history.top())
+        Programm.displayVariables()
         self.visit(Programm.getFunction(name).body_ctx)
 
         return_val = None
@@ -403,6 +407,9 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitFunctionDeclaration(self, ctx: AppParser.FunctionDeclarationContext):
         AppVisitor.inside_function_dec = True
+
+        if ctx.f_body is None and ctx.return_stat is None:
+            raise Error("Body of the function cannot be empty")
 
         f_name = self.visit(ctx.f_name)
         if Programm.getFunction(f_name) is not None:

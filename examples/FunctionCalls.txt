@@ -1,9 +1,11 @@
 DEFINE INT zmienna AS 3; DEFINE FUNCTION ret_pap()->INT AS DEFINE INT papjez AS 2137; RETURN papjez; ENDFUNCTION;
-DEFINE INT pap AS ret_pap(); 
-/*nie dzialaja wyrazenia artm - wynik to 2*/
+DEFINE INT pap AS 2137; 
 DEFINE INT pap22 AS ret_pap()+2; 
-DEFINE FUNCTION suma(INT a, INT b)->INT AS DEFINE INT output AS a+b; RETURN output; ENDFUNCTION; DEFINE INT sum AS suma(zmienna, pap); /* works */
-DEFINE FUNCTION func(INT a_to_sum)->INT AS DEFINE INT output AS suma(a_to_sum, a_to_sum); RETURN output; ENDFUNCTION; DEFINE INT output AS func(zmienna);
+DEFINE FUNCTION suma(INT a, INT b)->INT AS DEFINE INT s AS a+b; RETURN s; ENDFUNCTION; DEFINE INT sum AS suma(zmienna, pap); /* works */
+DEFINE FUNCTION func(INT a_to_sum)->INT AS DEFINE INT output2 AS suma(a_to_sum, a_to_sum); RETURN output2; ENDFUNCTION; DEFINE INT out AS func(zmienna);
 /*funkcja w funkcji w funkcji */
-DEFINE FUNCTION funcfunc(INT drr)->INT AS DEFINE INT output AS func(drr)+suma(drr,drr); RETURN output; ENDFUNCTION; DEFINE INT func_output AS funcfunc(zmienna);
+DEFINE FUNCTION funcfunc(INT drr)->INT AS DEFINE INT o AS func(drr)+suma(drr,drr); RETURN o; ENDFUNCTION; DEFINE INT func_output AS funcfunc(zmienna);
 /*DEFINE FUNCTION silnia(INT n)-> INT AS DEFINE INT w AS 0; IF(n <= 1) THEN SET wynik AS 1; ENDIF; IF (n > 1) THEN SET wynik AS silnia(n-1) * n; ENDIF; RETURN wynik;*/
+
+DEFINE INT zmienna AS 3; DEFINE FUNCTION ret_pap()->INT AS DEFINE INT papjez AS 2137; RETURN papjez; ENDFUNCTION;
+DEFINE INT pap AS ret_pap()+2; 
