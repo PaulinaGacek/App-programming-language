@@ -1,9 +1,10 @@
 from antlr4 import *
-from utils.AppParseTreeVisitor import AppParseTreeVisitor
-from utils.Programm import Programm
-from utils.Variable import *
+from programm.AppParseTreeVisitor import AppParseTreeVisitor
+from programm.Programm import Programm
+from programm.Variable import *
 from utils.Error import *
-from utils.Function import Function
+from utils.TypeUtils import *
+from programm.Function import Function
 from front.PyturtleHandler import *
 
 if __name__ is not None and "." in __name__:
@@ -126,10 +127,8 @@ class AppVisitor(AppParseTreeVisitor):
             AppVisitor.forces.clear()
 
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
-        # print(ctx.getText())
 
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
-
         if NR_OF_CHILDREN == 1:  # variable name or value
 
             if type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
@@ -212,7 +211,7 @@ class AppVisitor(AppParseTreeVisitor):
                 raise Error("Bad casting: {}".format(type(value).__name__))
             if type(value) is float:
                 value = int(value)
-            Programm.defineNewVariable(name, Programm.strToType(
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value, scope=Programm.scope_history.top())
 
         elif type_ == 'FLOAT':
@@ -220,17 +219,17 @@ class AppVisitor(AppParseTreeVisitor):
             if type(value) is not float:
                 raise Error("Bad casting: {}".format(type(value)))
             
-            Programm.defineNewVariable(name, Programm.strToType(
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value, scope=Programm.scope_history.top())
 
         elif type_ == 'FORCE':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, scope=Programm.scope_history.top())
 
         elif type_ == 'OBJECT':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, scope=Programm.scope_history.top())
             PyturtleHandler.add_new_object(name, value1, value2)
 
@@ -409,7 +408,7 @@ class AppVisitor(AppParseTreeVisitor):
         f_return_type = None
         context = None
         if ctx.return_type is not None:
-            f_return_type = Programm.strToType(self.visit(ctx.return_type))
+            f_return_type = TypeUtils.strToType(self.visit(ctx.return_type))
 
             if ctx.return_stat is None:
                 raise FunctionHasToReturnSomething(f_name, f_return_type)
@@ -444,7 +443,7 @@ class AppVisitor(AppParseTreeVisitor):
     def visitFunctionArgument(self, ctx: AppParser.FunctionArgumentContext):
         name = self.visit(ctx.name_)
         type = self.visit(ctx.type_)
-        var = Variable(name, Programm.strToType(type), None, None)
+        var = Variable(name, TypeUtils.strToType(type), None, None)
         return name, var
 
     def visitFunctionParams(self, ctx: AppParser.FunctionParamsContext):
@@ -459,11 +458,11 @@ class AppVisitor(AppParseTreeVisitor):
                 name = "Var_"+str(Programm.current_scope)+"_"+str(len(Programm.local_scopes))
                 if type(self.visit(child)) is not tuple:
                     val = self.visit(child)
-                    type_ = Programm.detectTypeFromValue(val)
+                    type_ = TypeUtils.detectTypeFromValue(val)
                     var= Variable(name, type_, val)
                 else:
                     val, val2 = self.visit(child)
-                    type_ = Programm.detectTypeFromValue((val,val2))
+                    type_ = TypeUtils.detectTypeFromValue((val,val2))
                     var= Variable(name, type_, val, val2)
 
                 given_arguments.append((name, var))

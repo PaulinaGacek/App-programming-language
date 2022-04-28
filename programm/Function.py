@@ -1,4 +1,4 @@
-from utils.Variable import *
+from programm.Variable import *
 
 class Function:
 

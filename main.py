@@ -3,8 +3,8 @@ from antlr4 import *
 from dist16.AppLexer import AppLexer
 from dist16.AppParser import AppParser
 from dist16.AppVisitor import *
-from utils.AppErrorListener import *
-from utils.Programm import Programm
+from programm.AppErrorListener import *
+from programm.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
 
 
@@ -28,9 +28,6 @@ def interprateInput(data):
 
     AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
     new_data = Programm.deleteFunctionsDefinitions(data.__str__())
-    # print("WITH DELETED FUNCTION DECLARATIONS:", new_data)
-    # new_data = Programm.inputFunctionsDefinition(new_data)
-    # print("WITH INPUT CODE:", new_data)
 
     data = InputStream(new_data)
     # lexer

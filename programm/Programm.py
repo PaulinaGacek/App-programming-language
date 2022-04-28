@@ -1,8 +1,8 @@
-from utils.Variable import *
+from programm.Variable import *
 from utils.Error import *
 from utils.Stack import *
-from utils.Function import *
-from front.PyturtleHandler import Force, PyturtleHandler
+from programm.Function import *
+from front.PyturtleHandler import PyturtleHandler
 import re
 
 
@@ -29,7 +29,7 @@ class Programm:
         if scope is None:  # scope is global
             # variable exists in global scope
             if Programm.variables.get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type_))
+                raise VariableRedefinitionError(name, TypeUtils.typeToStr(type_))
 
             # drawn object would collide with different object
             if type_ == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
@@ -40,9 +40,9 @@ class Programm:
 
         else:  # scope is local
             if type(scope) is int and Programm.local_scopes[scope].get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type_))
+                raise VariableRedefinitionError(name, TypeUtils.typeToStr(type_))
             if type(scope) is str and Programm.named_scopes[scope].get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type_))  
+                raise VariableRedefinitionError(name, TypeUtils.typeToStr(type_))  
 
             # drawn object would collide with different object
             if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
@@ -120,50 +120,9 @@ class Programm:
                 print("********")
 
     '''
-    Converts given string to Type object
-    '''
-    @staticmethod
-    def strToType(type: str):
-        if type == "TIME":
-            return Type.TIME
-        elif type == "INT":
-            return Type.INT
-        elif type == "OBJECT":
-            return Type.OBJECT
-        elif type == "FLOAT":
-            return Type.FLOAT
-        else:
-            return Type.FORCE
-
-    '''
-    Converts Type object to string
-    '''
-    @staticmethod
-    def typeToStr(type: Type):
-        if type == Type.TIME:
-            return "TIME"
-        elif type == Type.INT:
-            return "INT"
-        elif type == Type.OBJECT:
-            return "OBJECT"
-        elif type == Type.FORCE:
-            return "FORCE"
-        elif type == Type.FLOAT:
-            return "FLOAT"
-        return None
-
-    @staticmethod
-    def detectTypeFromValue(value):
-        # nie skonczone
-        if type(value) is int:
-            return Type.INT
-        if type(value) is float:
-            return Type.FLOAT
-        else:
-            return Type.FORCE
-
-    '''
-    Returns Variable object with given name
+    Returns Variable object with given name from local scope with given id
+        name - variable name
+        scope - id of local scope, if is None it means scope is global
     '''
     @staticmethod
     def getVariable(name: str, scope=None):
@@ -172,6 +131,10 @@ class Programm:
         else:
             return Programm.local_scopes[scope].get(name)
     
+    '''
+    Returns variable with given name from the most upper scope on curent stack.
+    It raises error when variable with given name does not exist in any stack.
+    '''
     @staticmethod
     def getVaribaleFromProperScope(name: str):
         size = Programm.scope_history.getSize()
@@ -182,6 +145,11 @@ class Programm:
             return Programm.variables.get(name)
         return UndefinedVariableReferenceError(name)
     
+    '''
+    Returns stack id of the most upper scope where variable was found. 
+    If the scope is global returns none.
+    It raises error when variable with given name does not exist in any stack.
+    '''
     @staticmethod
     def getProperScopeWithVariable(name: str):
         size = Programm.scope_history.getSize()
@@ -288,46 +256,6 @@ class Programm:
         data = re.sub(";;", ";", data)
         return data
 
-    @staticmethod
-    def inputFunctionsDefinition(data: str) -> str:
-        # functions = {} # maps name to Function()
-        for name, function in Programm.functions.items():
-            start_idx = data.find(name+"(")
-            while start_idx != -1:
-                variables = {}  # maps name in call to name in declaration
-                arg_list = Programm.getArguments(data, name)
-                if len(arg_list) != len(function.params):
-                    raise WrongNumberOfArguments(
-                        name, len(function.params), len(arg_list))
-
-                for idx in range(0, len(arg_list)):
-                    '''
-                    if Programm.getVariable(arg_list[idx], scope=Programm.current_scope) is None:
-                        if Programm.getVariable(arg_list[idx]) is None:
-                            raise UndefinedVariableReferenceError(
-                                arg_list[idx])
-                        if Programm.getVariable(arg_list[idx]).type != function.params[idx][1].type:
-                            raise UnallowedCasting(Programm.getVariable(arg_list[idx]).getTypeString(),
-                                function.params[idx][1].getTypeString())
-                    else:
-                        if Programm.getVariable(arg_list[idx], Programm.current_scope).type != function.params[idx][1].type:
-                            raise UnallowedCasting(Programm.getVariable(arg_list[idx], Programm.current_scope).getTypeString(),
-                                function.params[idx][1].getTypeString())
-                    '''
-                    variables[function.params[idx][0]
-                        ] = arg_list[idx]  # mapps name in func dec to real name
-
-                # replace all accurance of name(args); with function body
-                f_body = Programm.getFbodyWithInputedArgs(
-                    function.getBody(), variables)
-                func_header = re.search(
-                    name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", data).group(0)
-                data = re.sub(
-                    name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", func_header + f_body, data)
-
-                start_idx = data.find(name+"(", start_idx+1)
-        return data
-
     '''
     It gets string as 'funckja1(zmienna1, zmienna2)' and return list of parameters: ['zmienna1', 'zmienna2']
     If function has no parameters it returns empty list
@@ -344,13 +272,6 @@ class Programm:
         if str != "":
             list = str.rsplit(",")
         return list
-
-    @staticmethod
-    def getFbodyWithInputedArgs(f_body: str, variables):
-        for key, value in variables.items():
-            f_body = f_body.replace(key, value)
-        f_body = "IF (1==1) THEN " + f_body + "ENDIF;"
-        return f_body
 
     @staticmethod
     def getRepeatedVariableName(variables):

@@ -1,12 +1,5 @@
-from enum import Enum
+from utils.TypeUtils import *
 from utils.Error import *
-
-class Type(Enum):
-    TIME = 1
-    INT = 2
-    OBJECT = 3
-    FORCE = 4
-    FLOAT = 5
 
 class Variable:
 
