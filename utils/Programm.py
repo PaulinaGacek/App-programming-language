@@ -116,8 +116,8 @@ class Programm:
         else:
             print("Users functions:")
             for key, value in Programm.functions.items():
-                print("     Name: {} -> details: {}".format(key,
-                      value.displayDetails()))
+                print("     Name: {} -> details: {}".format(key, value.displayDetails()))
+                print("********")
 
     '''
     Converts given string to Type object
@@ -161,36 +161,41 @@ class Programm:
             return Programm.variables.get(name)
         else:
             return Programm.local_scopes[scope].get(name)
+    
+    @staticmethod
+    def getVaribaleFromProperScope(name: str):
+        size = Programm.scope_history.getSize()
+        for i in range (0,size):
+            if Programm.local_scopes[size-1-i].get(name) is not None:
+                return Programm.local_scopes[size-1-i].get(name)
+        if Programm.variables.get(name) is not None:
+            return Programm.variables.get(name)
+        return UndefinedVariableReferenceError(name)
+    
+    @staticmethod
+    def getProperScopeWithVariable(name: str):
+        size = Programm.scope_history.getSize()
+        for i in range (0,size):
+            if Programm.local_scopes[size-1-i].get(name) is not None:
+                return size-1-i
+        if Programm.variables.get(name) is not None:
+            return None
+        return UndefinedVariableReferenceError(name)
 
     @staticmethod
     def areTypesCompatible(type1, type2, name1, name2) -> bool:
-        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
+        # unfinished - checks only situation when both args are variable names
+        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext" or type1 == "FunctionCallContext" or type2 == "FunctionCallContext":
             return True
-        '''
-        Types has also be checked in local scopes
-        if type1 == "VariableNameContext":
-            if Programm.variables[name1].type == Type.INT:
-                type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.TIME:
-                type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.FORCE:
-                type1 = "Force_typeContext"
-            elif Programm.variables[name1].type == Type.OBJECT:
-                type1 = "Object_typeContext"
-
-        if type2 == "VariableNameContext":
-            if Programm.variables[name2].type == Type.INT:
-                type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.TIME:
-                type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.FORCE:
-                type2 = "Force_typeContext"
-            elif Programm.variables[name2].type == Type.OBJECT:
-                type2 = "Object_typeContext"
-
-        if type1 == type2:
+    
+        if type1 == "VariableNameContext" and type2 == "VariableNameContext":
+            if Programm.getVaribaleFromProperScope(name1).type != Programm.getVaribaleFromProperScope(name2).type:
+                return False
             return True
-        '''
+        
+        if (type1 == "IntegerContext" or type2 != "Float_typeContext") and type2 != "IntegerContext" and type2 != "Float_typeContext":
+            return False
+
         return True
 
     @staticmethod
@@ -199,23 +204,23 @@ class Programm:
             return True
         # print("type1: {}, type2: {}".format(type1, type2))
         if type1 == "VariableNameContext":
-            if Programm.variables[name1].type == Type.INT:
+            if Programm.getVaribaleFromProperScope(name1).type == Type.INT:
                 type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.TIME:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.TIME:
                 type1 = "TimeContext"
-            elif Programm.variables[name1].type == Type.FORCE:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.FORCE:
                 type1 = "Force_typeContext"
-            elif Programm.variables[name1].type == Type.OBJECT:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.OBJECT:
                 type1 = "Object_typeContext"
 
         if type2 == "VariableNameContext":
-            if Programm.variables[name2].type == Type.INT:
+            if Programm.getVaribaleFromProperScope(name2).type == Type.INT:
                 type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.TIME:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.TIME:
                 type2 = "TimeContext"
-            elif Programm.variables[name2].type == Type.FORCE:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.FORCE:
                 type2 = "Force_typeContext"
-            elif Programm.variables[name2].type == Type.OBJECT:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.OBJECT:
                 type2 = "Object_typeContext"
         # print("type1: {}, type2: {}".format(type1, type2))
 
@@ -364,6 +369,7 @@ class Programm:
             Programm.local_scopes.append(local_variables)
  
         Programm.current_scope = Programm.scope_history.top()
+        print("New variable scope was added, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def deleteTopVariableScope():
@@ -372,6 +378,7 @@ class Programm:
         if type(Programm.scope_history.top()) is int:
             Programm.local_scopes[Programm.scope_history.top()].clear()
         Programm.scope_history.pop()
+        print("Top scope was deleted, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def addNewNamedVariableScope(name: str, previos_scopes):
