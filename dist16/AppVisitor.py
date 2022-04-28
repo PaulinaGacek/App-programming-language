@@ -257,12 +257,12 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.addNewVariableScope()
             self.visit(ctx.con_body)
             Programm.deleteTopVariableScope()
-        elif ctx.elif_stat is not None and self.visit(ctx.elif_stat):
-            Programm.deleteTopVariableScope()
+        elif ctx.elif_stat is not None and self.visit(ctx.elif_stat.cond):
+            self.visit(ctx.elif_stat)
         else:
             if ctx.else_stat is not None:
                 self.visit(ctx.else_stat)
-                Programm.deleteTopVariableScope()
+                
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
@@ -334,23 +334,14 @@ class AppVisitor(AppParseTreeVisitor):
         return self.visitChildren(ctx)
 
     def visitElifStatement(self, ctx: AppParser.ElifStatementContext):
-
-        if not self.visit(ctx.parentCtx.cond) and self.visit(ctx.cond):
-            Programm.addNewVariableScope()
-            self.visit(ctx.con_body)
-            return True
-        else:
-            return False
+        Programm.addNewVariableScope()
+        self.visit(ctx.con_body)
+        Programm.deleteTopVariableScope()
 
     def visitElseStatement(self, ctx: AppParser.ElseStatementContext):
-
-        if not self.visit(ctx.parentCtx.cond):
-            if ctx.parentCtx.elif_stat is not None and not self.visit(ctx.parentCtx.elif_stat):
-                Programm.addNewVariableScope()
-                self.visit(ctx.con_body)
-            elif ctx.parentCtx.elif_stat is None:
-                Programm.addNewVariableScope()
-                self.visit(ctx.con_body)
+        Programm.addNewVariableScope()
+        self.visit(ctx.con_body)
+        Programm.deleteTopVariableScope()
 
     def visitParallelExpression(self, ctx: AppParser.ParallelExpressionContext):
         AppVisitor.inside_parallel = True
