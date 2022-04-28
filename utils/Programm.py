@@ -168,8 +168,18 @@ class Programm:
         for i in range (0,size):
             if Programm.local_scopes[size-1-i].get(name) is not None:
                 return Programm.local_scopes[size-1-i].get(name)
-        if  Programm.variables.get(name) is not None:
+        if Programm.variables.get(name) is not None:
             return Programm.variables.get(name)
+        return UndefinedVariableReferenceError(name)
+    
+    @staticmethod
+    def getProperScopeWithVariable(name: str):
+        size = Programm.scope_history.getSize()
+        for i in range (0,size):
+            if Programm.local_scopes[size-1-i].get(name) is not None:
+                return size-1-i
+        if Programm.variables.get(name) is not None:
+            return None
         return UndefinedVariableReferenceError(name)
 
     @staticmethod
@@ -194,23 +204,23 @@ class Programm:
             return True
         # print("type1: {}, type2: {}".format(type1, type2))
         if type1 == "VariableNameContext":
-            if Programm.variables[name1].type == Type.INT:
+            if Programm.getVaribaleFromProperScope(name1).type == Type.INT:
                 type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.TIME:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.TIME:
                 type1 = "TimeContext"
-            elif Programm.variables[name1].type == Type.FORCE:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.FORCE:
                 type1 = "Force_typeContext"
-            elif Programm.variables[name1].type == Type.OBJECT:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.OBJECT:
                 type1 = "Object_typeContext"
 
         if type2 == "VariableNameContext":
-            if Programm.variables[name2].type == Type.INT:
+            if Programm.getVaribaleFromProperScope(name2).type == Type.INT:
                 type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.TIME:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.TIME:
                 type2 = "TimeContext"
-            elif Programm.variables[name2].type == Type.FORCE:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.FORCE:
                 type2 = "Force_typeContext"
-            elif Programm.variables[name2].type == Type.OBJECT:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.OBJECT:
                 type2 = "Object_typeContext"
         # print("type1: {}, type2: {}".format(type1, type2))
 

@@ -1,0 +1,2 @@
+DEFINE INT number AS 3;
+DEFINE FUNCTION silnia(INT n)-> INT AS DEFINE INT wynik AS 0; IF(n <= 1) THEN SET wynik AS 1; ENDIF; IF (n > 1) THEN DEFINE INT decrement AS n-1; SET wynik AS silnia(decrement) * n; ENDIF; RETURN wynik; ENDFUNCTION; DEFINE INT silnia3 AS silnia(number);

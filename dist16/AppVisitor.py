@@ -243,21 +243,13 @@ class AppVisitor(AppParseTreeVisitor):
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
 
         name = self.visit(ctx.name_)
-        if Programm.getVariable(name, Programm.scope_history.top()) is None and Programm.getVariable(name) is None:
-            raise UndefinedVariableReferenceError(name)
+        var = Programm.getVaribaleFromProperScope(name)
+        type = var.type
+        # [TODO] add type checking
 
-        Programm.current_scope = None
-        if Programm.getVariable(name, Programm.scope_history.top()) is not None:
-            Programm.current_scope = Programm.scope_history.top()
-
-        type = Programm.getVariable(name, Programm.current_scope).type
-
-        if ctx.value_ is not None:  # simple type
+        if ctx.value_ is not None: 
             value = self.visit(ctx.value_)
-            Programm.defineExistingVariable(
-                name, value, scope=Programm.current_scope)
-
-        Programm.current_scope = Programm.scope_history.top()
+            Programm.defineExistingVariable(name, value, scope=Programm.getProperScopeWithVariable(name))
 
     def visitConditionalStatement(self, ctx: AppParser.ConditionalStatementContext):
 
@@ -289,23 +281,18 @@ class AppVisitor(AppParseTreeVisitor):
             type2 = type(self.getNodesChild(ctx.right_expr, 0)).__name__
         else:
             name2 = self.visit(ctx.right_var)
-            if Programm.getVariable(name2, scope=Programm.current_scope) is None:
-                if Programm.getVariable(name2) is None:
-                    raise UndefinedVariableReferenceError(name2)
-            type2 = Programm.getVariable(name2).type
-            val2 = Programm.getVariable(name2).value
+            var2 = Programm.getVaribaleFromProperScope(name2)
+            type2 = var2.type
+            val2 = var2.value
         # print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
 
         if not Programm.areTypesComparable(type1, type2, name1, name2):
             raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
                                    Programm.getTypeFromNodeType(type2, name2))
         cond_type = None
+        var1 = Programm.getVaribaleFromProperScope(name1)
         if type1 == "VariableNameContext":
-            if Programm.getVariable(name1, Programm.current_scope) is not None:
-                cond_type = Programm.getVariable(
-                    name1, Programm.current_scope).type
-            else:
-                cond_type = Programm.getVariable(name1).type
+            cond_type = var1.type
         elif type1 == "IntegerContext":
             cond_type = Type.INT
         elif type1 == "Object_typeContext":
