@@ -152,6 +152,16 @@ class Programm:
             return "FLOAT"
         return None
 
+    @staticmethod
+    def detectTypeFromValue(value):
+        # nie skonczone
+        if type(value) is int:
+            return Type.INT
+        if type(value) is float:
+            return Type.FLOAT
+        else:
+            return Type.FORCE
+
     '''
     Returns Variable object with given name
     '''

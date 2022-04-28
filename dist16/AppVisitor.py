@@ -1,4 +1,3 @@
-from re import T
 from antlr4 import *
 from utils.AppParseTreeVisitor import AppParseTreeVisitor
 from utils.Programm import Programm
@@ -6,7 +5,6 @@ from utils.Variable import *
 from utils.Error import *
 from utils.Function import Function
 from front.PyturtleHandler import *
-import itertools
 
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
@@ -94,10 +92,9 @@ class AppVisitor(AppParseTreeVisitor):
         power = None
         if ctx.force_ is not None:  # force is variable
             force_name = self.visit(ctx.force_)
-            if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
-                raise UndefinedVariableReferenceError(force_name)
-            angle = Programm.getVariable(force_name).value
-            power = Programm.getVariable(force_name).value2
+            force_var = Programm.getVaribaleFromProperScope(force_name)
+            angle = force_var.value
+            power = force_var.value2
 
         else:  # force is value
             angle, power = self.visit(ctx.force_val)
@@ -105,9 +102,8 @@ class AppVisitor(AppParseTreeVisitor):
         time_val = None
         if ctx.time_ is not None:
             time_name = self.visit(ctx.time_)
-            if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
-                raise UndefinedVariableReferenceError(time_name)
-            time_val = Programm.getVariable(time_name).value
+            time_var = Programm.getVaribaleFromProperScope(time_name)
+            time_val = time_var.value
         elif ctx.time_val is not None:
             time_val = self.visit(ctx.time_val)
         else:
@@ -209,8 +205,6 @@ class AppVisitor(AppParseTreeVisitor):
 
         if ctx.name_.scope_seq is not None:
             raise Error("Access operator not allowed during declaration")
-
-        # print("Type: {}".format(type_))
 
         if type_ == 'INT' or type_ == 'TIME':
             value = self.visit(ctx.value_)
@@ -361,7 +355,7 @@ class AppVisitor(AppParseTreeVisitor):
         given_arguments = []
         if ctx.f_args is not None:  # function with arguemnts
             given_arguments = self.visit(ctx.f_args)
-        # print(given_arguments)
+
         # checking number of arguments:
         if len(declared_types) != len(given_arguments):
             raise WrongNumberOfArguments(name, required=len(declared_types), provided=len(given_arguments))
@@ -449,11 +443,20 @@ class AppVisitor(AppParseTreeVisitor):
         for child in ctx.children:
             if type(child).__name__ == "VariableNameContext":
                 name = self.visit(child)
-                # not in local scope
                 var = Programm.getVaribaleFromProperScope(name)
                 given_arguments.append((name, var))
             elif type(child).__name__ == "ArithmeticalExpressionContext":
-                print("Arithm expr", self.visit(child))
+                name = "Var_"+str(Programm.current_scope)+"_"+str(len(Programm.local_scopes))
+                if type(self.visit(child)) is not tuple:
+                    val = self.visit(child)
+                    type_ = Programm.detectTypeFromValue(val)
+                    var= Variable(name, type_, val)
+                else:
+                    val, val2 = self.visit(child)
+                    type_ = Programm.detectTypeFromValue((val,val2))
+                    var= Variable(name, type_, val, val2)
+
+                given_arguments.append((name, var))
         return given_arguments
 
     def visitWhiteSpace(self, ctx: AppParser.WhiteSpaceContext):

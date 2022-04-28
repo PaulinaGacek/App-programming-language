@@ -1,2 +1,5 @@
-DEFINE INT number AS 3;
-DEFINE FUNCTION silnia(INT n)-> INT AS DEFINE INT wynik AS 0; IF(n <= 1) THEN SET wynik AS 1; ENDIF; IF (n > 1) THEN DEFINE INT decrement AS n-1; SET wynik AS silnia(decrement) * n; ENDIF; RETURN wynik; ENDFUNCTION; DEFINE INT silnia3 AS silnia(number);
+DEFINE INT number AS 4;
+DEFINE FUNCTION silnia(INT n)-> INT AS DEFINE INT wynik AS 0; IF(n <= 1) THEN SET wynik AS 1; ENDIF; IF (n > 1) THEN SET wynik AS silnia(n-1) * n; ENDIF; RETURN wynik; ENDFUNCTION; DEFINE INT silnia3 AS silnia(number);
+
+DEFINE OBJECT o AS (200,200); DEFINE FUNCTION func(FORCE f, OBJECT o) AS APPLY f TO o FOR 200; ENDFUNCTION;
+func([180,2], o);
