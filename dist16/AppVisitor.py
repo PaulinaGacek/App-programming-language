@@ -251,6 +251,12 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.addNewVariableScope()
             self.visit(ctx.con_body)
             Programm.deleteTopVariableScope()
+        elif ctx.elif_stat is not None and self.visit(ctx.elif_stat.cond):
+            self.visit(ctx.elif_stat)
+        else:
+            if ctx.else_stat is not None:
+                self.visit(ctx.else_stat)
+                
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
@@ -320,12 +326,16 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitConditionBody(self, ctx: AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
-    
+
     def visitElifStatement(self, ctx: AppParser.ElifStatementContext):
-        return self.visitChildren(ctx)
-    
+        Programm.addNewVariableScope()
+        self.visit(ctx.con_body)
+        Programm.deleteTopVariableScope()
+
     def visitElseStatement(self, ctx: AppParser.ElseStatementContext):
-        return self.visitChildren(ctx)
+        Programm.addNewVariableScope()
+        self.visit(ctx.con_body)
+        Programm.deleteTopVariableScope()
 
     def visitParallelExpression(self, ctx: AppParser.ParallelExpressionContext):
         AppVisitor.inside_parallel = True
@@ -350,7 +360,7 @@ class AppVisitor(AppParseTreeVisitor):
         name = self.visit(ctx.f_name)
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)
-        
+
         declared_types = Programm.functions.get(name).params  # list[(name,Variable())]
         given_arguments = []
         if ctx.f_args is not None:  # function with arguemnts
