@@ -1,3 +1,5 @@
+import math
+
 from antlr4 import *
 from programm.AppParseTreeVisitor import AppParseTreeVisitor
 from programm.Programm import Programm
@@ -27,6 +29,7 @@ class AppVisitor(AppParseTreeVisitor):
     inside_parallel = False
     forces = {}  # mapps object name to forces applied to it str-> List[Force]
     current_named_scope = []
+    NR_OF_FRAMES = 29.10
 
     def visitPrimaryExpression(self, ctx: AppParser.PrimaryExpressionContext):
 
@@ -81,7 +84,12 @@ class AppVisitor(AppParseTreeVisitor):
         for i in range(0, len(tab)):
             tab[i] = int(tab[i])
 
-        return 3600 * tab[0] + 60 * tab[1] + tab[2]
+        time_ = (3600 * tab[0] + 60 * tab[1] + tab[2]) * self.NR_OF_FRAMES
+
+        if time_ - int(time_) >= 0.5:
+            return math.ceil(time_)
+
+        return int(time_)
 
     def visitApplyForce(self, ctx: AppParser.ApplyForceContext):
 
