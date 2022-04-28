@@ -51,4 +51,10 @@ class TypeUtils:
         else:
             return Type.FORCE
     
-    
+    @staticmethod 
+    def getTypeFromContext(context):
+        if type(context) is int:
+            return Type.INT
+        if type(context) is float:
+            return Type.FLOAT
+        # add checking FORCE, OBJECT, TIME
