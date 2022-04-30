@@ -224,7 +224,9 @@ class AppVisitor(AppParseTreeVisitor):
 
         elif type_ == 'FLOAT':
             value = self.visit(ctx.value_)
-            if type(value) is not float:
+            if type(value) is int:
+                value = float(value)
+            elif type(value) is not float:
                 raise Error("Bad casting: {}".format(type(value)))
             
             Programm.defineNewVariable(name, TypeUtils.strToType(
