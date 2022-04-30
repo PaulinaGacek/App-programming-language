@@ -500,24 +500,106 @@ class AppVisitor(AppParseTreeVisitor):
 
     # Visit a parse tree produced by AppParser#getAngle.
     def visitGetAngle(self, ctx: AppParser.GetAngleContext):
-        return self.visitChildren(ctx)
+        x1, y1, x2, y2 = self.getDistancecoords(ctx)
+        degree = math.atan2(y2 - y1, x2 - x1) * 180 / math.pi
+        if degree < 0:
+            degree += 360
+        return degree
 
     # Visit a parse tree produced by AppParser#getCoordinate.
     def visitGetCoordinate(self, ctx: AppParser.GetCoordinateContext):
-        return self.visitChildren(ctx)
+        text_value = ctx.axis.text
+        name = self.visit(ctx.name_)
+        curr_object = None
+        if Programm.getVariable(name, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+            if Programm.getVariable(name) is None:  # nie ma w globalnym
+                raise UndefinedVariableReferenceError(name)
+            else:
+                curr_object = Programm.getVariable(name)
+        else:
+            curr_object = Programm.getVariable(name, Programm.current_scope)
+
+        if curr_object.type != Type.OBJECT:
+            raise TypeError("Variable is not an object")
+
+        ball = PyturtleHandler.balls[curr_object.name]
+        if text_value == "X":
+            return float(ball.get_pos_x())
+        elif text_value == "Y":
+            return float(ball.get_pos_y())
+        else:
+            return 2137
 
     # Visit a parse tree produced by AppParser#getDistance.
     def visitGetDistance(self, ctx: AppParser.GetDistanceContext):
-        return self.visitChildren(ctx)
+        x1, y1, x2, y2 = self.getDistancecoords(ctx)
+        diff_x = abs(x1 - x2)
+        diff_y = abs(y1 - y2)
+        return math.sqrt(diff_x ** 2 + diff_y ** 2)
 
-    # Visit a parse tree produced by AppParser#getVelocity.
     def visitGetVelocity(self, ctx: AppParser.GetVelocityContext):
-        return self.visitChildren(ctx)
+        text_value = ctx.axis.text
+        name = self.visit(ctx.name_)
+        curr_object = None
+        if Programm.getVariable(name, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+            if Programm.getVariable(name) is None:  # nie ma w globalnym
+                raise UndefinedVariableReferenceError(name)
+            else:
+                curr_object = Programm.getVariable(name)
+        else:
+            curr_object = Programm.getVariable(name, Programm.current_scope)
+
+        if curr_object.type != Type.OBJECT:
+            raise TypeError("Variable is not an object")
+
+        ball = PyturtleHandler.balls[curr_object.name]
+        if text_value == "X":
+            return float(ball.dx)
+        elif text_value == "Y":
+            return float(ball.dy)
+        elif text_value == "VALUE":
+            return math.sqrt(ball.dx**2 + ball.dy**2)
+        else:
+            return 2137
 
     def visitReturn_statement(self, ctx: AppParser.Return_statementContext):
         if AppVisitor.inside_function_dec:
             return Programm.getInstructionAsTxt(ctx)
         return self.visit(ctx.expr)
+
+    def getDistancecoords(self, ctx):
+        if ctx.name_1 is None:
+            object1 = self.visit(ctx.object_1)
+            x1 = object1[0]
+            y1 = object1[1]
+        else:
+            name1 = self.visit(ctx.name_1)
+            if Programm.getVariable(name1, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+                if Programm.getVariable(name1) is None:  # nie ma w globalnym
+                    raise UndefinedVariableReferenceError(name1)
+                else:
+                    object1 = Programm.getVariable(name1)
+            else:
+                object1 = Programm.getVariable(name1, Programm.current_scope)
+            x1 = object1.value
+            y1 = object1.value2
+        if ctx.name_2 is None:
+            object2 = self.visit(ctx.object_2)
+            x2 = object2[0]
+            y2 = object2[1]
+        else:
+            name2 = self.visit(ctx.name_2)
+            if Programm.getVariable(name2, Programm.current_scope) is None:  # nie ma w scopie lokalnym
+                if Programm.getVariable(name2) is None:  # nie ma w globalnym
+                    raise UndefinedVariableReferenceError(name2)
+                else:
+                    object2 = Programm.getVariable(name2)
+            else:
+                object2 = Programm.getVariable(name2, Programm.current_scope)
+            x2 = object2.value
+            y2 = object2.value2
+
+        return x1, y1, x2, y2
 
 
 del AppParser
