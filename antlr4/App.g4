@@ -44,9 +44,9 @@ float_type
 time_type
 	: (NONZERODIGIT|ZERO)+':'(NONZERODIGIT|ZERO)(NONZERODIGIT|ZERO)':'(NONZERODIGIT|ZERO)(NONZERODIGIT|ZERO);
 
-force_type: '['angle=arithmeticalExpression ',' power=arithmeticalExpression ']';
+force_type: '['whiteSpace? angle=arithmeticalExpression whiteSpace? ',' whiteSpace? power=arithmeticalExpression whiteSpace? ']';
 
-object_type: '('x_cor=arithmeticalExpression ',' y_cor=arithmeticalExpression ')';
+object_type: '('whiteSpace? x_cor=arithmeticalExpression whiteSpace? ',' whiteSpace? y_cor=arithmeticalExpression whiteSpace?')';
 
 applyForce
     : 'APPLY' whiteSpace (force_=variableName|force_val=force_type) whiteSpace
