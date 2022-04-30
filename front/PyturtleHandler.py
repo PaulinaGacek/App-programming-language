@@ -2,7 +2,6 @@ import turtle
 import queue
 import math
 import numpy as np
-import time
 
 
 class Force:
@@ -263,15 +262,6 @@ class PyturtleHandler:
         object2.dy = u2[1]
         PyturtleHandler.escape_collision(object1,object2)
 
-    @staticmethod
-    def display_visualisation(period: int):
-        if period <= 0:
-            return
-
-        for i in range(0, period):
-            PyturtleHandler.update_positions_of_all_balls()
-            time.sleep(PyturtleHandler.TIME_DELAY)
-            PyturtleHandler.win.update()
 
     @staticmethod
     def force_superposition(forces: list):

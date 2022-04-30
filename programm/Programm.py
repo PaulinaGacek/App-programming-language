@@ -4,6 +4,7 @@ from utils.Stack import *
 from programm.Function import *
 from front.PyturtleHandler import PyturtleHandler
 import re
+import time
 
 
 class Programm:
@@ -281,6 +282,7 @@ class Programm:
             if obj.type == Type.OBJECT:
                 obj.value = int(PyturtleHandler.balls.get(name).get_pos_x())
                 obj.value2 = int(PyturtleHandler.balls.get(name).get_pos_y())
+                # print("Name: {}, x: {}, y: {}".format(name, obj.value, obj.value2))
 
     @staticmethod
     def addNewVariableScope():
@@ -320,3 +322,14 @@ class Programm:
         
         Programm.scope_history.push(full_name)
         Programm.current_scope = Programm.scope_history.top()
+    
+    @staticmethod
+    def display_visualisation(period: int):
+        if period <= 0:
+            return
+
+        for i in range(0, period):
+            PyturtleHandler.update_positions_of_all_balls()
+            Programm.updateObjectsPositionsInVariableSet()
+            time.sleep(PyturtleHandler.TIME_DELAY)
+            PyturtleHandler.win.update()

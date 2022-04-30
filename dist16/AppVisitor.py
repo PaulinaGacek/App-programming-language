@@ -138,6 +138,11 @@ class AppVisitor(AppParseTreeVisitor):
             PyturtleHandler.add_forces(AppVisitor.forces)
             AppVisitor.forces.clear()
 
+        if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
+            PyturtleHandler.display_queues_len()
+            Programm.display_visualisation(PyturtleHandler.get_max_queue_len())
+            print("display visualisation ended")
+
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
 
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
