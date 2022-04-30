@@ -127,8 +127,8 @@ def serializedATN():
         buf.write("\4\2\2\u00ae\u00af\t\4\2\2\u00af\21\3\2\2\2\u00b0\u00b1")
         buf.write("\7\r\2\2\u00b1\u00b2\5\30\r\2\u00b2\u00b3\7\16\2\2\u00b3")
         buf.write("\u00b4\5\30\r\2\u00b4\u00b5\7\17\2\2\u00b5\23\3\2\2\2")
-        buf.write("\u00b6\u00b7\7\20\2\2\u00b7\u00b8\5\f\7\2\u00b8\u00b9")
-        buf.write("\7\16\2\2\u00b9\u00ba\5\f\7\2\u00ba\u00bb\7\21\2\2\u00bb")
+        buf.write("\u00b6\u00b7\7\20\2\2\u00b7\u00b8\5\30\r\2\u00b8\u00b9")
+        buf.write("\7\16\2\2\u00b9\u00ba\5\30\r\2\u00ba\u00bb\7\21\2\2\u00bb")
         buf.write("\25\3\2\2\2\u00bc\u00bd\7\22\2\2\u00bd\u00c0\5F$\2\u00be")
         buf.write("\u00c1\5\b\5\2\u00bf\u00c1\5\22\n\2\u00c0\u00be\3\2\2")
         buf.write("\2\u00c0\u00bf\3\2\2\2\u00c1\u00c2\3\2\2\2\u00c2\u00c3")
@@ -1389,14 +1389,14 @@ class AppParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.x_cor = None # IntegerContext
-            self.y_cor = None # IntegerContext
+            self.x_cor = None # ArithmeticalExpressionContext
+            self.y_cor = None # ArithmeticalExpressionContext
 
-        def integer(self, i:int=None):
+        def arithmeticalExpression(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(AppParser.IntegerContext)
+                return self.getTypedRuleContexts(AppParser.ArithmeticalExpressionContext)
             else:
-                return self.getTypedRuleContext(AppParser.IntegerContext,i)
+                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,i)
 
 
         def getRuleIndex(self):
@@ -1428,11 +1428,11 @@ class AppParser ( Parser ):
             self.state = 180
             self.match(AppParser.T__13)
             self.state = 181
-            localctx.x_cor = self.integer()
+            localctx.x_cor = self.arithmeticalExpression(0)
             self.state = 182
             self.match(AppParser.T__11)
             self.state = 183
-            localctx.y_cor = self.integer()
+            localctx.y_cor = self.arithmeticalExpression(0)
             self.state = 184
             self.match(AppParser.T__14)
         except RecognitionException as re:

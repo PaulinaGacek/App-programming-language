@@ -46,7 +46,7 @@ time_type
 
 force_type: '['angle=arithmeticalExpression ',' power=arithmeticalExpression ']';
 
-object_type: '('x_cor=integer ',' y_cor=integer ')';
+object_type: '('x_cor=arithmeticalExpression ',' y_cor=arithmeticalExpression ')';
 
 applyForce
     : 'APPLY' whiteSpace (force_=variableName|force_val=force_type) whiteSpace

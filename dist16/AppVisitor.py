@@ -76,7 +76,9 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitObject_type(self, ctx: AppParser.Object_typeContext):
         # returns tuple (x_cor: int, y_cor: int)
-        return int(ctx.x_cor.getText()), int(ctx.y_cor.getText())
+        x_cor = int(self.visit(ctx.x_cor))
+        y_cor = int(self.visit(ctx.y_cor))
+        return x_cor, y_cor
 
     def visitTime_type(self, ctx: AppParser.Time_typeContext):
         # returns nr of seconds: int
