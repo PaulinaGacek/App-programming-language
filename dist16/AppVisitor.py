@@ -1,12 +1,13 @@
-from re import T
+import math
+
 from antlr4 import *
-from utils.AppParseTreeVisitor import AppParseTreeVisitor
-from utils.Programm import Programm
-from utils.Variable import *
+from programm.AppParseTreeVisitor import AppParseTreeVisitor
+from programm.Programm import Programm
+from programm.Variable import *
 from utils.Error import *
-from utils.Function import Function
+from utils.TypeUtils import *
+from programm.Function import Function
 from front.PyturtleHandler import *
-import itertools
 
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
@@ -28,6 +29,7 @@ class AppVisitor(AppParseTreeVisitor):
     inside_parallel = False
     forces = {}  # mapps object name to forces applied to it str-> List[Force]
     current_named_scope = []
+    NR_OF_FRAMES = 29.10
 
     def visitPrimaryExpression(self, ctx: AppParser.PrimaryExpressionContext):
 
@@ -82,7 +84,12 @@ class AppVisitor(AppParseTreeVisitor):
         for i in range(0, len(tab)):
             tab[i] = int(tab[i])
 
-        return 3600 * tab[0] + 60 * tab[1] + tab[2]
+        time_ = (3600 * tab[0] + 60 * tab[1] + tab[2]) * self.NR_OF_FRAMES
+
+        if time_ - int(time_) >= 0.5:
+            return math.ceil(time_)
+
+        return int(time_)
 
     def visitApplyForce(self, ctx: AppParser.ApplyForceContext):
 
@@ -94,10 +101,9 @@ class AppVisitor(AppParseTreeVisitor):
         power = None
         if ctx.force_ is not None:  # force is variable
             force_name = self.visit(ctx.force_)
-            if Programm.getVariable(force_name) is None or Programm.getVariable(force_name).value is None:
-                raise UndefinedVariableReferenceError(force_name)
-            angle = Programm.getVariable(force_name).value
-            power = Programm.getVariable(force_name).value2
+            force_var = Programm.getVaribaleFromProperScope(force_name)
+            angle = force_var.value
+            power = force_var.value2
 
         else:  # force is value
             angle, power = self.visit(ctx.force_val)
@@ -105,9 +111,8 @@ class AppVisitor(AppParseTreeVisitor):
         time_val = None
         if ctx.time_ is not None:
             time_name = self.visit(ctx.time_)
-            if Programm.getVariable(time_name) is None or Programm.getVariable(time_name).value is None:
-                raise UndefinedVariableReferenceError(time_name)
-            time_val = Programm.getVariable(time_name).value
+            time_var = Programm.getVaribaleFromProperScope(time_name)
+            time_val = time_var.value
         elif ctx.time_val is not None:
             time_val = self.visit(ctx.time_val)
         else:
@@ -132,28 +137,15 @@ class AppVisitor(AppParseTreeVisitor):
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
 
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
+        if NR_OF_CHILDREN == 1:  # variable name or value
 
-        if NR_OF_CHILDREN == 1:  # variable name or INT
-            if type(self.getNodesChild(ctx, 0)).__name__ == "IntegerContext":
-                return self.visitChildren(ctx)
-
-            elif type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
+            if type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
-
-                if Programm.getVariable(name, Programm.current_scope) is None: # not defined in current scope
-                    if Programm.getVariable(name) is None:
-                        raise UndefinedVariableReferenceError(name)
-                    else:
-                        if Programm.getVariable(name).type == Type.INT or Programm.getVariable(name).type == Type.TIME:
-                            return Programm.getVariable(name).value
-                        else:
-                            return Programm.getVariable(name).value, Programm.getVariable(name).value2
+                var = Programm.getVaribaleFromProperScope(name)
+                if var.type == Type.INT or var.type == Type.TIME or var.type == Type.FLOAT:
+                    return var.value
                 else:
-                    if Programm.getVariable(name, Programm.current_scope).type == Type.INT or Programm.getVariable(name,
-                                                                                                                   Programm.current_scope).type == Type.TIME:
-                        return Programm.getVariable(name, Programm.current_scope).value
-                    else:
-                        return Programm.getVariable(name, Programm.current_scope).value, Programm.getVariable(name, Programm.current_scope).value2
+                    return var.value, var.value2
             else:
                 return self.visitChildren(ctx)
 
@@ -169,21 +161,23 @@ class AppVisitor(AppParseTreeVisitor):
                                                                                                         val1, val2))
 
             artm_type = None
-            if type1 == "VariableNameContext":
-                artm_type = Programm.getVariable(
-                    val1, Programm.current_scope).type
-            elif type1 == "IntegerContext":
+            if type2 == "VariableNameContext":
+                artm_type = Programm.getVaribaleFromProperScope(val2).type
+            elif type2 == "IntegerContext":
                 artm_type = Type.INT
-            elif type1 == "Object_typeContext":
+            elif type2 == "Float_typeContext":
+                artm_type = Type.INT
+            elif type2 == "Object_typeContext":
                 artm_type = Type.OBJECT
-            elif type1 == "Force_typeContext":
+            elif type2 == "Force_typeContext":
                 artm_type = Type.FORCE
+            elif type2 == "FunctionCallContext":
+                name = self.visit(self.getNodesChild(ctx.right, 0).f_name) # function name
+                artm_type = Programm.getFunction(name).return_type
             else:
                 artm_type = 'ARITM_EXPR'
 
-            # print("Artm type: {}".format(artm_type))
-
-            if artm_type == Type.INT or artm_type == Type.TIME:
+            if artm_type == Type.INT or artm_type == Type.TIME or artm_type == Type.FLOAT:
                 l = self.visit(ctx.left)
                 r = self.visit(ctx.right)
 
@@ -219,53 +213,46 @@ class AppVisitor(AppParseTreeVisitor):
         if ctx.name_.scope_seq is not None:
             raise Error("Access operator not allowed during declaration")
 
-        # print("Type: {}".format(type_))
-
         if type_ == 'INT' or type_ == 'TIME':
-            if type(self.visit(ctx.value_)) is not int:
-                raise Error("Bad casting: {}".format(type(self.visit(ctx.value_))))
-
             value = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(
+            if type(value) is not int and  type(value) is not float:
+                raise Error("Bad casting: {}".format(type(value).__name__))
+            if type(value) is float:
+                value = int(value)
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value, scope=Programm.scope_history.top())
 
         elif type_ == 'FLOAT':
-            if type(self.visit(ctx.value_)).__name__ != 'float':
-                raise Error("Bad casting: {}".format(
-                    type(self.visit(ctx.value_))))
             value = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(
+            if type(value) is int:
+                value = float(value)
+            elif type(value) is not float:
+                raise Error("Bad casting: {}".format(type(value)))
+            
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value, scope=Programm.scope_history.top())
 
         elif type_ == 'FORCE':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, scope=Programm.scope_history.top())
 
         elif type_ == 'OBJECT':
             value1, value2 = self.visit(ctx.value_)
-            Programm.defineNewVariable(name, Programm.strToType(
+            Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, scope=Programm.scope_history.top())
             PyturtleHandler.add_new_object(name, value1, value2)
 
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
 
         name = self.visit(ctx.name_)
-        if Programm.getVariable(name, Programm.scope_history.top()) is None and Programm.getVariable(name) is None:
-            raise UndefinedVariableReferenceError(name)
+        var = Programm.getVaribaleFromProperScope(name)
+        type = var.type
+        # [TODO] add type checking
 
-        Programm.current_scope = None
-        if Programm.getVariable(name, Programm.scope_history.top()) is not None:
-            Programm.current_scope = Programm.scope_history.top()
-
-        type = Programm.getVariable(name, Programm.current_scope).type
-
-        if ctx.value_ is not None:  # simple type
+        if ctx.value_ is not None: 
             value = self.visit(ctx.value_)
-            Programm.defineExistingVariable(
-                name, value, scope=Programm.current_scope)
-
-        Programm.current_scope = Programm.scope_history.top()
+            Programm.defineExistingVariable(name, value, scope=Programm.getProperScopeWithVariable(name))
 
     def visitConditionalStatement(self, ctx: AppParser.ConditionalStatementContext):
 
@@ -273,6 +260,12 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.addNewVariableScope()
             self.visit(ctx.con_body)
             Programm.deleteTopVariableScope()
+        elif ctx.elif_stat is not None and self.visit(ctx.elif_stat.cond):
+            self.visit(ctx.elif_stat)
+        else:
+            if ctx.else_stat is not None:
+                self.visit(ctx.else_stat)
+                
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
@@ -297,23 +290,18 @@ class AppVisitor(AppParseTreeVisitor):
             type2 = type(self.getNodesChild(ctx.right_expr, 0)).__name__
         else:
             name2 = self.visit(ctx.right_var)
-            if Programm.getVariable(name2, scope=Programm.current_scope) is None:
-                if Programm.getVariable(name2) is None:
-                    raise UndefinedVariableReferenceError(name2)
-            type2 = Programm.getVariable(name2).type
-            val2 = Programm.getVariable(name2).value
+            var2 = Programm.getVaribaleFromProperScope(name2)
+            type2 = var2.type
+            val2 = var2.value
         # print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
 
         if not Programm.areTypesComparable(type1, type2, name1, name2):
             raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
                                    Programm.getTypeFromNodeType(type2, name2))
         cond_type = None
+        var1 = Programm.getVaribaleFromProperScope(name1)
         if type1 == "VariableNameContext":
-            if Programm.getVariable(name1, Programm.current_scope) is not None:
-                cond_type = Programm.getVariable(
-                    name1, Programm.current_scope).type
-            else:
-                cond_type = Programm.getVariable(name1).type
+            cond_type = var1.type
         elif type1 == "IntegerContext":
             cond_type = Type.INT
         elif type1 == "Object_typeContext":
@@ -347,12 +335,16 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitConditionBody(self, ctx: AppParser.ConditionBodyContext):
         return self.visitChildren(ctx)
-    
+
     def visitElifStatement(self, ctx: AppParser.ElifStatementContext):
-        return self.visitChildren(ctx)
-    
+        Programm.addNewVariableScope()
+        self.visit(ctx.con_body)
+        Programm.deleteTopVariableScope()
+
     def visitElseStatement(self, ctx: AppParser.ElseStatementContext):
-        return self.visitChildren(ctx)
+        Programm.addNewVariableScope()
+        self.visit(ctx.con_body)
+        Programm.deleteTopVariableScope()
 
     def visitParallelExpression(self, ctx: AppParser.ParallelExpressionContext):
         AppVisitor.inside_parallel = True
@@ -377,12 +369,12 @@ class AppVisitor(AppParseTreeVisitor):
         name = self.visit(ctx.f_name)
         if Programm.functions.get(name) is None:
             raise UndefinedFunctionReferenceError(name)
-        
+
         declared_types = Programm.functions.get(name).params  # list[(name,Variable())]
         given_arguments = []
         if ctx.f_args is not None:  # function with arguemnts
             given_arguments = self.visit(ctx.f_args)
-        print(given_arguments)
+
         # checking number of arguments:
         if len(declared_types) != len(given_arguments):
             raise WrongNumberOfArguments(name, required=len(declared_types), provided=len(given_arguments))
@@ -403,6 +395,7 @@ class AppVisitor(AppParseTreeVisitor):
         # adding all params to scope
         for declared, given in zip(declared_types, given_arguments):
             Programm.defineNewVariable(declared[0], given[1].type, given[1].value, given[1].value2, scope=Programm.scope_history.top())
+        Programm.displayVariables()
         self.visit(Programm.getFunction(name).body_ctx)
 
         return_val = None
@@ -415,6 +408,9 @@ class AppVisitor(AppParseTreeVisitor):
     def visitFunctionDeclaration(self, ctx: AppParser.FunctionDeclarationContext):
         AppVisitor.inside_function_dec = True
 
+        if ctx.f_body is None and ctx.return_stat is None:
+            raise Error("Body of the function cannot be empty")
+
         f_name = self.visit(ctx.f_name)
         if Programm.getFunction(f_name) is not None:
             raise FunctionRedefinitionError(f_name)
@@ -422,7 +418,7 @@ class AppVisitor(AppParseTreeVisitor):
         f_return_type = None
         context = None
         if ctx.return_type is not None:
-            f_return_type = Programm.strToType(self.visit(ctx.return_type))
+            f_return_type = TypeUtils.strToType(self.visit(ctx.return_type))
 
             if ctx.return_stat is None:
                 raise FunctionHasToReturnSomething(f_name, f_return_type)
@@ -457,29 +453,29 @@ class AppVisitor(AppParseTreeVisitor):
     def visitFunctionArgument(self, ctx: AppParser.FunctionArgumentContext):
         name = self.visit(ctx.name_)
         type = self.visit(ctx.type_)
-        var = Variable(name, Programm.strToType(type), None, None)
+        var = Variable(name, TypeUtils.strToType(type), None, None)
         return name, var
 
     def visitFunctionParams(self, ctx: AppParser.FunctionParamsContext):
         # in use when function is called, not when declared!
         given_arguments = []  # list((name, Variable()))
         for child in ctx.children:
-            # print(type(child).__name__)
             if type(child).__name__ == "VariableNameContext":
                 name = self.visit(child)
-                # not in local scope
-                if Programm.getVariable(name, scope=Programm.current_scope) is None:
-                    if Programm.getVariable(name) is None:  # not in global scope
-                        raise UndefinedVariableReferenceError(name)
-                    else:  # declared in global scope
-                        given_arguments.append(
-                            (name, Programm.getVariable(name)))
-                else:  # in local
-                    given_arguments.append(
-                        (name, Programm.getVariable(name, scope=Programm.current_scope)))
+                var = Programm.getVaribaleFromProperScope(name)
+                given_arguments.append((name, var))
             elif type(child).__name__ == "ArithmeticalExpressionContext":
-                print(self.visit(child))
-                param_var = Variable()
+                name = "Var_"+str(Programm.current_scope)+"_"+str(len(Programm.local_scopes))
+                if type(self.visit(child)) is not tuple:
+                    val = self.visit(child)
+                    type_ = TypeUtils.detectTypeFromValue(val)
+                    var= Variable(name, type_, val)
+                else:
+                    val, val2 = self.visit(child)
+                    type_ = TypeUtils.detectTypeFromValue((val,val2))
+                    var= Variable(name, type_, val, val2)
+
+                given_arguments.append((name, var))
         return given_arguments
 
     def visitWhiteSpace(self, ctx: AppParser.WhiteSpaceContext):

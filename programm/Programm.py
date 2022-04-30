@@ -1,8 +1,8 @@
-from utils.Variable import *
+from programm.Variable import *
 from utils.Error import *
 from utils.Stack import *
-from utils.Function import *
-from front.PyturtleHandler import Force, PyturtleHandler
+from programm.Function import *
+from front.PyturtleHandler import PyturtleHandler
 import re
 
 
@@ -29,7 +29,7 @@ class Programm:
         if scope is None:  # scope is global
             # variable exists in global scope
             if Programm.variables.get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type_))
+                raise VariableRedefinitionError(name, TypeUtils.typeToStr(type_))
 
             # drawn object would collide with different object
             if type_ == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
@@ -40,9 +40,9 @@ class Programm:
 
         else:  # scope is local
             if type(scope) is int and Programm.local_scopes[scope].get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type_))
+                raise VariableRedefinitionError(name, TypeUtils.typeToStr(type_))
             if type(scope) is str and Programm.named_scopes[scope].get(name) is not None:
-                raise VariableRedefinitionError(name, Programm.typeToStr(type_))  
+                raise VariableRedefinitionError(name, TypeUtils.typeToStr(type_))  
 
             # drawn object would collide with different object
             if type == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
@@ -116,44 +116,13 @@ class Programm:
         else:
             print("Users functions:")
             for key, value in Programm.functions.items():
-                print("     Name: {} -> details: {}".format(key,
-                      value.displayDetails()))
+                print("     Name: {} -> details: {}".format(key, value.displayDetails()))
+                print("********")
 
     '''
-    Converts given string to Type object
-    '''
-    @staticmethod
-    def strToType(type: str):
-        if type == "TIME":
-            return Type.TIME
-        elif type == "INT":
-            return Type.INT
-        elif type == "OBJECT":
-            return Type.OBJECT
-        elif type == "FLOAT":
-            return Type.FLOAT
-        else:
-            return Type.FORCE
-
-    '''
-    Converts Type object to string
-    '''
-    @staticmethod
-    def typeToStr(type: Type):
-        if type == Type.TIME:
-            return "TIME"
-        elif type == Type.INT:
-            return "INT"
-        elif type == Type.OBJECT:
-            return "OBJECT"
-        elif type == Type.FORCE:
-            return "FORCE"
-        elif type == Type.FLOAT:
-            return "FLOAT"
-        return None
-
-    '''
-    Returns Variable object with given name
+    Returns Variable object with given name from local scope with given id
+        name - variable name
+        scope - id of local scope, if is None it means scope is global
     '''
     @staticmethod
     def getVariable(name: str, scope=None):
@@ -161,36 +130,50 @@ class Programm:
             return Programm.variables.get(name)
         else:
             return Programm.local_scopes[scope].get(name)
+    
+    '''
+    Returns variable with given name from the most upper scope on curent stack.
+    It raises error when variable with given name does not exist in any stack.
+    '''
+    @staticmethod
+    def getVaribaleFromProperScope(name: str):
+        size = Programm.scope_history.getSize()
+        for i in range (0,size):
+            if Programm.local_scopes[size-1-i].get(name) is not None:
+                return Programm.local_scopes[size-1-i].get(name)
+        if Programm.variables.get(name) is not None:
+            return Programm.variables.get(name)
+        return UndefinedVariableReferenceError(name)
+    
+    '''
+    Returns stack id of the most upper scope where variable was found. 
+    If the scope is global returns none.
+    It raises error when variable with given name does not exist in any stack.
+    '''
+    @staticmethod
+    def getProperScopeWithVariable(name: str):
+        size = Programm.scope_history.getSize()
+        for i in range (0,size):
+            if Programm.local_scopes[size-1-i].get(name) is not None:
+                return size-1-i
+        if Programm.variables.get(name) is not None:
+            return None
+        return UndefinedVariableReferenceError(name)
 
     @staticmethod
     def areTypesCompatible(type1, type2, name1, name2) -> bool:
-        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext":
+        # unfinished - checks only situation when both args are variable names
+        if type1 == "ArithmeticalExpressionContext" or type2 == "ArithmeticalExpressionContext" or type1 == "FunctionCallContext" or type2 == "FunctionCallContext":
             return True
-        '''
-        Types has also be checked in local scopes
-        if type1 == "VariableNameContext":
-            if Programm.variables[name1].type == Type.INT:
-                type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.TIME:
-                type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.FORCE:
-                type1 = "Force_typeContext"
-            elif Programm.variables[name1].type == Type.OBJECT:
-                type1 = "Object_typeContext"
-
-        if type2 == "VariableNameContext":
-            if Programm.variables[name2].type == Type.INT:
-                type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.TIME:
-                type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.FORCE:
-                type2 = "Force_typeContext"
-            elif Programm.variables[name2].type == Type.OBJECT:
-                type2 = "Object_typeContext"
-
-        if type1 == type2:
+    
+        if type1 == "VariableNameContext" and type2 == "VariableNameContext":
+            if Programm.getVaribaleFromProperScope(name1).type != Programm.getVaribaleFromProperScope(name2).type:
+                return False
             return True
-        '''
+        
+        if (type1 == "IntegerContext" or type2 != "Float_typeContext") and type2 != "IntegerContext" and type2 != "Float_typeContext":
+            return False
+
         return True
 
     @staticmethod
@@ -199,23 +182,23 @@ class Programm:
             return True
         # print("type1: {}, type2: {}".format(type1, type2))
         if type1 == "VariableNameContext":
-            if Programm.variables[name1].type == Type.INT:
+            if Programm.getVaribaleFromProperScope(name1).type == Type.INT:
                 type1 = "IntegerContext"
-            elif Programm.variables[name1].type == Type.TIME:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.TIME:
                 type1 = "TimeContext"
-            elif Programm.variables[name1].type == Type.FORCE:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.FORCE:
                 type1 = "Force_typeContext"
-            elif Programm.variables[name1].type == Type.OBJECT:
+            elif Programm.getVaribaleFromProperScope(name1).type == Type.OBJECT:
                 type1 = "Object_typeContext"
 
         if type2 == "VariableNameContext":
-            if Programm.variables[name2].type == Type.INT:
+            if Programm.getVaribaleFromProperScope(name2).type == Type.INT:
                 type2 = "IntegerContext"
-            elif Programm.variables[name2].type == Type.TIME:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.TIME:
                 type2 = "TimeContext"
-            elif Programm.variables[name2].type == Type.FORCE:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.FORCE:
                 type2 = "Force_typeContext"
-            elif Programm.variables[name2].type == Type.OBJECT:
+            elif Programm.getVaribaleFromProperScope(name2).type == Type.OBJECT:
                 type2 = "Object_typeContext"
         # print("type1: {}, type2: {}".format(type1, type2))
 
@@ -234,14 +217,6 @@ class Programm:
             return Type.OBJECT
         if node_type == "Force_typeContext":
             return Type.FORCE
-    
-    @staticmethod 
-    def getTypeFromContext(context):
-        if type(context) is int:
-            return Type.INT
-        if type(context) is float:
-            return Type.FLOAT
-        # add checking FORCE, OBJECT, TIME
 
     '''
         Returns Function() object with given name
@@ -273,46 +248,6 @@ class Programm:
         data = re.sub(";;", ";", data)
         return data
 
-    @staticmethod
-    def inputFunctionsDefinition(data: str) -> str:
-        # functions = {} # maps name to Function()
-        for name, function in Programm.functions.items():
-            start_idx = data.find(name+"(")
-            while start_idx != -1:
-                variables = {}  # maps name in call to name in declaration
-                arg_list = Programm.getArguments(data, name)
-                if len(arg_list) != len(function.params):
-                    raise WrongNumberOfArguments(
-                        name, len(function.params), len(arg_list))
-
-                for idx in range(0, len(arg_list)):
-                    '''
-                    if Programm.getVariable(arg_list[idx], scope=Programm.current_scope) is None:
-                        if Programm.getVariable(arg_list[idx]) is None:
-                            raise UndefinedVariableReferenceError(
-                                arg_list[idx])
-                        if Programm.getVariable(arg_list[idx]).type != function.params[idx][1].type:
-                            raise UnallowedCasting(Programm.getVariable(arg_list[idx]).getTypeString(),
-                                function.params[idx][1].getTypeString())
-                    else:
-                        if Programm.getVariable(arg_list[idx], Programm.current_scope).type != function.params[idx][1].type:
-                            raise UnallowedCasting(Programm.getVariable(arg_list[idx], Programm.current_scope).getTypeString(),
-                                function.params[idx][1].getTypeString())
-                    '''
-                    variables[function.params[idx][0]
-                        ] = arg_list[idx]  # mapps name in func dec to real name
-
-                # replace all accurance of name(args); with function body
-                f_body = Programm.getFbodyWithInputedArgs(
-                    function.getBody(), variables)
-                func_header = re.search(
-                    name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", data).group(0)
-                data = re.sub(
-                    name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", func_header + f_body, data)
-
-                start_idx = data.find(name+"(", start_idx+1)
-        return data
-
     '''
     It gets string as 'funckja1(zmienna1, zmienna2)' and return list of parameters: ['zmienna1', 'zmienna2']
     If function has no parameters it returns empty list
@@ -329,13 +264,6 @@ class Programm:
         if str != "":
             list = str.rsplit(",")
         return list
-
-    @staticmethod
-    def getFbodyWithInputedArgs(f_body: str, variables):
-        for key, value in variables.items():
-            f_body = f_body.replace(key, value)
-        f_body = "IF (1==1) THEN " + f_body + "ENDIF;"
-        return f_body
 
     @staticmethod
     def getRepeatedVariableName(variables):
@@ -364,6 +292,7 @@ class Programm:
             Programm.local_scopes.append(local_variables)
  
         Programm.current_scope = Programm.scope_history.top()
+        print("New variable scope was added, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def deleteTopVariableScope():
@@ -372,6 +301,7 @@ class Programm:
         if type(Programm.scope_history.top()) is int:
             Programm.local_scopes[Programm.scope_history.top()].clear()
         Programm.scope_history.pop()
+        print("Top scope was deleted, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def addNewNamedVariableScope(name: str, previos_scopes):
