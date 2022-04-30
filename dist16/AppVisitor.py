@@ -70,7 +70,9 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitForce_type(self, ctx: AppParser.Force_typeContext):
         # returns tuple (angle: int, power: int)
-        return int(ctx.angle.getText()), int(ctx.power.getText())
+        angle = self.visit(ctx.angle)
+        power = self.visit(ctx.power)
+        return angle, power
 
     def visitObject_type(self, ctx: AppParser.Object_typeContext):
         # returns tuple (x_cor: int, y_cor: int)

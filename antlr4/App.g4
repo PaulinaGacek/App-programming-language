@@ -44,7 +44,7 @@ float_type
 time_type
 	: (NONZERODIGIT|ZERO)+':'(NONZERODIGIT|ZERO)(NONZERODIGIT|ZERO)':'(NONZERODIGIT|ZERO)(NONZERODIGIT|ZERO);
 
-force_type: '['angle=integer ',' power=integer ']';
+force_type: '['angle=arithmeticalExpression ',' power=arithmeticalExpression ']';
 
 object_type: '('x_cor=integer ',' y_cor=integer ')';
 

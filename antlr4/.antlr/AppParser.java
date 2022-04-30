@@ -872,13 +872,13 @@ public class AppParser extends Parser {
 	}
 
 	public static class Force_typeContext extends ParserRuleContext {
-		public IntegerContext angle;
-		public IntegerContext power;
-		public List<IntegerContext> integer() {
-			return getRuleContexts(IntegerContext.class);
+		public ArithmeticalExpressionContext angle;
+		public ArithmeticalExpressionContext power;
+		public List<ArithmeticalExpressionContext> arithmeticalExpression() {
+			return getRuleContexts(ArithmeticalExpressionContext.class);
 		}
-		public IntegerContext integer(int i) {
-			return getRuleContext(IntegerContext.class,i);
+		public ArithmeticalExpressionContext arithmeticalExpression(int i) {
+			return getRuleContext(ArithmeticalExpressionContext.class,i);
 		}
 		public Force_typeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -895,11 +895,11 @@ public class AppParser extends Parser {
 			setState(174);
 			match(T__10);
 			setState(175);
-			((Force_typeContext)_localctx).angle = integer();
+			((Force_typeContext)_localctx).angle = arithmeticalExpression(0);
 			setState(176);
 			match(T__11);
 			setState(177);
-			((Force_typeContext)_localctx).power = integer();
+			((Force_typeContext)_localctx).power = arithmeticalExpression(0);
 			setState(178);
 			match(T__12);
 			}
@@ -3761,8 +3761,8 @@ public class AppParser extends Parser {
 		"\3\2\2\2\u00a7\u00a5\3\2\2\2\u00a7\u00a8\3\2\2\2\u00a8\u00a9\3\2\2\2\u00a9"+
 		"\u00aa\7\f\2\2\u00aa\u00ab\t\4\2\2\u00ab\u00ac\t\4\2\2\u00ac\u00ad\7\f"+
 		"\2\2\u00ad\u00ae\t\4\2\2\u00ae\u00af\t\4\2\2\u00af\21\3\2\2\2\u00b0\u00b1"+
-		"\7\r\2\2\u00b1\u00b2\5\f\7\2\u00b2\u00b3\7\16\2\2\u00b3\u00b4\5\f\7\2"+
-		"\u00b4\u00b5\7\17\2\2\u00b5\23\3\2\2\2\u00b6\u00b7\7\20\2\2\u00b7\u00b8"+
+		"\7\r\2\2\u00b1\u00b2\5\30\r\2\u00b2\u00b3\7\16\2\2\u00b3\u00b4\5\30\r"+
+		"\2\u00b4\u00b5\7\17\2\2\u00b5\23\3\2\2\2\u00b6\u00b7\7\20\2\2\u00b7\u00b8"+
 		"\5\f\7\2\u00b8\u00b9\7\16\2\2\u00b9\u00ba\5\f\7\2\u00ba\u00bb\7\21\2\2"+
 		"\u00bb\25\3\2\2\2\u00bc\u00bd\7\22\2\2\u00bd\u00c0\5F$\2\u00be\u00c1\5"+
 		"\b\5\2\u00bf\u00c1\5\22\n\2\u00c0\u00be\3\2\2\2\u00c0\u00bf\3\2\2\2\u00c1"+
