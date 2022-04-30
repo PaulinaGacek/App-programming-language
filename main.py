@@ -40,15 +40,15 @@ def interprateInput(data):
     visitor = AppVisitor()
     output = visitor.visit(tree)
 
-    Programm.updateObjectsPositionsInVariableSet()
-    Programm.displayVariables()
-    Programm.dispay_functions()
-
     if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
         PyturtleHandler.display_queues_len()
         PyturtleHandler.display_visualisation(
             PyturtleHandler.get_max_queue_len())
         print("display visualisation ended")
+
+    Programm.updateObjectsPositionsInVariableSet()
+    Programm.displayVariables()
+    Programm.dispay_functions()
 
     PyturtleHandler.win.update()
 

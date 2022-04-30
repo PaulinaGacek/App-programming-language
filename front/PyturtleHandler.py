@@ -84,8 +84,8 @@ class Ball:
 
 
 class PyturtleHandler:
-    HEIGHT = 400
-    WIDTH = 400
+    HEIGHT = 800
+    WIDTH = 800
     RADIUS = 11
     TIME_DELAY = 0  # in secs
 
