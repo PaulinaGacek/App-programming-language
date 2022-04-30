@@ -107,7 +107,7 @@ parallelExpression
 parallelBody: (app_force_=applyForce whiteSpace?)+ ;
 
 loop
-    : 'LOOP' whiteSpace? '(' whiteSpace? cond=condition whiteSpace?')'whiteSpace l_body=loopBody whiteSpace 'ENDLOOP' whiteSpace? ';'
+    : 'LOOP' whiteSpace? '(' whiteSpace? cond=condition whiteSpace?')'whiteSpace? l_body=loopBody whiteSpace? 'ENDLOOP' whiteSpace? ';'
     ;
 
 loopBody
