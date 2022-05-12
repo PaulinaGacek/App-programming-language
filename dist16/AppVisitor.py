@@ -1,5 +1,6 @@
 import math
 
+import numpy as np
 from antlr4 import *
 from programm.AppParseTreeVisitor import AppParseTreeVisitor
 from programm.Programm import Programm
@@ -200,17 +201,7 @@ class AppVisitor(AppParseTreeVisitor):
                 return operation.get(op, lambda: None)()
 
             elif artm_type == Type.FORCE:
-                l_angle, l_power = self.visit(ctx.left)
-                r_angle, r_power = self.visit(ctx.right)
-                print("Operation on forces left:[{},{}], right:[{},{}]".format(
-                    l_angle, l_power, r_angle, r_power))
-
-                op = ctx.op.text
-                # caculate output force and return
-
-            elif artm_type == Type.OBJECT:
-                print("Operation on objects")
-
+                return self.arithmeticalOperationForce(ctx)
             else:
                 return self.visitChildren(ctx)
 
@@ -256,7 +247,6 @@ class AppVisitor(AppParseTreeVisitor):
 
         name = self.visit(ctx.name_)
         var = Programm.getVaribaleFromProperScope(name)
-        # if is in named define with scope name
         value = self.visit(ctx.value_)
         if ctx.name_.scope_seq is not None:
             scope_name = self.visit(ctx.name_.scope_seq)
@@ -266,7 +256,12 @@ class AppVisitor(AppParseTreeVisitor):
             print("Scope name:", scope_name, " --> name:", name)
             Programm.defineExistingVariable(name, value, scope=scope_name)
         else:
-            Programm.defineExistingVariable(name, value, scope=Programm.getProperScopeWithVariable(name))
+            if type(value) is tuple:
+                value1 = value[0]
+                value2 = value[1]
+                Programm.defineExistingVariable(name, value1, value2, scope=Programm.getProperScopeWithVariable(name))
+            else:
+                Programm.defineExistingVariable(name, value, scope=Programm.getProperScopeWithVariable(name))
 
     def visitConditionalStatement(self, ctx: AppParser.ConditionalStatementContext):
 
@@ -617,6 +612,44 @@ class AppVisitor(AppParseTreeVisitor):
             y2 = object2.value2
 
         return x1, y1, x2, y2
+
+    def arithmeticalOperationForce(self, ctx: AppParser.ArithmeticalExpressionContext):
+        l_angle, l_power = self.visit(ctx.left)
+        r_angle, r_power = self.visit(ctx.right)
+        print(f"Operation on forces left:[{l_angle},{l_power}], right:[{r_angle},{r_power}]")
+
+        op = ctx.op.text
+        not_allowed = ['*', '/']
+
+        if op in not_allowed:
+            raise OperatorNotDefininedForType(ctx.op.text, Type.FORCE)
+
+        if op == '-':
+            r_angle += 180
+            r_angle = r_angle % 360
+
+        lfx = l_power * np.cos(l_angle * np.pi / 180)
+        lfy = l_power * np.sin(l_angle * np.pi / 180)
+        rfx = r_power * np.cos(r_angle * np.pi / 180)
+        rfy = r_power * np.sin(r_angle * np.pi / 180)
+
+        x = lfx + rfx
+        y = lfy + rfy
+
+        angle = np.arctan(y / x) * 180 / np.pi
+        power = np.sqrt(x ** 2 + y ** 2)
+
+        if power - int(power) >= 0.5:
+            power = math.ceil(power)
+        else:
+            power = math.floor(power)
+
+        if angle - int(angle) >= 0.5:
+            angle = math.ceil(angle)
+        else:
+            angle = math.floor(angle)
+
+        return int(angle), int(power)
 
 
 del AppParser
