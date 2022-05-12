@@ -72,8 +72,16 @@ arithmeticalExpression
     ;
 
 declaration
-	:   'DEFINE' whiteSpace type_=variableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression whiteSpace? ';'
+	:   'DEFINE' whiteSpace type_=variableType whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression 
+		(whiteSpace mass_def=massDefinition)? (whiteSpace size_def=sizeDefinition) ?whiteSpace? ';'
 	;
+
+massDefinition
+	: 'WITH MASS' whiteSpace value_=integer;
+
+sizeDefinition
+	: 'WITH SIZE' whiteSpace value_=integer;
+
 
 definition
 	:   'SET' whiteSpace name_=variableName whiteSpace 'AS' whiteSpace value_=arithmeticalExpression ';'

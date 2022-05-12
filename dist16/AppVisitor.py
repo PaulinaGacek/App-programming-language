@@ -243,6 +243,13 @@ class AppVisitor(AppParseTreeVisitor):
                 type_), value1, value2, scope=Programm.scope_history.top())
             PyturtleHandler.add_new_object(name, value1, value2)
 
+            if ctx.mass_def is not None:
+                mass = self.visit(ctx.mass_def)
+            
+            if ctx.size_def is not None:
+                size = self.visit(ctx.size_def)
+
+
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
 
         name = self.visit(ctx.name_)
@@ -650,6 +657,16 @@ class AppVisitor(AppParseTreeVisitor):
             angle = math.floor(angle)
 
         return int(angle), int(power)
+    
+    def visitMassDefinition(self, ctx: AppParser.MassDefinitionContext):
+        value = self.visit(ctx.value_)
+        print("Mass:", value)
+        return int(value)
+
+    def visitSizeDefinition(self, ctx: AppParser.SizeDefinitionContext):
+        value = self.visit(ctx.value_)
+        print("Size:", value)
+        return int(value)
 
 
 del AppParser

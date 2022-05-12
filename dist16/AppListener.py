@@ -125,6 +125,24 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#massDefinition.
+    def enterMassDefinition(self, ctx:AppParser.MassDefinitionContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#massDefinition.
+    def exitMassDefinition(self, ctx:AppParser.MassDefinitionContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#sizeDefinition.
+    def enterSizeDefinition(self, ctx:AppParser.SizeDefinitionContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#sizeDefinition.
+    def exitSizeDefinition(self, ctx:AppParser.SizeDefinitionContext):
+        pass
+
+
     # Enter a parse tree produced by AppParser#definition.
     def enterDefinition(self, ctx:AppParser.DefinitionContext):
         pass
