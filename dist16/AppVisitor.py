@@ -9,6 +9,7 @@ from utils.Error import *
 from utils.TypeUtils import *
 from programm.Function import Function
 from front.PyturtleHandler import *
+import re
 
 if __name__ is not None and "." in __name__:
     from .AppParser import AppParser
@@ -246,10 +247,15 @@ class AppVisitor(AppParseTreeVisitor):
 
         name = self.visit(ctx.name_)
         var = Programm.getVaribaleFromProperScope(name)
-        # [TODO] add type checking
-
-        if ctx.value_ is not None: 
-            value = self.visit(ctx.value_)
+        value = self.visit(ctx.value_)
+        if ctx.name_.scope_seq is not None:
+            scope_name = self.visit(ctx.name_.scope_seq)
+            name = re.sub(scope_name, "", name)
+            
+            scope_name = re.sub("::$", "", scope_name)
+            print("Scope name:", scope_name, " --> name:", name)
+            Programm.defineExistingVariable(name, value, scope=scope_name)
+        else:
             if type(value) is tuple:
                 value1 = value[0]
                 value2 = value[1]

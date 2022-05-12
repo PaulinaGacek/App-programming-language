@@ -71,12 +71,17 @@ class Programm:
             Programm.variables[name].value2 = value2
 
         else:  # scope is local
-            if Programm.local_scopes[scope].get(name) is None:
+            if type(scope) is int and Programm.local_scopes[scope].get(name) is None:
+                raise UndefinedVariableReferenceError(name)
+            if type(scope) is str and Programm.named_scopes[scope].get(name) is None:
                 raise UndefinedVariableReferenceError(name)
 
-            Programm.local_scopes[scope][name].value = value
-            Programm.local_scopes[scope][name].value2 = value2
-
+            if type(scope) is int:
+                Programm.local_scopes[scope][name].value = value
+                Programm.local_scopes[scope][name].value2 = value2
+            elif type(scope) is str:
+                Programm.named_scopes[scope][name].value = value
+                Programm.named_scopes[scope][name].value2 = value2
     '''
     Prints the content of variables dict.
     '''
@@ -129,8 +134,10 @@ class Programm:
     def getVariable(name: str, scope=None):
         if scope is None:
             return Programm.variables.get(name)
-        else:
+        elif type(scope) is int:
             return Programm.local_scopes[scope].get(name)
+        else:
+            return Programm.named_scopes[scope].get(name)
     
     '''
     Returns variable with given name from the most upper scope on curent stack.

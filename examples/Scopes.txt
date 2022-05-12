@@ -7,3 +7,4 @@ MyScope{DEFINE TIME zmienna2 AS 4220;}; /*zmienna 2 dodawana jest do scopu */
 MyScope{ MyNestedScope{ DEFINE TIME zmienna2 AS 0;};}; 
 MyScope{ MyNestedScope2{ DEFINE TIME zmienna2 AS 0;};}; 
 MyNestedScope2{ DEFINE TIME zmienna2 AS 0;};
+SET MyScope::zmienna2 AS 100;
