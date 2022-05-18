@@ -241,13 +241,20 @@ class AppVisitor(AppParseTreeVisitor):
             value1, value2 = self.visit(ctx.value_)
             Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, scope=Programm.scope_history.top())
-            PyturtleHandler.add_new_object(name, value1, value2)
 
+            mass = None
+            size = None
             if ctx.mass_def is not None:
                 mass = self.visit(ctx.mass_def)
+            else:
+                mass = 1
             
             if ctx.size_def is not None:
                 size = self.visit(ctx.size_def)
+            else:
+                size = PyturtleHandler.RADIUS
+            
+            PyturtleHandler.add_new_object(name, value1, value2, mass=mass, size=size)
 
 
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
