@@ -26,14 +26,14 @@ class Programm:
     if variable was already defined.
     '''
     @staticmethod
-    def defineNewVariable(name: str, type_: Type, value: int, value2=None, scope=None):
+    def defineNewVariable(name: str, type_: Type, value: int, value2=None, value3=None, scope=None):
         if scope is None:  # scope is global
             # variable exists in global scope
             if Programm.variables.get(name) is not None:
                 raise VariableRedefinitionError(name, TypeUtils.typeToStr(type_))
 
             # drawn object would collide with different object
-            if type_ == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2):
+            if type_ == Type.OBJECT and not PyturtleHandler.can_object_be_drawn(value, value2, value3):
                 raise ObjectCannotBeDrawn(name, value, value2)
 
             new_var = Variable(name, type_, value, value2)

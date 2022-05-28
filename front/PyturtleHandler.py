@@ -72,7 +72,7 @@ class Ball:
             z = math.ceil(z)
         else:
             z = math.ceil(z)
-        if z > PyturtleHandler.RADIUS:
+        if z > self.size:
             return False
 
         return True
@@ -126,23 +126,23 @@ class PyturtleHandler:
     '''
 
     @staticmethod
-    def can_object_be_drawn(x, y) -> bool:
+    def can_object_be_drawn(x, y, size) -> bool:
 
-        if x - PyturtleHandler.RADIUS < 0 or x + PyturtleHandler.RADIUS > PyturtleHandler.WIDTH:
+        if x - size < 0 or x + size > PyturtleHandler.WIDTH:
             return False
 
-        if y - PyturtleHandler.RADIUS < 0 or y + PyturtleHandler.RADIUS > PyturtleHandler.HEIGHT:
+        if y - size < 0 or y + size > PyturtleHandler.HEIGHT:
             return False
 
         # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
         # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
-        for x_ in range(0, PyturtleHandler.RADIUS + 1):
+        for x_ in range(0, size + 1):
             x1 = x + x_
             x2 = x - x_
-            y1 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
-            y2 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
-            y3 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
-            y4 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
+            y1 = math.sqrt(size ** 2 - (x1 - x) ** 2) + y
+            y2 = - math.sqrt(size ** 2 - (x1 - x) ** 2) + y
+            y3 = math.sqrt(size ** 2 - (x2 - x) ** 2) + y
+            y4 = - math.sqrt(size ** 2 - (x2 - x) ** 2) + y
 
             if not PyturtleHandler.is_pixel_available(int(x1), int(y1)) \
                     or not PyturtleHandler.is_pixel_available(int(x1), int(y2)):
@@ -180,8 +180,9 @@ class PyturtleHandler:
     def is_balls_collision(object1: Ball, object2: Ball) -> bool:
         x1, y1 = object1.get_pos_x(), object1.get_pos_y()
         x2, y2 = object2.get_pos_x(), object2.get_pos_y()
+        size1, size2 = object1.size, object2.size
 
-        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < 2 * PyturtleHandler.RADIUS):
+        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < (size1 + size2)):
             # print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
             return True
 
@@ -203,6 +204,7 @@ class PyturtleHandler:
     def add_new_object(name, x, y, mass, size):
         PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0, mass, size)
 
+    # TODO use size of balls in function
     @staticmethod
     def update_positions_of_all_balls():
         radius = PyturtleHandler.RADIUS
@@ -326,6 +328,7 @@ class PyturtleHandler:
     keeping to collide and in some cases they even became one ball. This method prevents from these situation - it makes sure that 
     ball will escape collision state in one iteration
     '''
+    # TODO use size of balls in this function
     @staticmethod
     def escape_collision(object1: Ball, object2: Ball):
         
@@ -342,4 +345,5 @@ class PyturtleHandler:
             after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
             after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
 
+    # TODO update size of balls in drawing function
 
