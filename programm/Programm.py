@@ -248,32 +248,6 @@ class Programm:
         return output
 
     @staticmethod
-    def deleteFunctionsDefinitions(data: str) -> str:
-        idx = data.find('DEFINE FUNCTION')
-        while idx != -1:
-            data = re.sub("DEFINE FUNCTION .+ ENDFUNCTION;", "", data)
-            idx = data.find('DEFINE FUNCTION')
-        data = re.sub(";;", ";", data)
-        return data
-
-    '''
-    It gets string as 'funckja1(zmienna1, zmienna2)' and return list of parameters: ['zmienna1', 'zmienna2']
-    If function has no parameters it returns empty list
-    '''
-    @staticmethod
-    def getArguments(data: str, func_name: str):
-        list = []
-        str = re.search(
-            func_name+"\( *(([a-z])([a-z]|[A-Z]|[0-9])* *(, *([a-z])([a-z]|[A-Z]|[0-9])* *)*)?\);", data).group(0)
-        str = re.sub(func_name+"\(", "", str)
-        str = re.sub("\);;", "", str)
-        str = re.sub("\);", "", str)
-        str = str.replace(" ", "")
-        if str != "":
-            list = str.rsplit(",")
-        return list
-
-    @staticmethod
     def getRepeatedVariableName(variables):
         # variables -> list((str, Variable()))
         variable_set = set()

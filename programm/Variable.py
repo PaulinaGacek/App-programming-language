@@ -1,4 +1,4 @@
-from utils.TypeUtils import *
+from programm.TypeUtils import *
 from utils.Error import *
 
 class Variable:
