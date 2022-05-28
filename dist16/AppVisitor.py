@@ -248,6 +248,8 @@ class AppVisitor(AppParseTreeVisitor):
 
             if ctx.size_def is not None:
                 size = self.visit(ctx.size_def)
+                if size > PyturtleHandler.MAX_RADIUS:
+                    size = PyturtleHandler.MAX_RADIUS
             else:
                 size = PyturtleHandler.RADIUS
 

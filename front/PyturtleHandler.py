@@ -89,6 +89,7 @@ class PyturtleHandler:
     WIDTH = 800
     RADIUS = 11
     TIME_DELAY = 0  # in secs
+    MAX_RADIUS = 100
 
     win = None
     color = (205, 205, 205)
@@ -204,16 +205,15 @@ class PyturtleHandler:
     def add_new_object(name, x, y, mass, size):
         PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0, mass, size)
 
-    # TODO use size of balls in function
     @staticmethod
     def update_positions_of_all_balls():
-        radius = PyturtleHandler.RADIUS
 
         balls_copy = PyturtleHandler.balls.copy()
 
         for key, value in PyturtleHandler.balls.items():
 
             value.update_velocity()
+            radius = value.size
 
             # check for a wall collision
             if value.turtle.xcor() + radius > PyturtleHandler.WIDTH or value.turtle.xcor() - radius <= 0:
@@ -255,6 +255,7 @@ class PyturtleHandler:
         v1 = np.array((object1.dx, object1.dy))
         v2 = np.array((object2.dx, object2.dy))
 
+
         u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
         u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
 
@@ -264,7 +265,7 @@ class PyturtleHandler:
         object1.dy = u1[1]
         object2.dx = u2[0]
         object2.dy = u2[1]
-        PyturtleHandler.escape_collision(object1,object2)
+        PyturtleHandler.escape_collision(object1, object2)
 
 
     @staticmethod
@@ -328,16 +329,17 @@ class PyturtleHandler:
     keeping to collide and in some cases they even became one ball. This method prevents from these situation - it makes sure that 
     ball will escape collision state in one iteration
     '''
-    # TODO use size of balls in this function
     @staticmethod
     def escape_collision(object1: Ball, object2: Ball):
-        
+
+        size1, size2 = object1.size, object2.size
+
         # sitaution after collision
         after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
         after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
 
         # checking if after one iteration they will escape collision state
-        while (math.sqrt((after_x_1 - after_x_2)**2 + (after_y_1 - after_y_2)**2) < 2 * PyturtleHandler.RADIUS):
+        while (math.sqrt((after_x_1 - after_x_2)**2 + (after_y_1 - after_y_2)**2) < (size1 + size2)):
 
             object1.turtle.goto(object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy)
             object2.turtle.goto(object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy)
@@ -345,5 +347,5 @@ class PyturtleHandler:
             after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
             after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
 
-    # TODO update size of balls in drawing function
+
 
