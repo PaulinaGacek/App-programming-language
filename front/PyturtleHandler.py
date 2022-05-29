@@ -37,6 +37,10 @@ class Ball:
         self.turtle.goto(x, y)
         self.turtle.color(
             Ball.colors[len(PyturtleHandler.balls.keys()) % len(Ball.colors)])
+        self.turtle.shapesize(self.size / PyturtleHandler.RADIUS)
+        print("------------------BALL SIZE---------------------")
+        print(self.turtle.shapesize())
+        print("------------------------------------------------")
         self.turtle.showturtle()
 
         self.event_queue = queue.Queue()
@@ -87,7 +91,7 @@ class Ball:
 class PyturtleHandler:
     HEIGHT = 800
     WIDTH = 800
-    RADIUS = 11
+    RADIUS = 10
     TIME_DELAY = 0  # in secs
     MAX_RADIUS = 100
 
