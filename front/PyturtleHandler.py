@@ -37,6 +37,10 @@ class Ball:
         self.turtle.goto(x, y)
         self.turtle.color(
             Ball.colors[len(PyturtleHandler.balls.keys()) % len(Ball.colors)])
+        self.turtle.shapesize(self.size / PyturtleHandler.RADIUS)
+        print("------------------BALL SIZE---------------------")
+        print(self.turtle.shapesize())
+        print("------------------------------------------------")
         self.turtle.showturtle()
 
         self.event_queue = queue.Queue()
@@ -72,7 +76,7 @@ class Ball:
             z = math.ceil(z)
         else:
             z = math.ceil(z)
-        if z > PyturtleHandler.RADIUS:
+        if z > self.size:
             return False
 
         return True
@@ -87,8 +91,9 @@ class Ball:
 class PyturtleHandler:
     HEIGHT = 800
     WIDTH = 800
-    RADIUS = 11
+    RADIUS = 10
     TIME_DELAY = 0  # in secs
+    MAX_RADIUS = 100
 
     win = None
     color = (205, 205, 205)
@@ -126,23 +131,23 @@ class PyturtleHandler:
     '''
 
     @staticmethod
-    def can_object_be_drawn(x, y) -> bool:
+    def can_object_be_drawn(x, y, size) -> bool:
 
-        if x - PyturtleHandler.RADIUS < 0 or x + PyturtleHandler.RADIUS > PyturtleHandler.WIDTH:
+        if x - size < 0 or x + size > PyturtleHandler.WIDTH:
             return False
 
-        if y - PyturtleHandler.RADIUS < 0 or y + PyturtleHandler.RADIUS > PyturtleHandler.HEIGHT:
+        if y - size < 0 or y + size > PyturtleHandler.HEIGHT:
             return False
 
         # (x_ - x)**2 + (y_ - y)**2 = RADIUS**2
         # y_ = sqrt(RADIUS**2 - (x_ - x)**2) + y
-        for x_ in range(0, PyturtleHandler.RADIUS + 1):
+        for x_ in range(0, size + 1):
             x1 = x + x_
             x2 = x - x_
-            y1 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
-            y2 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x1 - x) ** 2) + y
-            y3 = math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
-            y4 = - math.sqrt(PyturtleHandler.RADIUS ** 2 - (x2 - x) ** 2) + y
+            y1 = math.sqrt(size ** 2 - (x1 - x) ** 2) + y
+            y2 = - math.sqrt(size ** 2 - (x1 - x) ** 2) + y
+            y3 = math.sqrt(size ** 2 - (x2 - x) ** 2) + y
+            y4 = - math.sqrt(size ** 2 - (x2 - x) ** 2) + y
 
             if not PyturtleHandler.is_pixel_available(int(x1), int(y1)) \
                     or not PyturtleHandler.is_pixel_available(int(x1), int(y2)):
@@ -180,8 +185,9 @@ class PyturtleHandler:
     def is_balls_collision(object1: Ball, object2: Ball) -> bool:
         x1, y1 = object1.get_pos_x(), object1.get_pos_y()
         x2, y2 = object2.get_pos_x(), object2.get_pos_y()
+        size1, size2 = object1.size, object2.size
 
-        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < 2 * PyturtleHandler.RADIUS):
+        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < (size1 + size2)):
             # print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
             return True
 
@@ -205,13 +211,13 @@ class PyturtleHandler:
 
     @staticmethod
     def update_positions_of_all_balls():
-        radius = PyturtleHandler.RADIUS
 
         balls_copy = PyturtleHandler.balls.copy()
 
         for key, value in PyturtleHandler.balls.items():
 
             value.update_velocity()
+            radius = value.size
 
             # check for a wall collision
             if value.turtle.xcor() + radius > PyturtleHandler.WIDTH or value.turtle.xcor() - radius <= 0:
@@ -253,6 +259,7 @@ class PyturtleHandler:
         v1 = np.array((object1.dx, object1.dy))
         v2 = np.array((object2.dx, object2.dy))
 
+
         u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
         u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
 
@@ -262,7 +269,7 @@ class PyturtleHandler:
         object1.dy = u1[1]
         object2.dx = u2[0]
         object2.dy = u2[1]
-        PyturtleHandler.escape_collision(object1,object2)
+        PyturtleHandler.escape_collision(object1, object2)
 
 
     @staticmethod
@@ -328,18 +335,21 @@ class PyturtleHandler:
     '''
     @staticmethod
     def escape_collision(object1: Ball, object2: Ball):
-        
+
+        size1, size2 = object1.size, object2.size
+
         # sitaution after collision
         after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
         after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
 
         # checking if after one iteration they will escape collision state
-        while (math.sqrt((after_x_1 - after_x_2)**2 + (after_y_1 - after_y_2)**2) < 2 * PyturtleHandler.RADIUS):
+        while (math.sqrt((after_x_1 - after_x_2)**2 + (after_y_1 - after_y_2)**2) < (size1 + size2)):
 
             object1.turtle.goto(object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy)
             object2.turtle.goto(object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy)
 
             after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
             after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
+
 
 
