@@ -1,12 +1,11 @@
 import math
-
 import numpy as np
 from antlr4 import *
-from programm.AppParseTreeVisitor import AppParseTreeVisitor
+from language_tools.AppParseTreeVisitor import AppParseTreeVisitor
 from programm.Programm import Programm
 from programm.Variable import *
 from utils.Error import *
-from utils.TypeUtils import *
+from programm.TypeUtils import *
 from programm.Function import Function
 from front.PyturtleHandler import *
 import re
@@ -241,13 +240,20 @@ class AppVisitor(AppParseTreeVisitor):
             value1, value2 = self.visit(ctx.value_)
             Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, scope=Programm.scope_history.top())
-            PyturtleHandler.add_new_object(name, value1, value2)
 
+            mass = None
+            size = None
             if ctx.mass_def is not None:
                 mass = self.visit(ctx.mass_def)
+            else:
+                mass = 1
             
             if ctx.size_def is not None:
                 size = self.visit(ctx.size_def)
+            else:
+                size = PyturtleHandler.RADIUS
+            
+            PyturtleHandler.add_new_object(name, value1, value2, mass=mass, size=size)
 
 
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
@@ -257,8 +263,7 @@ class AppVisitor(AppParseTreeVisitor):
         value = self.visit(ctx.value_)
         if ctx.name_.scope_seq is not None:
             scope_name = self.visit(ctx.name_.scope_seq)
-            name = re.sub(scope_name, "", name)
-            
+            name = re.sub(scope_name, "", name)       
             scope_name = re.sub("::$", "", scope_name)
             print("Scope name:", scope_name, " --> name:", name)
             Programm.defineExistingVariable(name, value, scope=scope_name)
@@ -297,7 +302,6 @@ class AppVisitor(AppParseTreeVisitor):
                     raise UndefinedVariableReferenceError(name1)
             type1 = Programm.getVariable(name1).type
             val1 = Programm.getVariable(name1).value
-        # print("Name1: {}, type1: {}, val1: {}".format(name1, type1, val1))
 
         name2, val2, type2 = None, None, None
         if ctx.right_expr is not None:
@@ -517,7 +521,6 @@ class AppVisitor(AppParseTreeVisitor):
         Programm.deleteTopVariableScope()
         self.current_named_scope.remove(name)
 
-    # Visit a parse tree produced by AppParser#getAngle.
     def visitGetAngle(self, ctx: AppParser.GetAngleContext):
         x1, y1, x2, y2 = self.getDistancecoords(ctx)
         degree = math.atan2(y2 - y1, x2 - x1) * 180 / math.pi
@@ -525,13 +528,12 @@ class AppVisitor(AppParseTreeVisitor):
             degree += 360
         return degree
 
-    # Visit a parse tree produced by AppParser#getCoordinate.
     def visitGetCoordinate(self, ctx: AppParser.GetCoordinateContext):
         text_value = ctx.axis.text
         name = self.visit(ctx.name_)
         curr_object = None
-        if Programm.getVariable(name, Programm.current_scope) is None:  # nie ma w scopie lokalnym
-            if Programm.getVariable(name) is None:  # nie ma w globalnym
+        if Programm.getVariable(name, Programm.current_scope) is None:
+            if Programm.getVariable(name) is None: 
                 raise UndefinedVariableReferenceError(name)
             else:
                 curr_object = Programm.getVariable(name)
@@ -549,7 +551,6 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             return 2137
 
-    # Visit a parse tree produced by AppParser#getDistance.
     def visitGetDistance(self, ctx: AppParser.GetDistanceContext):
         x1, y1, x2, y2 = self.getDistancecoords(ctx)
         diff_x = abs(x1 - x2)
@@ -560,8 +561,8 @@ class AppVisitor(AppParseTreeVisitor):
         text_value = ctx.axis.text
         name = self.visit(ctx.name_)
         curr_object = None
-        if Programm.getVariable(name, Programm.current_scope) is None:  # nie ma w scopie lokalnym
-            if Programm.getVariable(name) is None:  # nie ma w globalnym
+        if Programm.getVariable(name, Programm.current_scope) is None:
+            if Programm.getVariable(name) is None: 
                 raise UndefinedVariableReferenceError(name)
             else:
                 curr_object = Programm.getVariable(name)
@@ -593,8 +594,8 @@ class AppVisitor(AppParseTreeVisitor):
             y1 = object1[1]
         else:
             name1 = self.visit(ctx.name_1)
-            if Programm.getVariable(name1, Programm.current_scope) is None:  # nie ma w scopie lokalnym
-                if Programm.getVariable(name1) is None:  # nie ma w globalnym
+            if Programm.getVariable(name1, Programm.current_scope) is None: 
+                if Programm.getVariable(name1) is None: 
                     raise UndefinedVariableReferenceError(name1)
                 else:
                     object1 = Programm.getVariable(name1)
@@ -608,8 +609,8 @@ class AppVisitor(AppParseTreeVisitor):
             y2 = object2[1]
         else:
             name2 = self.visit(ctx.name_2)
-            if Programm.getVariable(name2, Programm.current_scope) is None:  # nie ma w scopie lokalnym
-                if Programm.getVariable(name2) is None:  # nie ma w globalnym
+            if Programm.getVariable(name2, Programm.current_scope) is None:
+                if Programm.getVariable(name2) is None:
                     raise UndefinedVariableReferenceError(name2)
                 else:
                     object2 = Programm.getVariable(name2)
@@ -660,13 +661,10 @@ class AppVisitor(AppParseTreeVisitor):
     
     def visitMassDefinition(self, ctx: AppParser.MassDefinitionContext):
         value = self.visit(ctx.value_)
-        print("Mass:", value)
         return int(value)
 
     def visitSizeDefinition(self, ctx: AppParser.SizeDefinitionContext):
         value = self.visit(ctx.value_)
-        print("Size:", value)
         return int(value)
-
 
 del AppParser

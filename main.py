@@ -1,9 +1,9 @@
 import sys
 from antlr4 import *
-from dist16.AppLexer import AppLexer
-from dist16.AppParser import AppParser
-from dist16.AppVisitor import *
-from programm.AppErrorListener import *
+from language_tools.AppLexer import AppLexer
+from language_tools.AppParser import AppParser
+from language_tools.AppVisitor import *
+from language_tools.AppErrorListener import *
 from programm.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
 
@@ -27,9 +27,7 @@ def interprateInput(data):
     output = visitor.visit(tree)
 
     AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
-    new_data = Programm.deleteFunctionsDefinitions(data.__str__())
-
-    data = InputStream(new_data)
+    data = InputStream(data.__str__())
     # lexer
     lexer = AppLexer(data)
     stream = CommonTokenStream(lexer)

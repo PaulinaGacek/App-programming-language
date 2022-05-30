@@ -21,9 +21,11 @@ class Ball:
               (216, 133, 163), (253, 206, 185)]
     FACTOR = 5
 
-    def __init__(self, name, x, y, dx, dy):
+    def __init__(self, name, x, y, dx, dy, mass, size):
         self.name = name
         self.turtle = turtle.Turtle("circle")
+        self.mass = mass
+        self.size = size
 
         self.dy = dy  # current y velocity
         self.dx = dx
@@ -46,9 +48,9 @@ class Ball:
         force = self.event_queue.get()
         self.queue_size -= 1
         self.acc_x = math.cos(force.angle * math.pi /
-                              180) * force.power/Ball.FACTOR
+                              180) * force.power/Ball.FACTOR /self.mass
         self.acc_y = math.sin(force.angle * math.pi /
-                              180) * force.power/Ball.FACTOR
+                              180) * force.power/Ball.FACTOR /self.mass
 
         self.dy += self.acc_y
         self.dx += self.acc_x
@@ -198,8 +200,8 @@ class PyturtleHandler:
         PyturtleHandler.isBoardInstantiated = True
 
     @staticmethod
-    def add_new_object(name, x, y):
-        PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0)
+    def add_new_object(name, x, y, mass, size):
+        PyturtleHandler.balls[name] = Ball(name, x, y, 0, 0, mass, size)
 
     @staticmethod
     def update_positions_of_all_balls():
