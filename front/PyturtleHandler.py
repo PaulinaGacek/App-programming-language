@@ -2,6 +2,7 @@ import turtle
 import queue
 import math
 import numpy as np
+from front.Ball import Ball
 
 
 class Force:
@@ -14,78 +15,6 @@ class Force:
         self.delay = delay
         # print("New force with angle {}, power {}, ticks {}, delay {}".format(self.angle, power, ticks, delay))
         # add checking if values are not negative
-
-
-class Ball:
-    colors = [(101, 93, 138), (120, 151, 171),
-              (216, 133, 163), (253, 206, 185)]
-    FACTOR = 5
-
-    def __init__(self, name, x, y, dx, dy, mass, size):
-        self.name = name
-        self.turtle = turtle.Turtle("circle")
-        self.mass = mass
-        self.size = size
-
-        self.dy = dy  # current y velocity
-        self.dx = dx
-        self.acc_x = 0  # current x acc
-        self.acc_y = 0
-
-        self.turtle.hideturtle()
-        self.turtle.penup()
-        self.turtle.goto(x, y)
-        self.turtle.color(
-            Ball.colors[len(PyturtleHandler.balls.keys()) % len(Ball.colors)])
-        self.turtle.shapesize(self.size / PyturtleHandler.RADIUS)
-        print("------------------BALL SIZE---------------------")
-        print(self.turtle.shapesize())
-        print("------------------------------------------------")
-        self.turtle.showturtle()
-
-        self.event_queue = queue.Queue()
-        self.queue_size = 0
-
-    def update_velocity(self):
-        if self.queue_size <= 0:
-            print("Queue is empty!!!")
-        force = self.event_queue.get()
-        self.queue_size -= 1
-        self.acc_x = math.cos(force.angle * math.pi /
-                              180) * force.power/Ball.FACTOR /self.mass
-        self.acc_y = math.sin(force.angle * math.pi /
-                              180) * force.power/Ball.FACTOR /self.mass
-
-        self.dy += self.acc_y
-        self.dx += self.acc_x
-
-        self.turtle.goto(self.turtle.xcor() + self.dx,
-                         self.turtle.ycor() + self.dy)
-
-    '''
-        Checks if given pixel (x_, y_) is inside self
-        Returns true if it is inside.
-    '''
-
-    def is_pixel_inside(self, x_, y_) -> bool:
-        diff_x = abs(x_ - self.turtle.xcor())
-        diff_y = abs(y_ - self.turtle.ycor())
-        z = math.sqrt((diff_x ** 2 + diff_y ** 2))
-        z_ = int(z)
-        if z - z_ >= 0.5:
-            z = math.ceil(z)
-        else:
-            z = math.ceil(z)
-        if z > self.size:
-            return False
-
-        return True
-
-    def get_pos_x(self):
-        return self.turtle.xcor()
-
-    def get_pos_y(self):
-        return self.turtle.ycor()
 
 
 class PyturtleHandler:
@@ -176,22 +105,6 @@ class PyturtleHandler:
                 print("{} has collission with {}".format(name, obj.name))
                 return [False, obj]
         return [True, None]
-
-    """
-    Returns there is a collistion between object1 and object2 - if the distance between the centers of two objects is less than the sum of their radii.
-    """
-
-    @staticmethod
-    def is_balls_collision(object1: Ball, object2: Ball) -> bool:
-        x1, y1 = object1.get_pos_x(), object1.get_pos_y()
-        x2, y2 = object2.get_pos_x(), object2.get_pos_y()
-        size1, size2 = object1.size, object2.size
-
-        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < (size1 + size2)):
-            # print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
-            return True
-
-        return False
 
     @staticmethod
     def instantiate_board():
@@ -352,4 +265,18 @@ class PyturtleHandler:
             after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
 
 
+    """
+    Returns there is a collistion between object1 and object2 - if the distance between the centers of two objects is less than the sum of their radii.
+    """
 
+    @staticmethod
+    def is_balls_collision(object1: Ball, object2: Ball) -> bool:
+        x1, y1 = object1.get_pos_x(), object1.get_pos_y()
+        x2, y2 = object2.get_pos_x(), object2.get_pos_y()
+        size1, size2 = object1.size, object2.size
+
+        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < (size1 + size2)):
+            # print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
+            return True
+
+        return False
