@@ -3,7 +3,6 @@ from utils.Error import *
 from utils.Stack import *
 from programm.Function import *
 from front.PyturtleHandler import PyturtleHandler
-import re
 import time
 
 

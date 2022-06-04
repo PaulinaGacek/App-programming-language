@@ -70,7 +70,12 @@ class CollisionHandler:
         # CollisionHandler.escape_collision(object1, object2)
     
     def is_vertical_wall_collision(self, ball: Ball):
-        return ball.get_next_pos_y() + ball.get_radius() > self.height or ball.get_next_pos_y() - ball.get_radius() <= 0
+        if ball.get_next_pos_y() + ball.get_radius() > self.height:
+            print("upper wall ->"+ball.name)
+            return True
+        if ball.get_next_pos_y() - ball.get_radius() < 0:
+            print("bottom wall->"+ball.name)
+            return True
     
     def is_horizontall_wall_collision(self, ball: Ball):
         return ball.get_next_pos_x() + ball.get_radius() > self.width or ball.get_next_pos_x() - ball.get_radius() <= 0
