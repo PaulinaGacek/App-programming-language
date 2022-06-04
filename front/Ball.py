@@ -47,7 +47,8 @@ class Ball:
                               180) * force.power/Ball.FACTOR /self.mass
 
     def move_to_next_pos(self):
-        self.turtle.goto(self.next_pos_x,self.next_pos_y)
+        self.turtle.goto(self.next_pos_x, self.next_pos_y)
+        
 
     '''
         Checks if given pixel (x_, y_) is inside self

@@ -107,13 +107,13 @@ class PyturtleHandler:
     @staticmethod
     def update_positions_of_all_balls():
 
-        for value in PyturtleHandler.balls.values():
-            value.update_acceleration()
+        for ball in PyturtleHandler.balls.values():
+            ball.update_acceleration()
         
         PyturtleHandler.collisionHandler.calculate_next_balls_pos(PyturtleHandler.balls)
 
-        for value in PyturtleHandler.balls.values():
-            value.move_to_next_pos()
+        for ball in PyturtleHandler.balls.values():
+            ball.move_to_next_pos()
 
     @staticmethod
     def force_superposition(forces: list):
