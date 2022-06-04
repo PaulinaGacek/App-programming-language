@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Type(Enum):
     TIME = 1
     INT = 2
@@ -7,19 +8,21 @@ class Type(Enum):
     FORCE = 4
     FLOAT = 5
 
+
 class TypeUtils:
-    '''
+
+    """
     Converts given string to Type object
-    '''
+    """
     @staticmethod
-    def strToType(type: str):
-        if type == "TIME":
+    def strToType(type_: str):
+        if type_ == "TIME":
             return Type.TIME
-        elif type == "INT":
+        elif type_ == "INT":
             return Type.INT
-        elif type == "OBJECT":
+        elif type_ == "OBJECT":
             return Type.OBJECT
-        elif type == "FLOAT":
+        elif type_ == "FLOAT":
             return Type.FLOAT
         else:
             return Type.FORCE
@@ -28,16 +31,16 @@ class TypeUtils:
     Converts Type object to string
     '''
     @staticmethod
-    def typeToStr(type: Type):
-        if type == Type.TIME:
+    def typeToStr(type_: Type):
+        if type_ == Type.TIME:
             return "TIME"
-        elif type == Type.INT:
+        elif type_ == Type.INT:
             return "INT"
-        elif type == Type.OBJECT:
+        elif type_ == Type.OBJECT:
             return "OBJECT"
-        elif type == Type.FORCE:
+        elif type_ == Type.FORCE:
             return "FORCE"
-        elif type == Type.FLOAT:
+        elif type_ == Type.FLOAT:
             return "FLOAT"
         return None
 
