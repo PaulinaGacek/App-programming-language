@@ -20,6 +20,9 @@ class Ball:
         self.acc_x = 0  # current x acc
         self.acc_y = 0
 
+        self.next_pos_x = x
+        self.next_pos_y = y
+
         self.turtle.hideturtle()
         self.turtle.penup()
         self.turtle.goto(x, y)
@@ -31,23 +34,20 @@ class Ball:
         self.event_queue = queue.Queue()
         self.queue_size = 0
         Ball.counter +=1 # number of created balls
-
-    def update_velocity(self):
+    
+    def update_acceleration(self):
         if self.queue_size <= 0:
             print("Queue is empty!!!")
         force = self.event_queue.get()
         self.queue_size -= 1
+
         self.acc_x = math.cos(force.angle * math.pi /
                               180) * force.power/Ball.FACTOR /self.mass
         self.acc_y = math.sin(force.angle * math.pi /
                               180) * force.power/Ball.FACTOR /self.mass
 
-        # adding virtual ticks
-        self.dy += self.acc_y
-        self.dx += self.acc_x
-
-        self.turtle.goto(self.turtle.xcor() + self.dx,
-                         self.turtle.ycor() + self.dy)
+    def move_to_next_pos(self):
+        self.turtle.goto(self.next_pos_x,self.next_pos_y)
 
     '''
         Checks if given pixel (x_, y_) is inside self
@@ -73,3 +73,12 @@ class Ball:
 
     def get_pos_y(self):
         return self.turtle.ycor()
+    
+    def get_next_pos_x(self):
+        return self.next_pos_x
+    
+    def get_next_pos_y(self):
+        return self.next_pos_y
+    
+    def get_radius(self):
+        return self.size

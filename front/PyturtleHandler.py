@@ -1,9 +1,7 @@
 import turtle
-import queue
 import math
-import numpy as np
 from front.Ball import Ball
-
+from front.CollisionsHandler import CollisionHandler
 
 class Force:
     def __init__(self, angle: int, power: int, ticks: int, delay: int = 0):
@@ -18,15 +16,15 @@ class Force:
 
 
 class PyturtleHandler:
-    HEIGHT = 800
-    WIDTH = 800
+    HEIGHT = 400
+    WIDTH = 400
     RADIUS = 10
     TIME_DELAY = 0  # in secs
     MAX_RADIUS = 100
+    collisionHandler = None
 
     win = None
     color = (205, 205, 205)
-    isBoardInstantiated = False
 
     balls = {}  # mapps name to the Ball()
 
@@ -90,22 +88,6 @@ class PyturtleHandler:
 
         return True
 
-    '''
-        Checks if pixel (x,y) is not occupied by any other object then that one which name was given,
-         so if this pixel is accessible
-    '''
-
-    @staticmethod
-    def is_pixel_accessible(x, y, name):
-        balls_copy = PyturtleHandler.balls.copy()
-        balls_copy.pop(name)  # don't check collision with itself
-
-        for obj in balls_copy.values():
-            if obj.is_pixel_inside(x, y) is True:
-                print("{} has collission with {}".format(name, obj.name))
-                return [False, obj]
-        return [True, None]
-
     @staticmethod
     def instantiate_board():
         PyturtleHandler.win = turtle.Screen()
@@ -116,7 +98,7 @@ class PyturtleHandler:
             PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
         turtle.setworldcoordinates(
             0, 0, PyturtleHandler.WIDTH, PyturtleHandler.HEIGHT)
-        PyturtleHandler.isBoardInstantiated = True
+        PyturtleHandler.collisionHandler = CollisionHandler(10, PyturtleHandler.HEIGHT, PyturtleHandler.WIDTH)
 
     @staticmethod
     def add_new_object(name, x, y, mass, size):
@@ -125,65 +107,13 @@ class PyturtleHandler:
     @staticmethod
     def update_positions_of_all_balls():
 
-        balls_copy = PyturtleHandler.balls.copy()
+        for value in PyturtleHandler.balls.values():
+            value.update_acceleration()
+        
+        PyturtleHandler.collisionHandler.calculate_next_balls_pos(PyturtleHandler.balls)
 
-        for key, value in PyturtleHandler.balls.items():
-
-            value.update_velocity()
-            radius = value.size
-
-            # check for a wall collision
-            if value.turtle.xcor() + radius > PyturtleHandler.WIDTH or value.turtle.xcor() - radius <= 0:
-                value.dx *= -1
-
-            if value.turtle.ycor() + radius > PyturtleHandler.HEIGHT or value.turtle.ycor() - radius <= 0:
-                value.dy *= -1
-
-            if value.turtle.xcor() > PyturtleHandler.WIDTH - radius:
-                value.turtle.goto(PyturtleHandler.WIDTH -
-                                  radius * 2, value.turtle.ycor())
-
-            if value.turtle.xcor() < radius:
-                value.turtle.goto(radius * 2, value.turtle.ycor())
-
-            if value.turtle.ycor() > PyturtleHandler.HEIGHT - radius:
-                value.turtle.goto(value.turtle.xcor(),
-                                  PyturtleHandler.HEIGHT - radius * 2)
-
-            if value.turtle.ycor() < radius:
-                value.turtle.goto(value.turtle.xcor(), radius * 2)
-
-            # check collision with other ball
-            balls_copy.pop(key)  # don't check collision with itself
-            for value_ in balls_copy.values():
-                if PyturtleHandler.is_balls_collision(value, value_):
-                    PyturtleHandler.change_velocity(value, value_)
-
-    """
-    Updates velocities of object1 and object2 to simulate their ellastic collision
-    """
-
-    @staticmethod
-    def change_velocity(object1, object2):
-
-        r1 = np.array((object1.get_pos_x(), object1.get_pos_y()))
-        r2 = np.array((object2.get_pos_x(), object2.get_pos_x()))
-        d = np.linalg.norm(r1 - r2) ** 2
-        v1 = np.array((object1.dx, object1.dy))
-        v2 = np.array((object2.dx, object2.dy))
-
-
-        u1 = v1 - np.dot(v1 - v2, r1 - r2) / d * (r1 - r2)
-        u2 = v2 - np.dot(v2 - v1, r2 - r1) / d * (r2 - r1)
-
-        # print("Object {}: v1:{},{} -> v2:{},{}".format(object1.name,object1.dx, object1.dy, u1[0], u1[1]))
-        # print("Object {}: v1:{},{} -> v2:{},{}".format(object2.name,object2.dx, object2.dy, u2[0], u2[1]))
-        object1.dx = u1[0]
-        object1.dy = u1[1]
-        object2.dx = u2[0]
-        object2.dy = u2[1]
-        PyturtleHandler.escape_collision(object1, object2)
-
+        for value in PyturtleHandler.balls.values():
+            value.move_to_next_pos()
 
     @staticmethod
     def force_superposition(forces: list):
@@ -240,43 +170,3 @@ class PyturtleHandler:
     def display_queues_len():
         for key, value in PyturtleHandler.balls.items():
             print("Name:{}, Queue len: {}".format(key, value.queue_size))
-    
-    '''
-    When velocities are too small there were cases when balls couldn't escape from collision situation in one iteration, so they were
-    keeping to collide and in some cases they even became one ball. This method prevents from these situation - it makes sure that 
-    ball will escape collision state in one iteration
-    '''
-    @staticmethod
-    def escape_collision(object1: Ball, object2: Ball):
-
-        size1, size2 = object1.size, object2.size
-
-        # sitaution after collision
-        after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
-        after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
-
-        # checking if after one iteration they will escape collision state
-        while (math.sqrt((after_x_1 - after_x_2)**2 + (after_y_1 - after_y_2)**2) < (size1 + size2)):
-
-            object1.turtle.goto(object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy)
-            object2.turtle.goto(object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy)
-
-            after_x_1, after_y_1 = object1.get_pos_x() + object1.dx, object1.get_pos_y() + object1.dy
-            after_x_2, after_y_2 = object2.get_pos_x() + object2.dx, object2.get_pos_y() + object2.dy
-
-
-    """
-    Returns there is a collistion between object1 and object2 - if the distance between the centers of two objects is less than the sum of their radii.
-    """
-
-    @staticmethod
-    def is_balls_collision(object1: Ball, object2: Ball) -> bool:
-        x1, y1 = object1.get_pos_x(), object1.get_pos_y()
-        x2, y2 = object2.get_pos_x(), object2.get_pos_y()
-        size1, size2 = object1.size, object2.size
-
-        if (math.sqrt((x1 - x2)**2 + (y1 - y2)**2) < (size1 + size2)):
-            # print("Collision between {}({},{}) and {}({},{})".format(object1.name,x1,y1,object2.name,x2,y2))
-            return True
-
-        return False
