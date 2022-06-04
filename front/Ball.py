@@ -2,6 +2,7 @@ import turtle
 import queue
 import math
 
+
 class Ball:
     counter = 0
     colors = [(101, 93, 138), (120, 151, 171),
@@ -33,7 +34,7 @@ class Ball:
 
         self.event_queue = queue.Queue()
         self.queue_size = 0
-        Ball.counter +=1 # number of created balls
+        Ball.counter += 1  # number of created balls
     
     def update_acceleration(self):
         if self.queue_size <= 0:
@@ -41,20 +42,16 @@ class Ball:
         force = self.event_queue.get()
         self.queue_size -= 1
 
-        self.acc_x = math.cos(force.angle * math.pi /
-                              180) * force.power/Ball.FACTOR /self.mass
-        self.acc_y = math.sin(force.angle * math.pi /
-                              180) * force.power/Ball.FACTOR /self.mass
+        self.acc_x = math.cos(force.angle * math.pi / 180) * force.power/Ball.FACTOR / self.mass
+        self.acc_y = math.sin(force.angle * math.pi / 180) * force.power/Ball.FACTOR / self.mass
 
     def move_to_next_pos(self):
         self.turtle.goto(self.next_pos_x, self.next_pos_y)
-        
 
     '''
         Checks if given pixel (x_, y_) is inside self
         Returns true if it is inside.
     '''
-
     def is_pixel_inside(self, x_, y_) -> bool:
         diff_x = abs(x_ - self.turtle.xcor())
         diff_y = abs(y_ - self.turtle.ycor())
