@@ -3,7 +3,6 @@ import math
 from front.Ball import Ball
 from front.CollisionsHandler import CollisionHandler
 
-
 class Force:
     def __init__(self, angle: int, power: int, ticks: int, delay: int = 0):
         if angle < 0:
@@ -27,7 +26,7 @@ class PyturtleHandler:
     win = None
     color = (205, 205, 205)
 
-    balls = {}  # maps name to the Ball()
+    balls = {}  # mapps name to the Ball()
 
     @staticmethod
     def set_height(height):
