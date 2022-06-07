@@ -3,11 +3,10 @@
 from antlr4 import *
 from io import StringIO
 import sys
-
 if sys.version_info[1] > 5:
-    from typing import TextIO
+	from typing import TextIO
 else:
-    from typing.io import TextIO
+	from typing.io import TextIO
 
 
 def serializedATN():
@@ -377,45 +376,46 @@ def serializedATN():
         return buf.getvalue()
 
 
-class AppParser(Parser):
+class AppParser ( Parser ):
+
     grammarFileName = "App.g4"
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
-    decisionsToDFA = [DFA(ds, i) for i, ds in enumerate(atn.decisionToState)]
+    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = ["<INVALID>", "';'", "'TIME'", "'INT'", "'FORCE'", "'OBJECT'",
-                    "'FLOAT'", "'_'", "'-'", "'.'", "':'", "'['", "','",
-                    "']'", "'('", "')'", "'APPLY'", "'TO'", "'FOR'", "'DELAY'",
-                    "'+'", "'/'", "'*'", "'DEFINE'", "'AS'", "'WITH MASS'",
-                    "'WITH SIZE'", "'SET'", "'IF'", "'THEN'", "'ENDIF'",
-                    "'=='", "'>'", "'<'", "'>='", "'<='", "'!='", "'ELIF'",
-                    "'ELSE'", "'PARALLEL'", "'ENDPARALLEL'", "'LOOP'",
-                    "'ENDLOOP'", "'DEFINE FUNCTION'", "'->'", "'ENDFUNCTION'",
-                    "'RETURN'", "'/*'", "'*/'", "'::'", "'{'", "'}'", "'ANGLE BETWEEN'",
-                    "'COORDINATE'", "'X'", "'Y'", "'OF'", "'DISTANCE BETWEEN'",
-                    "'VELOCITY'", "'VALUE'", "<INVALID>", "<INVALID>",
-                    "<INVALID>", "<INVALID>", "'0'"]
+    literalNames = [ "<INVALID>", "';'", "'TIME'", "'INT'", "'FORCE'", "'OBJECT'", 
+                     "'FLOAT'", "'_'", "'-'", "'.'", "':'", "'['", "','", 
+                     "']'", "'('", "')'", "'APPLY'", "'TO'", "'FOR'", "'DELAY'", 
+                     "'+'", "'/'", "'*'", "'DEFINE'", "'AS'", "'WITH MASS'", 
+                     "'WITH SIZE'", "'SET'", "'IF'", "'THEN'", "'ENDIF'", 
+                     "'=='", "'>'", "'<'", "'>='", "'<='", "'!='", "'ELIF'", 
+                     "'ELSE'", "'PARALLEL'", "'ENDPARALLEL'", "'LOOP'", 
+                     "'ENDLOOP'", "'DEFINE FUNCTION'", "'->'", "'ENDFUNCTION'", 
+                     "'RETURN'", "'/*'", "'*/'", "'::'", "'{'", "'}'", "'ANGLE BETWEEN'", 
+                     "'COORDINATE'", "'X'", "'Y'", "'OF'", "'DISTANCE BETWEEN'", 
+                     "'VELOCITY'", "'VALUE'", "<INVALID>", "<INVALID>", 
+                     "<INVALID>", "<INVALID>", "'0'" ]
 
-    symbolicNames = ["<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                     "WS", "LOWERCASELETTER", "UPPERCASELETTER", "NONZERODIGIT",
-                     "ZERO"]
+    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "WS", "LOWERCASELETTER", "UPPERCASELETTER", "NONZERODIGIT", 
+                      "ZERO" ]
 
     RULE_primaryExpression = 0
     RULE_instruction = 1
@@ -459,159 +459,170 @@ class AppParser(Parser):
     RULE_getDistance = 39
     RULE_getVelocity = 40
 
-    ruleNames = ["primaryExpression", "instruction", "variableType", "variableName",
-                 "functionName", "integer", "float_type", "time_type",
-                 "force_type", "object_type", "applyForce", "arithmeticalExpression",
-                 "declaration", "massDefinition", "sizeDefinition", "definition",
-                 "conditionalStatement", "condition", "conditionBody",
-                 "elifStatement", "elseStatement", "parallelExpression",
-                 "parallelBody", "loop", "loopBody", "functionCall", "functionDeclaration",
-                 "functionBody", "functionArgs", "functionParams", "functionArgument",
-                 "return_statement", "comment", "scopeName", "scopeSequence",
-                 "scopeDeclaration", "whiteSpace", "getAngle", "getCoordinate",
-                 "getDistance", "getVelocity"]
+    ruleNames =  [ "primaryExpression", "instruction", "variableType", "variableName", 
+                   "functionName", "integer", "float_type", "time_type", 
+                   "force_type", "object_type", "applyForce", "arithmeticalExpression", 
+                   "declaration", "massDefinition", "sizeDefinition", "definition", 
+                   "conditionalStatement", "condition", "conditionBody", 
+                   "elifStatement", "elseStatement", "parallelExpression", 
+                   "parallelBody", "loop", "loopBody", "functionCall", "functionDeclaration", 
+                   "functionBody", "functionArgs", "functionParams", "functionArgument", 
+                   "return_statement", "comment", "scopeName", "scopeSequence", 
+                   "scopeDeclaration", "whiteSpace", "getAngle", "getCoordinate", 
+                   "getDistance", "getVelocity" ]
 
     EOF = Token.EOF
-    T__0 = 1
-    T__1 = 2
-    T__2 = 3
-    T__3 = 4
-    T__4 = 5
-    T__5 = 6
-    T__6 = 7
-    T__7 = 8
-    T__8 = 9
-    T__9 = 10
-    T__10 = 11
-    T__11 = 12
-    T__12 = 13
-    T__13 = 14
-    T__14 = 15
-    T__15 = 16
-    T__16 = 17
-    T__17 = 18
-    T__18 = 19
-    T__19 = 20
-    T__20 = 21
-    T__21 = 22
-    T__22 = 23
-    T__23 = 24
-    T__24 = 25
-    T__25 = 26
-    T__26 = 27
-    T__27 = 28
-    T__28 = 29
-    T__29 = 30
-    T__30 = 31
-    T__31 = 32
-    T__32 = 33
-    T__33 = 34
-    T__34 = 35
-    T__35 = 36
-    T__36 = 37
-    T__37 = 38
-    T__38 = 39
-    T__39 = 40
-    T__40 = 41
-    T__41 = 42
-    T__42 = 43
-    T__43 = 44
-    T__44 = 45
-    T__45 = 46
-    T__46 = 47
-    T__47 = 48
-    T__48 = 49
-    T__49 = 50
-    T__50 = 51
-    T__51 = 52
-    T__52 = 53
-    T__53 = 54
-    T__54 = 55
-    T__55 = 56
-    T__56 = 57
-    T__57 = 58
-    T__58 = 59
-    WS = 60
-    LOWERCASELETTER = 61
-    UPPERCASELETTER = 62
-    NONZERODIGIT = 63
-    ZERO = 64
+    T__0=1
+    T__1=2
+    T__2=3
+    T__3=4
+    T__4=5
+    T__5=6
+    T__6=7
+    T__7=8
+    T__8=9
+    T__9=10
+    T__10=11
+    T__11=12
+    T__12=13
+    T__13=14
+    T__14=15
+    T__15=16
+    T__16=17
+    T__17=18
+    T__18=19
+    T__19=20
+    T__20=21
+    T__21=22
+    T__22=23
+    T__23=24
+    T__24=25
+    T__25=26
+    T__26=27
+    T__27=28
+    T__28=29
+    T__29=30
+    T__30=31
+    T__31=32
+    T__32=33
+    T__33=34
+    T__34=35
+    T__35=36
+    T__36=37
+    T__37=38
+    T__38=39
+    T__39=40
+    T__40=41
+    T__41=42
+    T__42=43
+    T__43=44
+    T__44=45
+    T__45=46
+    T__46=47
+    T__47=48
+    T__48=49
+    T__49=50
+    T__50=51
+    T__51=52
+    T__52=53
+    T__53=54
+    T__54=55
+    T__55=56
+    T__56=57
+    T__57=58
+    T__58=59
+    WS=60
+    LOWERCASELETTER=61
+    UPPERCASELETTER=62
+    NONZERODIGIT=63
+    ZERO=64
 
-    def __init__(self, input: TokenStream, output: TextIO = sys.stdout):
+    def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
         self.checkVersion("4.9.2")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
+
+
+
     class PrimaryExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def functionDeclaration(self, i: int = None):
+        def functionDeclaration(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.FunctionDeclarationContext)
             else:
-                return self.getTypedRuleContext(AppParser.FunctionDeclarationContext, i)
+                return self.getTypedRuleContext(AppParser.FunctionDeclarationContext,i)
 
-        def instruction(self, i: int = None):
+
+        def instruction(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.InstructionContext)
             else:
-                return self.getTypedRuleContext(AppParser.InstructionContext, i)
+                return self.getTypedRuleContext(AppParser.InstructionContext,i)
 
-        def scopeDeclaration(self, i: int = None):
+
+        def scopeDeclaration(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ScopeDeclarationContext)
             else:
-                return self.getTypedRuleContext(AppParser.ScopeDeclarationContext, i)
+                return self.getTypedRuleContext(AppParser.ScopeDeclarationContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_primaryExpression
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterPrimaryExpression"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterPrimaryExpression" ):
                 listener.enterPrimaryExpression(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitPrimaryExpression"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitPrimaryExpression" ):
                 listener.exitPrimaryExpression(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitPrimaryExpression"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPrimaryExpression" ):
                 return visitor.visitPrimaryExpression(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def primaryExpression(self):
 
         localctx = AppParser.PrimaryExpressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 0, self.RULE_primaryExpression)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 93
+            self.state = 93 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 83
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if _la == AppParser.WS:
+                if _la==AppParser.WS:
                     self.state = 82
                     self.whiteSpace()
 
+
                 self.state = 88
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 1, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
                 if la_ == 1:
                     self.state = 85
                     self.functionDeclaration()
@@ -627,21 +638,19 @@ class AppParser(Parser):
                     self.scopeDeclaration()
                     pass
 
+
                 self.state = 91
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 2, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,2,self._ctx)
                 if la_ == 1:
                     self.state = 90
                     self.whiteSpace()
 
-                self.state = 95
+
+                self.state = 95 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (((_la & ~0x3f) == 0 and ((1 << _la) & (
-                        (1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (
-                        1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (
-                                1 << AppParser.T__42) | (1 << AppParser.T__46) | (1 << AppParser.WS) | (
-                                1 << AppParser.LOWERCASELETTER) | (1 << AppParser.UPPERCASELETTER))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (1 << AppParser.T__42) | (1 << AppParser.T__46) | (1 << AppParser.WS) | (1 << AppParser.LOWERCASELETTER) | (1 << AppParser.UPPERCASELETTER))) != 0)):
                     break
 
         except RecognitionException as re:
@@ -652,62 +661,75 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class InstructionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def declaration(self):
-            return self.getTypedRuleContext(AppParser.DeclarationContext, 0)
+            return self.getTypedRuleContext(AppParser.DeclarationContext,0)
+
 
         def definition(self):
-            return self.getTypedRuleContext(AppParser.DefinitionContext, 0)
+            return self.getTypedRuleContext(AppParser.DefinitionContext,0)
+
 
         def conditionalStatement(self):
-            return self.getTypedRuleContext(AppParser.ConditionalStatementContext, 0)
+            return self.getTypedRuleContext(AppParser.ConditionalStatementContext,0)
+
 
         def parallelExpression(self):
-            return self.getTypedRuleContext(AppParser.ParallelExpressionContext, 0)
+            return self.getTypedRuleContext(AppParser.ParallelExpressionContext,0)
+
 
         def loop(self):
-            return self.getTypedRuleContext(AppParser.LoopContext, 0)
+            return self.getTypedRuleContext(AppParser.LoopContext,0)
+
 
         def functionCall(self):
-            return self.getTypedRuleContext(AppParser.FunctionCallContext, 0)
+            return self.getTypedRuleContext(AppParser.FunctionCallContext,0)
+
 
         def whiteSpace(self):
-            return self.getTypedRuleContext(AppParser.WhiteSpaceContext, 0)
+            return self.getTypedRuleContext(AppParser.WhiteSpaceContext,0)
+
 
         def applyForce(self):
-            return self.getTypedRuleContext(AppParser.ApplyForceContext, 0)
+            return self.getTypedRuleContext(AppParser.ApplyForceContext,0)
+
 
         def comment(self):
-            return self.getTypedRuleContext(AppParser.CommentContext, 0)
+            return self.getTypedRuleContext(AppParser.CommentContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_instruction
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterInstruction"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterInstruction" ):
                 listener.enterInstruction(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitInstruction"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitInstruction" ):
                 listener.exitInstruction(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitInstruction"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitInstruction" ):
                 return visitor.visitInstruction(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def instruction(self):
 
         localctx = AppParser.InstructionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_instruction)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.state = 110
             self._errHandler.sync(self)
@@ -744,9 +766,10 @@ class AppParser(Parser):
                 self.state = 104
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if _la == AppParser.WS:
+                if _la==AppParser.WS:
                     self.state = 103
                     self.whiteSpace()
+
 
                 self.state = 106
                 self.match(AppParser.T__0)
@@ -772,42 +795,45 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class VariableTypeContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
+
 
         def getRuleIndex(self):
             return AppParser.RULE_variableType
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterVariableType"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterVariableType" ):
                 listener.enterVariableType(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitVariableType"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitVariableType" ):
                 listener.exitVariableType(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitVariableType"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitVariableType" ):
                 return visitor.visitVariableType(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def variableType(self):
 
         localctx = AppParser.VariableTypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 4, self.RULE_variableType)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 112
             _la = self._input.LA(1)
-            if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                    (1 << AppParser.T__1) | (1 << AppParser.T__2) | (1 << AppParser.T__3) | (1 << AppParser.T__4) | (
-                    1 << AppParser.T__5))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__1) | (1 << AppParser.T__2) | (1 << AppParser.T__3) | (1 << AppParser.T__4) | (1 << AppParser.T__5))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -820,36 +846,38 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class VariableNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.scope_seq = None  # ScopeSequenceContext
+            self.scope_seq = None # ScopeSequenceContext
 
-        def LOWERCASELETTER(self, i: int = None):
+        def LOWERCASELETTER(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.LOWERCASELETTER)
             else:
                 return self.getToken(AppParser.LOWERCASELETTER, i)
 
         def scopeSequence(self):
-            return self.getTypedRuleContext(AppParser.ScopeSequenceContext, 0)
+            return self.getTypedRuleContext(AppParser.ScopeSequenceContext,0)
 
-        def UPPERCASELETTER(self, i: int = None):
+
+        def UPPERCASELETTER(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.UPPERCASELETTER)
             else:
                 return self.getToken(AppParser.UPPERCASELETTER, i)
 
-        def NONZERODIGIT(self, i: int = None):
+        def NONZERODIGIT(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.NONZERODIGIT)
             else:
                 return self.getToken(AppParser.NONZERODIGIT, i)
 
-        def ZERO(self, i: int = None):
+        def ZERO(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.ZERO)
             else:
@@ -858,54 +886,55 @@ class AppParser(Parser):
         def getRuleIndex(self):
             return AppParser.RULE_variableName
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterVariableName"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterVariableName" ):
                 listener.enterVariableName(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitVariableName"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitVariableName" ):
                 listener.exitVariableName(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitVariableName"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitVariableName" ):
                 return visitor.visitVariableName(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def variableName(self):
 
         localctx = AppParser.VariableNameContext(self, self._ctx, self.state)
         self.enterRule(localctx, 6, self.RULE_variableName)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 115
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.UPPERCASELETTER:
+            if _la==AppParser.UPPERCASELETTER:
                 self.state = 114
                 localctx.scope_seq = self.scopeSequence()
+
 
             self.state = 117
             self.match(AppParser.LOWERCASELETTER)
             self.state = 121
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input, 7, self._ctx)
-            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
-                if _alt == 1:
+            _alt = self._interp.adaptivePredict(self._input,7,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
                     self.state = 118
                     _la = self._input.LA(1)
-                    if not (((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & (
-                            (1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (
-                            1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (
-                                    1 << (AppParser.ZERO - 7)))) != 0)):
+                    if not(((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & ((1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (1 << (AppParser.ZERO - 7)))) != 0)):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
-                        self.consume()
+                        self.consume() 
                 self.state = 123
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input, 7, self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,7,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -915,32 +944,33 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class FunctionNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def LOWERCASELETTER(self, i: int = None):
+        def LOWERCASELETTER(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.LOWERCASELETTER)
             else:
                 return self.getToken(AppParser.LOWERCASELETTER, i)
 
-        def UPPERCASELETTER(self, i: int = None):
+        def UPPERCASELETTER(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.UPPERCASELETTER)
             else:
                 return self.getToken(AppParser.UPPERCASELETTER, i)
 
-        def NONZERODIGIT(self, i: int = None):
+        def NONZERODIGIT(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.NONZERODIGIT)
             else:
                 return self.getToken(AppParser.NONZERODIGIT, i)
 
-        def ZERO(self, i: int = None):
+        def ZERO(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.ZERO)
             else:
@@ -949,25 +979,28 @@ class AppParser(Parser):
         def getRuleIndex(self):
             return AppParser.RULE_functionName
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFunctionName"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionName" ):
                 listener.enterFunctionName(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFunctionName"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionName" ):
                 listener.exitFunctionName(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFunctionName"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionName" ):
                 return visitor.visitFunctionName(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def functionName(self):
 
         localctx = AppParser.FunctionNameContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_functionName)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 124
@@ -975,16 +1008,10 @@ class AppParser(Parser):
             self.state = 128
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while ((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & (
-                    (1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (
-                    1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (
-                            1 << (AppParser.ZERO - 7)))) != 0):
+            while ((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & ((1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (1 << (AppParser.ZERO - 7)))) != 0):
                 self.state = 125
                 _la = self._input.LA(1)
-                if not (((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & (
-                        (1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (
-                        1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (
-                                1 << (AppParser.ZERO - 7)))) != 0)):
+                if not(((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & ((1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (1 << (AppParser.ZERO - 7)))) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
@@ -1001,20 +1028,21 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class IntegerContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def NONZERODIGIT(self, i: int = None):
+        def NONZERODIGIT(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.NONZERODIGIT)
             else:
                 return self.getToken(AppParser.NONZERODIGIT, i)
 
-        def ZERO(self, i: int = None):
+        def ZERO(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.ZERO)
             else:
@@ -1023,25 +1051,28 @@ class AppParser(Parser):
         def getRuleIndex(self):
             return AppParser.RULE_integer
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterInteger"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterInteger" ):
                 listener.enterInteger(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitInteger"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitInteger" ):
                 listener.exitInteger(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitInteger"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitInteger" ):
                 return visitor.visitInteger(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def integer(self):
 
         localctx = AppParser.IntegerContext(self, self._ctx, self.state)
         self.enterRule(localctx, 10, self.RULE_integer)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.state = 139
             self._errHandler.sync(self)
@@ -1052,19 +1083,19 @@ class AppParser(Parser):
                 self.match(AppParser.NONZERODIGIT)
                 self.state = 135
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input, 9, self._ctx)
-                while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
-                    if _alt == 1:
+                _alt = self._interp.adaptivePredict(self._input,9,self._ctx)
+                while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                    if _alt==1:
                         self.state = 132
                         _la = self._input.LA(1)
-                        if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+                        if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                             self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
-                            self.consume()
+                            self.consume() 
                     self.state = 137
                     self._errHandler.sync(self)
-                    _alt = self._interp.adaptivePredict(self._input, 9, self._ctx)
+                    _alt = self._interp.adaptivePredict(self._input,9,self._ctx)
 
                 pass
             elif token in [AppParser.ZERO]:
@@ -1083,21 +1114,22 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class Float_typeContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.minus = None  # Token
+            self.minus = None # Token
 
-        def NONZERODIGIT(self, i: int = None):
+        def NONZERODIGIT(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.NONZERODIGIT)
             else:
                 return self.getToken(AppParser.NONZERODIGIT, i)
 
-        def ZERO(self, i: int = None):
+        def ZERO(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.ZERO)
             else:
@@ -1106,25 +1138,28 @@ class AppParser(Parser):
         def getRuleIndex(self):
             return AppParser.RULE_float_type
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFloat_type"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFloat_type" ):
                 listener.enterFloat_type(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFloat_type"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFloat_type" ):
                 listener.exitFloat_type(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFloat_type"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFloat_type" ):
                 return visitor.visitFloat_type(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def float_type(self):
 
         localctx = AppParser.Float_typeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 12, self.RULE_float_type)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.state = 164
             self._errHandler.sync(self)
@@ -1134,19 +1169,20 @@ class AppParser(Parser):
                 self.state = 142
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if _la == AppParser.T__7:
+                if _la==AppParser.T__7:
                     self.state = 141
                     localctx.minus = self.match(AppParser.T__7)
+
 
                 self.state = 144
                 self.match(AppParser.NONZERODIGIT)
                 self.state = 148
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while _la == AppParser.NONZERODIGIT or _la == AppParser.ZERO:
+                while _la==AppParser.NONZERODIGIT or _la==AppParser.ZERO:
                     self.state = 145
                     _la = self._input.LA(1)
-                    if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+                    if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
@@ -1157,14 +1193,14 @@ class AppParser(Parser):
 
                 self.state = 151
                 self.match(AppParser.T__8)
-                self.state = 153
+                self.state = 153 
                 self._errHandler.sync(self)
                 _alt = 1
-                while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                     if _alt == 1:
                         self.state = 152
                         _la = self._input.LA(1)
-                        if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+                        if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                             self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
@@ -1172,9 +1208,9 @@ class AppParser(Parser):
 
                     else:
                         raise NoViableAltException(self)
-                    self.state = 155
+                    self.state = 155 
                     self._errHandler.sync(self)
-                    _alt = self._interp.adaptivePredict(self._input, 13, self._ctx)
+                    _alt = self._interp.adaptivePredict(self._input,13,self._ctx)
 
                 pass
             elif token in [AppParser.ZERO]:
@@ -1183,14 +1219,14 @@ class AppParser(Parser):
                 self.match(AppParser.ZERO)
                 self.state = 158
                 self.match(AppParser.T__8)
-                self.state = 160
+                self.state = 160 
                 self._errHandler.sync(self)
                 _alt = 1
-                while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                     if _alt == 1:
                         self.state = 159
                         _la = self._input.LA(1)
-                        if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+                        if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                             self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
@@ -1198,9 +1234,9 @@ class AppParser(Parser):
 
                     else:
                         raise NoViableAltException(self)
-                    self.state = 162
+                    self.state = 162 
                     self._errHandler.sync(self)
-                    _alt = self._interp.adaptivePredict(self._input, 14, self._ctx)
+                    _alt = self._interp.adaptivePredict(self._input,14,self._ctx)
 
                 pass
             else:
@@ -1214,20 +1250,21 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class Time_typeContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def NONZERODIGIT(self, i: int = None):
+        def NONZERODIGIT(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.NONZERODIGIT)
             else:
                 return self.getToken(AppParser.NONZERODIGIT, i)
 
-        def ZERO(self, i: int = None):
+        def ZERO(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.ZERO)
             else:
@@ -1236,56 +1273,59 @@ class AppParser(Parser):
         def getRuleIndex(self):
             return AppParser.RULE_time_type
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterTime_type"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterTime_type" ):
                 listener.enterTime_type(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitTime_type"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitTime_type" ):
                 listener.exitTime_type(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitTime_type"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTime_type" ):
                 return visitor.visitTime_type(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def time_type(self):
 
         localctx = AppParser.Time_typeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 14, self.RULE_time_type)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 167
+            self.state = 167 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 166
                 _la = self._input.LA(1)
-                if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+                if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 169
+                self.state = 169 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+                if not (_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                     break
 
             self.state = 171
             self.match(AppParser.T__9)
             self.state = 172
             _la = self._input.LA(1)
-            if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+            if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
                 self.consume()
             self.state = 173
             _la = self._input.LA(1)
-            if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+            if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -1294,14 +1334,14 @@ class AppParser(Parser):
             self.match(AppParser.T__9)
             self.state = 175
             _la = self._input.LA(1)
-            if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+            if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
                 self.consume()
             self.state = 176
             _la = self._input.LA(1)
-            if not (_la == AppParser.NONZERODIGIT or _la == AppParser.ZERO):
+            if not(_la==AppParser.NONZERODIGIT or _la==AppParser.ZERO):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -1314,49 +1354,55 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class Force_typeContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.angle = None  # ArithmeticalExpressionContext
-            self.power = None  # ArithmeticalExpressionContext
+            self.angle = None # ArithmeticalExpressionContext
+            self.power = None # ArithmeticalExpressionContext
 
-        def arithmeticalExpression(self, i: int = None):
+        def arithmeticalExpression(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ArithmeticalExpressionContext)
             else:
-                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, i)
+                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_force_type
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterForce_type"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterForce_type" ):
                 listener.enterForce_type(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitForce_type"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitForce_type" ):
                 listener.exitForce_type(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitForce_type"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitForce_type" ):
                 return visitor.visitForce_type(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def force_type(self):
 
         localctx = AppParser.Force_typeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 16, self.RULE_force_type)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 178
@@ -1364,36 +1410,40 @@ class AppParser(Parser):
             self.state = 180
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 179
                 self.whiteSpace()
+
 
             self.state = 182
             localctx.angle = self.arithmeticalExpression(0)
             self.state = 184
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 183
                 self.whiteSpace()
+
 
             self.state = 186
             self.match(AppParser.T__11)
             self.state = 188
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 187
                 self.whiteSpace()
+
 
             self.state = 190
             localctx.power = self.arithmeticalExpression(0)
             self.state = 192
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 191
                 self.whiteSpace()
+
 
             self.state = 194
             self.match(AppParser.T__12)
@@ -1405,49 +1455,55 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class Object_typeContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.x_cor = None  # ArithmeticalExpressionContext
-            self.y_cor = None  # ArithmeticalExpressionContext
+            self.x_cor = None # ArithmeticalExpressionContext
+            self.y_cor = None # ArithmeticalExpressionContext
 
-        def arithmeticalExpression(self, i: int = None):
+        def arithmeticalExpression(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ArithmeticalExpressionContext)
             else:
-                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, i)
+                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_object_type
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterObject_type"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterObject_type" ):
                 listener.enterObject_type(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitObject_type"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitObject_type" ):
                 listener.exitObject_type(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitObject_type"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitObject_type" ):
                 return visitor.visitObject_type(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def object_type(self):
 
         localctx = AppParser.Object_typeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_object_type)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 196
@@ -1455,36 +1511,40 @@ class AppParser(Parser):
             self.state = 198
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 197
                 self.whiteSpace()
+
 
             self.state = 200
             localctx.x_cor = self.arithmeticalExpression(0)
             self.state = 202
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 201
                 self.whiteSpace()
+
 
             self.state = 204
             self.match(AppParser.T__11)
             self.state = 206
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 205
                 self.whiteSpace()
+
 
             self.state = 208
             localctx.y_cor = self.arithmeticalExpression(0)
             self.state = 210
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 209
                 self.whiteSpace()
+
 
             self.state = 212
             self.match(AppParser.T__14)
@@ -1496,71 +1556,80 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ApplyForceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.force_ = None  # VariableNameContext
-            self.force_val = None  # Force_typeContext
-            self.object_ = None  # VariableNameContext
-            self.time_ = None  # VariableNameContext
-            self.time_val = None  # IntegerContext
-            self.time_type_val = None  # Time_typeContext
-            self.delay_ = None  # VariableNameContext
-            self.delay_val_ = None  # IntegerContext
-            self.delay_time_type_val = None  # Time_typeContext
+            self.force_ = None # VariableNameContext
+            self.force_val = None # Force_typeContext
+            self.object_ = None # VariableNameContext
+            self.time_ = None # VariableNameContext
+            self.time_val = None # IntegerContext
+            self.time_type_val = None # Time_typeContext
+            self.delay_ = None # VariableNameContext
+            self.delay_val_ = None # IntegerContext
+            self.delay_time_type_val = None # Time_typeContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
 
-        def variableName(self, i: int = None):
+
+        def variableName(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.VariableNameContext)
             else:
-                return self.getTypedRuleContext(AppParser.VariableNameContext, i)
+                return self.getTypedRuleContext(AppParser.VariableNameContext,i)
+
 
         def force_type(self):
-            return self.getTypedRuleContext(AppParser.Force_typeContext, 0)
+            return self.getTypedRuleContext(AppParser.Force_typeContext,0)
 
-        def integer(self, i: int = None):
+
+        def integer(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.IntegerContext)
             else:
-                return self.getTypedRuleContext(AppParser.IntegerContext, i)
+                return self.getTypedRuleContext(AppParser.IntegerContext,i)
 
-        def time_type(self, i: int = None):
+
+        def time_type(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.Time_typeContext)
             else:
-                return self.getTypedRuleContext(AppParser.Time_typeContext, i)
+                return self.getTypedRuleContext(AppParser.Time_typeContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_applyForce
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterApplyForce"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterApplyForce" ):
                 listener.enterApplyForce(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitApplyForce"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitApplyForce" ):
                 listener.exitApplyForce(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitApplyForce"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitApplyForce" ):
                 return visitor.visitApplyForce(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def applyForce(self):
 
         localctx = AppParser.ApplyForceContext(self, self._ctx, self.state)
         self.enterRule(localctx, 20, self.RULE_applyForce)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 214
@@ -1597,7 +1666,7 @@ class AppParser(Parser):
             self.whiteSpace()
             self.state = 230
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 26, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,26,self._ctx)
             if la_ == 1:
                 self.state = 227
                 localctx.time_ = self.variableName()
@@ -1613,9 +1682,10 @@ class AppParser(Parser):
                 localctx.time_type_val = self.time_type()
                 pass
 
+
             self.state = 240
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 28, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,28,self._ctx)
             if la_ == 1:
                 self.state = 232
                 self.whiteSpace()
@@ -1625,7 +1695,7 @@ class AppParser(Parser):
                 self.whiteSpace()
                 self.state = 238
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 27, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,27,self._ctx)
                 if la_ == 1:
                     self.state = 235
                     localctx.delay_ = self.variableName()
@@ -1641,12 +1711,16 @@ class AppParser(Parser):
                     localctx.delay_time_type_val = self.time_type()
                     pass
 
+
+
+
             self.state = 243
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 242
                 self.whiteSpace()
+
 
             self.state = 245
             self.match(AppParser.T__0)
@@ -1658,91 +1732,107 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ArithmeticalExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.left = None  # ArithmeticalExpressionContext
-            self.op = None  # Token
-            self.right = None  # ArithmeticalExpressionContext
+            self.left = None # ArithmeticalExpressionContext
+            self.op = None # Token
+            self.right = None # ArithmeticalExpressionContext
 
         def integer(self):
-            return self.getTypedRuleContext(AppParser.IntegerContext, 0)
+            return self.getTypedRuleContext(AppParser.IntegerContext,0)
+
 
         def float_type(self):
-            return self.getTypedRuleContext(AppParser.Float_typeContext, 0)
+            return self.getTypedRuleContext(AppParser.Float_typeContext,0)
+
 
         def force_type(self):
-            return self.getTypedRuleContext(AppParser.Force_typeContext, 0)
+            return self.getTypedRuleContext(AppParser.Force_typeContext,0)
+
 
         def object_type(self):
-            return self.getTypedRuleContext(AppParser.Object_typeContext, 0)
+            return self.getTypedRuleContext(AppParser.Object_typeContext,0)
+
 
         def time_type(self):
-            return self.getTypedRuleContext(AppParser.Time_typeContext, 0)
+            return self.getTypedRuleContext(AppParser.Time_typeContext,0)
+
 
         def variableName(self):
-            return self.getTypedRuleContext(AppParser.VariableNameContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableNameContext,0)
+
 
         def functionCall(self):
-            return self.getTypedRuleContext(AppParser.FunctionCallContext, 0)
+            return self.getTypedRuleContext(AppParser.FunctionCallContext,0)
+
 
         def getAngle(self):
-            return self.getTypedRuleContext(AppParser.GetAngleContext, 0)
+            return self.getTypedRuleContext(AppParser.GetAngleContext,0)
+
 
         def getCoordinate(self):
-            return self.getTypedRuleContext(AppParser.GetCoordinateContext, 0)
+            return self.getTypedRuleContext(AppParser.GetCoordinateContext,0)
+
 
         def getDistance(self):
-            return self.getTypedRuleContext(AppParser.GetDistanceContext, 0)
+            return self.getTypedRuleContext(AppParser.GetDistanceContext,0)
+
 
         def getVelocity(self):
-            return self.getTypedRuleContext(AppParser.GetVelocityContext, 0)
+            return self.getTypedRuleContext(AppParser.GetVelocityContext,0)
 
-        def arithmeticalExpression(self, i: int = None):
+
+        def arithmeticalExpression(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ArithmeticalExpressionContext)
             else:
-                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, i)
+                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_arithmeticalExpression
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterArithmeticalExpression"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterArithmeticalExpression" ):
                 listener.enterArithmeticalExpression(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitArithmeticalExpression"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitArithmeticalExpression" ):
                 listener.exitArithmeticalExpression(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitArithmeticalExpression"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArithmeticalExpression" ):
                 return visitor.visitArithmeticalExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-    def arithmeticalExpression(self, _p: int = 0):
+
+
+    def arithmeticalExpression(self, _p:int=0):
         _parentctx = self._ctx
         _parentState = self.state
         localctx = AppParser.ArithmeticalExpressionContext(self, self._ctx, _parentState)
         _prevctx = localctx
         _startState = 22
         self.enterRecursionRule(localctx, 22, self.RULE_arithmeticalExpression, _p)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 259
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 30, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,30,self._ctx)
             if la_ == 1:
                 self.state = 248
                 self.integer()
@@ -1798,12 +1888,13 @@ class AppParser(Parser):
                 self.getVelocity()
                 pass
 
+
             self._ctx.stop = self._input.LT(-1)
             self.state = 272
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input, 33, self._ctx)
-            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
-                if _alt == 1:
+            _alt = self._interp.adaptivePredict(self._input,33,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
@@ -1817,16 +1908,15 @@ class AppParser(Parser):
                     self.state = 263
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
-                    if _la == AppParser.WS:
+                    if _la==AppParser.WS:
                         self.state = 262
                         self.whiteSpace()
+
 
                     self.state = 265
                     localctx.op = self._input.LT(1)
                     _la = self._input.LA(1)
-                    if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                            (1 << AppParser.T__7) | (1 << AppParser.T__19) | (1 << AppParser.T__20) | (
-                            1 << AppParser.T__21))) != 0)):
+                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__7) | (1 << AppParser.T__19) | (1 << AppParser.T__20) | (1 << AppParser.T__21))) != 0)):
                         localctx.op = self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
@@ -1834,15 +1924,16 @@ class AppParser(Parser):
                     self.state = 267
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
-                    if _la == AppParser.WS:
+                    if _la==AppParser.WS:
                         self.state = 266
                         self.whiteSpace()
 
+
                     self.state = 269
-                    localctx.right = self.arithmeticalExpression(13)
+                    localctx.right = self.arithmeticalExpression(13) 
                 self.state = 274
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input, 33, self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,33,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -1852,61 +1943,71 @@ class AppParser(Parser):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
+
     class DeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.type_ = None  # VariableTypeContext
-            self.name_ = None  # VariableNameContext
-            self.value_ = None  # ArithmeticalExpressionContext
-            self.mass_def = None  # MassDefinitionContext
-            self.size_def = None  # SizeDefinitionContext
+            self.type_ = None # VariableTypeContext
+            self.name_ = None # VariableNameContext
+            self.value_ = None # ArithmeticalExpressionContext
+            self.mass_def = None # MassDefinitionContext
+            self.size_def = None # SizeDefinitionContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def variableType(self):
-            return self.getTypedRuleContext(AppParser.VariableTypeContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableTypeContext,0)
+
 
         def variableName(self):
-            return self.getTypedRuleContext(AppParser.VariableNameContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableNameContext,0)
+
 
         def arithmeticalExpression(self):
-            return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, 0)
+            return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,0)
+
 
         def massDefinition(self):
-            return self.getTypedRuleContext(AppParser.MassDefinitionContext, 0)
+            return self.getTypedRuleContext(AppParser.MassDefinitionContext,0)
+
 
         def sizeDefinition(self):
-            return self.getTypedRuleContext(AppParser.SizeDefinitionContext, 0)
+            return self.getTypedRuleContext(AppParser.SizeDefinitionContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_declaration
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterDeclaration"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterDeclaration" ):
                 listener.enterDeclaration(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitDeclaration"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitDeclaration" ):
                 listener.exitDeclaration(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitDeclaration"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitDeclaration" ):
                 return visitor.visitDeclaration(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def declaration(self):
 
         localctx = AppParser.DeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 24, self.RULE_declaration)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 275
@@ -1929,28 +2030,31 @@ class AppParser(Parser):
             localctx.value_ = self.arithmeticalExpression(0)
             self.state = 287
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 34, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,34,self._ctx)
             if la_ == 1:
                 self.state = 284
                 self.whiteSpace()
                 self.state = 285
                 localctx.mass_def = self.massDefinition()
 
+
             self.state = 292
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 35, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,35,self._ctx)
             if la_ == 1:
                 self.state = 289
                 self.whiteSpace()
                 self.state = 290
                 localctx.size_def = self.sizeDefinition()
 
+
             self.state = 295
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 294
                 self.whiteSpace()
+
 
             self.state = 297
             self.match(AppParser.T__0)
@@ -1962,36 +2066,42 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class MassDefinitionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.value_ = None  # IntegerContext
+            self.value_ = None # IntegerContext
 
         def whiteSpace(self):
-            return self.getTypedRuleContext(AppParser.WhiteSpaceContext, 0)
+            return self.getTypedRuleContext(AppParser.WhiteSpaceContext,0)
+
 
         def integer(self):
-            return self.getTypedRuleContext(AppParser.IntegerContext, 0)
+            return self.getTypedRuleContext(AppParser.IntegerContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_massDefinition
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterMassDefinition"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterMassDefinition" ):
                 listener.enterMassDefinition(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitMassDefinition"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitMassDefinition" ):
                 listener.exitMassDefinition(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitMassDefinition"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMassDefinition" ):
                 return visitor.visitMassDefinition(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def massDefinition(self):
 
@@ -2013,36 +2123,42 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class SizeDefinitionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.value_ = None  # IntegerContext
+            self.value_ = None # IntegerContext
 
         def whiteSpace(self):
-            return self.getTypedRuleContext(AppParser.WhiteSpaceContext, 0)
+            return self.getTypedRuleContext(AppParser.WhiteSpaceContext,0)
+
 
         def integer(self):
-            return self.getTypedRuleContext(AppParser.IntegerContext, 0)
+            return self.getTypedRuleContext(AppParser.IntegerContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_sizeDefinition
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterSizeDefinition"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterSizeDefinition" ):
                 listener.enterSizeDefinition(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitSizeDefinition"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitSizeDefinition" ):
                 listener.exitSizeDefinition(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitSizeDefinition"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitSizeDefinition" ):
                 return visitor.visitSizeDefinition(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def sizeDefinition(self):
 
@@ -2064,43 +2180,50 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class DefinitionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.name_ = None  # VariableNameContext
-            self.value_ = None  # ArithmeticalExpressionContext
+            self.name_ = None # VariableNameContext
+            self.value_ = None # ArithmeticalExpressionContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def variableName(self):
-            return self.getTypedRuleContext(AppParser.VariableNameContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableNameContext,0)
+
 
         def arithmeticalExpression(self):
-            return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, 0)
+            return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_definition
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterDefinition"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterDefinition" ):
                 listener.enterDefinition(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitDefinition"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitDefinition" ):
                 listener.exitDefinition(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitDefinition"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitDefinition" ):
                 return visitor.visitDefinition(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def definition(self):
 
@@ -2132,60 +2255,69 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ConditionalStatementContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.cond = None  # ConditionContext
-            self.con_body = None  # ConditionBodyContext
-            self.elif_stat = None  # ElifStatementContext
-            self.else_stat = None  # ElseStatementContext
+            self.cond = None # ConditionContext
+            self.con_body = None # ConditionBodyContext
+            self.elif_stat = None # ElifStatementContext
+            self.else_stat = None # ElseStatementContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def condition(self):
-            return self.getTypedRuleContext(AppParser.ConditionContext, 0)
+            return self.getTypedRuleContext(AppParser.ConditionContext,0)
+
 
         def conditionBody(self):
-            return self.getTypedRuleContext(AppParser.ConditionBodyContext, 0)
+            return self.getTypedRuleContext(AppParser.ConditionBodyContext,0)
 
-        def elifStatement(self, i: int = None):
+
+        def elifStatement(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ElifStatementContext)
             else:
-                return self.getTypedRuleContext(AppParser.ElifStatementContext, i)
+                return self.getTypedRuleContext(AppParser.ElifStatementContext,i)
+
 
         def elseStatement(self):
-            return self.getTypedRuleContext(AppParser.ElseStatementContext, 0)
+            return self.getTypedRuleContext(AppParser.ElseStatementContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_conditionalStatement
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterConditionalStatement"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterConditionalStatement" ):
                 listener.enterConditionalStatement(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitConditionalStatement"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitConditionalStatement" ):
                 listener.exitConditionalStatement(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitConditionalStatement"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConditionalStatement" ):
                 return visitor.visitConditionalStatement(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def conditionalStatement(self):
 
         localctx = AppParser.ConditionalStatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 32, self.RULE_conditionalStatement)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 316
@@ -2193,36 +2325,40 @@ class AppParser(Parser):
             self.state = 318
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 317
                 self.whiteSpace()
+
 
             self.state = 320
             self.match(AppParser.T__13)
             self.state = 322
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 321
                 self.whiteSpace()
+
 
             self.state = 324
             localctx.cond = self.condition()
             self.state = 326
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 325
                 self.whiteSpace()
+
 
             self.state = 328
             self.match(AppParser.T__14)
             self.state = 330
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 329
                 self.whiteSpace()
+
 
             self.state = 332
             self.match(AppParser.T__28)
@@ -2233,14 +2369,15 @@ class AppParser(Parser):
             self.state = 336
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 335
                 self.whiteSpace()
+
 
             self.state = 341
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la == AppParser.T__36:
+            while _la==AppParser.T__36:
                 self.state = 338
                 localctx.elif_stat = self.elifStatement()
                 self.state = 343
@@ -2250,18 +2387,20 @@ class AppParser(Parser):
             self.state = 345
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.T__37:
+            if _la==AppParser.T__37:
                 self.state = 344
                 localctx.else_stat = self.elseStatement()
+
 
             self.state = 347
             self.match(AppParser.T__29)
             self.state = 349
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 348
                 self.whiteSpace()
+
 
             self.state = 351
             self.match(AppParser.T__0)
@@ -2273,50 +2412,56 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ConditionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.left_expr = None  # ArithmeticalExpressionContext
-            self.op = None  # Token
-            self.right_expr = None  # ArithmeticalExpressionContext
+            self.left_expr = None # ArithmeticalExpressionContext
+            self.op = None # Token
+            self.right_expr = None # ArithmeticalExpressionContext
 
-        def arithmeticalExpression(self, i: int = None):
+        def arithmeticalExpression(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ArithmeticalExpressionContext)
             else:
-                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, i)
+                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_condition
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterCondition"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterCondition" ):
                 listener.enterCondition(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitCondition"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitCondition" ):
                 listener.exitCondition(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitCondition"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCondition" ):
                 return visitor.visitCondition(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def condition(self):
 
         localctx = AppParser.ConditionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 34, self.RULE_condition)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 353
@@ -2324,16 +2469,15 @@ class AppParser(Parser):
             self.state = 355
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 354
                 self.whiteSpace()
+
 
             self.state = 357
             localctx.op = self._input.LT(1)
             _la = self._input.LA(1)
-            if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                    (1 << AppParser.T__30) | (1 << AppParser.T__31) | (1 << AppParser.T__32) | (
-                    1 << AppParser.T__33) | (1 << AppParser.T__34) | (1 << AppParser.T__35))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__30) | (1 << AppParser.T__31) | (1 << AppParser.T__32) | (1 << AppParser.T__33) | (1 << AppParser.T__34) | (1 << AppParser.T__35))) != 0)):
                 localctx.op = self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -2341,9 +2485,10 @@ class AppParser(Parser):
             self.state = 359
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 358
                 self.whiteSpace()
+
 
             self.state = 361
             localctx.right_expr = self.arithmeticalExpression(0)
@@ -2355,50 +2500,56 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ConditionBodyContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def instruction(self, i: int = None):
+        def instruction(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.InstructionContext)
             else:
-                return self.getTypedRuleContext(AppParser.InstructionContext, i)
+                return self.getTypedRuleContext(AppParser.InstructionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_conditionBody
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterConditionBody"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterConditionBody" ):
                 listener.enterConditionBody(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitConditionBody"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitConditionBody" ):
                 listener.exitConditionBody(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitConditionBody"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConditionBody" ):
                 return visitor.visitConditionBody(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def conditionBody(self):
 
         localctx = AppParser.ConditionBodyContext(self, self._ctx, self.state)
         self.enterRule(localctx, 36, self.RULE_conditionBody)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 367
+            self.state = 367 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -2406,19 +2557,16 @@ class AppParser(Parser):
                 self.instruction()
                 self.state = 365
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 47, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,47,self._ctx)
                 if la_ == 1:
                     self.state = 364
                     self.whiteSpace()
 
-                self.state = 369
+
+                self.state = 369 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                        (1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (
-                        1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (
-                                1 << AppParser.T__46) | (1 << AppParser.LOWERCASELETTER) | (
-                                1 << AppParser.UPPERCASELETTER))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (1 << AppParser.T__46) | (1 << AppParser.LOWERCASELETTER) | (1 << AppParser.UPPERCASELETTER))) != 0)):
                     break
 
         except RecognitionException as re:
@@ -2429,49 +2577,56 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ElifStatementContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.cond = None  # ConditionContext
-            self.con_body = None  # ConditionBodyContext
+            self.cond = None # ConditionContext
+            self.con_body = None # ConditionBodyContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def condition(self):
-            return self.getTypedRuleContext(AppParser.ConditionContext, 0)
+            return self.getTypedRuleContext(AppParser.ConditionContext,0)
+
 
         def conditionBody(self):
-            return self.getTypedRuleContext(AppParser.ConditionBodyContext, 0)
+            return self.getTypedRuleContext(AppParser.ConditionBodyContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_elifStatement
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterElifStatement"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterElifStatement" ):
                 listener.enterElifStatement(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitElifStatement"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitElifStatement" ):
                 listener.exitElifStatement(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitElifStatement"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitElifStatement" ):
                 return visitor.visitElifStatement(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def elifStatement(self):
 
         localctx = AppParser.ElifStatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 38, self.RULE_elifStatement)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 371
@@ -2479,36 +2634,40 @@ class AppParser(Parser):
             self.state = 373
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 372
                 self.whiteSpace()
+
 
             self.state = 375
             self.match(AppParser.T__13)
             self.state = 377
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 376
                 self.whiteSpace()
+
 
             self.state = 379
             localctx.cond = self.condition()
             self.state = 381
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 380
                 self.whiteSpace()
+
 
             self.state = 383
             self.match(AppParser.T__14)
             self.state = 385
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 384
                 self.whiteSpace()
+
 
             self.state = 387
             self.match(AppParser.T__28)
@@ -2519,7 +2678,7 @@ class AppParser(Parser):
             self.state = 391
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 390
                 self.whiteSpace()
 
@@ -2532,55 +2691,62 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ElseStatementContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.con_body = None  # ConditionBodyContext
+            self.con_body = None # ConditionBodyContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def conditionBody(self):
-            return self.getTypedRuleContext(AppParser.ConditionBodyContext, 0)
+            return self.getTypedRuleContext(AppParser.ConditionBodyContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_elseStatement
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterElseStatement"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterElseStatement" ):
                 listener.enterElseStatement(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitElseStatement"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitElseStatement" ):
                 listener.exitElseStatement(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitElseStatement"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitElseStatement" ):
                 return visitor.visitElseStatement(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def elseStatement(self):
 
         localctx = AppParser.ElseStatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 40, self.RULE_elseStatement)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 393
             self.match(AppParser.T__37)
             self.state = 395
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 54, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,54,self._ctx)
             if la_ == 1:
                 self.state = 394
                 self.whiteSpace()
+
 
             self.state = 397
             self.whiteSpace()
@@ -2589,7 +2755,7 @@ class AppParser(Parser):
             self.state = 400
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 399
                 self.whiteSpace()
 
@@ -2602,45 +2768,51 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ParallelExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.par_body = None  # ParallelBodyContext
+            self.par_body = None # ParallelBodyContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def parallelBody(self):
-            return self.getTypedRuleContext(AppParser.ParallelBodyContext, 0)
+            return self.getTypedRuleContext(AppParser.ParallelBodyContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_parallelExpression
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterParallelExpression"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterParallelExpression" ):
                 listener.enterParallelExpression(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitParallelExpression"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitParallelExpression" ):
                 listener.exitParallelExpression(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitParallelExpression"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParallelExpression" ):
                 return visitor.visitParallelExpression(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def parallelExpression(self):
 
         localctx = AppParser.ParallelExpressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 42, self.RULE_parallelExpression)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 402
@@ -2656,9 +2828,10 @@ class AppParser(Parser):
             self.state = 408
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 407
                 self.whiteSpace()
+
 
             self.state = 410
             self.match(AppParser.T__0)
@@ -2670,51 +2843,57 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ParallelBodyContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.app_force_ = None  # ApplyForceContext
+            self.app_force_ = None # ApplyForceContext
 
-        def applyForce(self, i: int = None):
+        def applyForce(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ApplyForceContext)
             else:
-                return self.getTypedRuleContext(AppParser.ApplyForceContext, i)
+                return self.getTypedRuleContext(AppParser.ApplyForceContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_parallelBody
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterParallelBody"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterParallelBody" ):
                 listener.enterParallelBody(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitParallelBody"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitParallelBody" ):
                 listener.exitParallelBody(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitParallelBody"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParallelBody" ):
                 return visitor.visitParallelBody(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def parallelBody(self):
 
         localctx = AppParser.ParallelBodyContext(self, self._ctx, self.state)
         self.enterRule(localctx, 44, self.RULE_parallelBody)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 416
+            self.state = 416 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -2722,15 +2901,16 @@ class AppParser(Parser):
                 localctx.app_force_ = self.applyForce()
                 self.state = 414
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 57, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,57,self._ctx)
                 if la_ == 1:
                     self.state = 413
                     self.whiteSpace()
 
-                self.state = 418
+
+                self.state = 418 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la == AppParser.T__15):
+                if not (_la==AppParser.T__15):
                     break
 
         except RecognitionException as re:
@@ -2741,49 +2921,56 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class LoopContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.cond = None  # ConditionContext
-            self.l_body = None  # LoopBodyContext
+            self.cond = None # ConditionContext
+            self.l_body = None # LoopBodyContext
 
         def condition(self):
-            return self.getTypedRuleContext(AppParser.ConditionContext, 0)
+            return self.getTypedRuleContext(AppParser.ConditionContext,0)
+
 
         def loopBody(self):
-            return self.getTypedRuleContext(AppParser.LoopBodyContext, 0)
+            return self.getTypedRuleContext(AppParser.LoopBodyContext,0)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_loop
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterLoop"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterLoop" ):
                 listener.enterLoop(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitLoop"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitLoop" ):
                 listener.exitLoop(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitLoop"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLoop" ):
                 return visitor.visitLoop(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def loop(self):
 
         localctx = AppParser.LoopContext(self, self._ctx, self.state)
         self.enterRule(localctx, 46, self.RULE_loop)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 420
@@ -2791,54 +2978,60 @@ class AppParser(Parser):
             self.state = 422
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 421
                 self.whiteSpace()
+
 
             self.state = 424
             self.match(AppParser.T__13)
             self.state = 426
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 425
                 self.whiteSpace()
+
 
             self.state = 428
             localctx.cond = self.condition()
             self.state = 430
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 429
                 self.whiteSpace()
+
 
             self.state = 432
             self.match(AppParser.T__14)
             self.state = 434
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 433
                 self.whiteSpace()
+
 
             self.state = 436
             localctx.l_body = self.loopBody()
             self.state = 438
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 437
                 self.whiteSpace()
+
 
             self.state = 440
             self.match(AppParser.T__41)
             self.state = 442
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 441
                 self.whiteSpace()
+
 
             self.state = 444
             self.match(AppParser.T__0)
@@ -2850,50 +3043,56 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class LoopBodyContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def instruction(self, i: int = None):
+        def instruction(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.InstructionContext)
             else:
-                return self.getTypedRuleContext(AppParser.InstructionContext, i)
+                return self.getTypedRuleContext(AppParser.InstructionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_loopBody
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterLoopBody"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterLoopBody" ):
                 listener.enterLoopBody(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitLoopBody"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitLoopBody" ):
                 listener.exitLoopBody(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitLoopBody"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLoopBody" ):
                 return visitor.visitLoopBody(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def loopBody(self):
 
         localctx = AppParser.LoopBodyContext(self, self._ctx, self.state)
         self.enterRule(localctx, 48, self.RULE_loopBody)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 450
+            self.state = 450 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -2901,19 +3100,16 @@ class AppParser(Parser):
                 self.instruction()
                 self.state = 448
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 65, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,65,self._ctx)
                 if la_ == 1:
                     self.state = 447
                     self.whiteSpace()
 
-                self.state = 452
+
+                self.state = 452 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                        (1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (
-                        1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (
-                                1 << AppParser.T__46) | (1 << AppParser.LOWERCASELETTER) | (
-                                1 << AppParser.UPPERCASELETTER))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (1 << AppParser.T__46) | (1 << AppParser.LOWERCASELETTER) | (1 << AppParser.UPPERCASELETTER))) != 0)):
                     break
 
         except RecognitionException as re:
@@ -2924,61 +3120,70 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class FunctionCallContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.scope_seq = None  # ScopeSequenceContext
-            self.f_name = None  # FunctionNameContext
-            self.f_args = None  # FunctionParamsContext
+            self.scope_seq = None # ScopeSequenceContext
+            self.f_name = None # FunctionNameContext
+            self.f_args = None # FunctionParamsContext
 
         def functionName(self):
-            return self.getTypedRuleContext(AppParser.FunctionNameContext, 0)
+            return self.getTypedRuleContext(AppParser.FunctionNameContext,0)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def scopeSequence(self):
-            return self.getTypedRuleContext(AppParser.ScopeSequenceContext, 0)
+            return self.getTypedRuleContext(AppParser.ScopeSequenceContext,0)
+
 
         def functionParams(self):
-            return self.getTypedRuleContext(AppParser.FunctionParamsContext, 0)
+            return self.getTypedRuleContext(AppParser.FunctionParamsContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_functionCall
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFunctionCall"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionCall" ):
                 listener.enterFunctionCall(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFunctionCall"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionCall" ):
                 listener.exitFunctionCall(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFunctionCall"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionCall" ):
                 return visitor.visitFunctionCall(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def functionCall(self):
 
         localctx = AppParser.FunctionCallContext(self, self._ctx, self.state)
         self.enterRule(localctx, 50, self.RULE_functionCall)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 455
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.UPPERCASELETTER:
+            if _la==AppParser.UPPERCASELETTER:
                 self.state = 454
                 localctx.scope_seq = self.scopeSequence()
+
 
             self.state = 457
             localctx.f_name = self.functionName()
@@ -2987,27 +3192,26 @@ class AppParser(Parser):
             self.state = 460
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 459
                 self.whiteSpace()
+
 
             self.state = 466
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if ((((_la - 8)) & ~0x3f) == 0 and ((1 << (_la - 8)) & (
-                    (1 << (AppParser.T__7 - 8)) | (1 << (AppParser.T__10 - 8)) | (1 << (AppParser.T__13 - 8)) | (
-                    1 << (AppParser.T__51 - 8)) | (1 << (AppParser.T__52 - 8)) | (1 << (AppParser.T__56 - 8)) | (
-                            1 << (AppParser.T__57 - 8)) | (1 << (AppParser.LOWERCASELETTER - 8)) | (
-                            1 << (AppParser.UPPERCASELETTER - 8)) | (1 << (AppParser.NONZERODIGIT - 8)) | (
-                            1 << (AppParser.ZERO - 8)))) != 0):
+            if ((((_la - 8)) & ~0x3f) == 0 and ((1 << (_la - 8)) & ((1 << (AppParser.T__7 - 8)) | (1 << (AppParser.T__10 - 8)) | (1 << (AppParser.T__13 - 8)) | (1 << (AppParser.T__51 - 8)) | (1 << (AppParser.T__52 - 8)) | (1 << (AppParser.T__56 - 8)) | (1 << (AppParser.T__57 - 8)) | (1 << (AppParser.LOWERCASELETTER - 8)) | (1 << (AppParser.UPPERCASELETTER - 8)) | (1 << (AppParser.NONZERODIGIT - 8)) | (1 << (AppParser.ZERO - 8)))) != 0):
                 self.state = 462
                 localctx.f_args = self.functionParams()
                 self.state = 464
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if _la == AppParser.WS:
+                if _la==AppParser.WS:
                     self.state = 463
                     self.whiteSpace()
+
+
+
 
             self.state = 468
             self.match(AppParser.T__14)
@@ -3019,61 +3223,71 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class FunctionDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.f_name = None  # FunctionNameContext
-            self.f_args = None  # FunctionArgsContext
-            self.return_type = None  # VariableTypeContext
-            self.f_body = None  # FunctionBodyContext
-            self.return_stat = None  # Return_statementContext
+            self.f_name = None # FunctionNameContext
+            self.f_args = None # FunctionArgsContext
+            self.return_type = None # VariableTypeContext
+            self.f_body = None # FunctionBodyContext
+            self.return_stat = None # Return_statementContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def functionName(self):
-            return self.getTypedRuleContext(AppParser.FunctionNameContext, 0)
+            return self.getTypedRuleContext(AppParser.FunctionNameContext,0)
+
 
         def functionArgs(self):
-            return self.getTypedRuleContext(AppParser.FunctionArgsContext, 0)
+            return self.getTypedRuleContext(AppParser.FunctionArgsContext,0)
+
 
         def variableType(self):
-            return self.getTypedRuleContext(AppParser.VariableTypeContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableTypeContext,0)
+
 
         def functionBody(self):
-            return self.getTypedRuleContext(AppParser.FunctionBodyContext, 0)
+            return self.getTypedRuleContext(AppParser.FunctionBodyContext,0)
+
 
         def return_statement(self):
-            return self.getTypedRuleContext(AppParser.Return_statementContext, 0)
+            return self.getTypedRuleContext(AppParser.Return_statementContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_functionDeclaration
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFunctionDeclaration"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionDeclaration" ):
                 listener.enterFunctionDeclaration(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFunctionDeclaration"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionDeclaration" ):
                 listener.exitFunctionDeclaration(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFunctionDeclaration"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionDeclaration" ):
                 return visitor.visitFunctionDeclaration(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def functionDeclaration(self):
 
         localctx = AppParser.FunctionDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 52, self.RULE_functionDeclaration)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 470
@@ -3086,57 +3300,63 @@ class AppParser(Parser):
             self.match(AppParser.T__13)
             self.state = 475
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 71, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,71,self._ctx)
             if la_ == 1:
                 self.state = 474
                 self.whiteSpace()
 
+
             self.state = 478
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if (((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                    (1 << AppParser.T__1) | (1 << AppParser.T__2) | (1 << AppParser.T__3) | (1 << AppParser.T__4) | (
-                    1 << AppParser.T__5))) != 0):
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__1) | (1 << AppParser.T__2) | (1 << AppParser.T__3) | (1 << AppParser.T__4) | (1 << AppParser.T__5))) != 0):
                 self.state = 477
                 localctx.f_args = self.functionArgs()
+
 
             self.state = 481
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 480
                 self.whiteSpace()
+
 
             self.state = 483
             self.match(AppParser.T__14)
             self.state = 495
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 77, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,77,self._ctx)
             if la_ == 1:
                 self.state = 485
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if _la == AppParser.WS:
+                if _la==AppParser.WS:
                     self.state = 484
                     self.whiteSpace()
+
 
                 self.state = 487
                 self.match(AppParser.T__43)
                 self.state = 489
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if _la == AppParser.WS:
+                if _la==AppParser.WS:
                     self.state = 488
                     self.whiteSpace()
+
 
                 self.state = 491
                 localctx.return_type = self.variableType()
                 self.state = 493
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 76, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,76,self._ctx)
                 if la_ == 1:
                     self.state = 492
                     self.whiteSpace()
+
+
+
 
             self.state = 497
             self.whiteSpace()
@@ -3144,50 +3364,53 @@ class AppParser(Parser):
             self.match(AppParser.T__23)
             self.state = 500
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 78, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,78,self._ctx)
             if la_ == 1:
                 self.state = 499
                 self.whiteSpace()
 
+
             self.state = 503
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if (((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                    (1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (
-                    1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (1 << AppParser.T__46) | (
-                            1 << AppParser.LOWERCASELETTER) | (1 << AppParser.UPPERCASELETTER))) != 0):
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (1 << AppParser.T__46) | (1 << AppParser.LOWERCASELETTER) | (1 << AppParser.UPPERCASELETTER))) != 0):
                 self.state = 502
                 localctx.f_body = self.functionBody()
 
+
             self.state = 506
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 80, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,80,self._ctx)
             if la_ == 1:
                 self.state = 505
                 self.whiteSpace()
 
+
             self.state = 509
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.T__45:
+            if _la==AppParser.T__45:
                 self.state = 508
                 localctx.return_stat = self.return_statement()
+
 
             self.state = 512
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 511
                 self.whiteSpace()
+
 
             self.state = 514
             self.match(AppParser.T__44)
             self.state = 516
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 515
                 self.whiteSpace()
+
 
             self.state = 518
             self.match(AppParser.T__0)
@@ -3199,50 +3422,56 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class FunctionBodyContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def instruction(self, i: int = None):
+        def instruction(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.InstructionContext)
             else:
-                return self.getTypedRuleContext(AppParser.InstructionContext, i)
+                return self.getTypedRuleContext(AppParser.InstructionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_functionBody
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFunctionBody"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionBody" ):
                 listener.enterFunctionBody(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFunctionBody"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionBody" ):
                 listener.exitFunctionBody(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFunctionBody"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionBody" ):
                 return visitor.visitFunctionBody(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def functionBody(self):
 
         localctx = AppParser.FunctionBodyContext(self, self._ctx, self.state)
         self.enterRule(localctx, 54, self.RULE_functionBody)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 524
+            self.state = 524 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -3250,19 +3479,16 @@ class AppParser(Parser):
                 self.instruction()
                 self.state = 522
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input, 84, self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,84,self._ctx)
                 if la_ == 1:
                     self.state = 521
                     self.whiteSpace()
 
-                self.state = 526
+
+                self.state = 526 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & (
-                        (1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (
-                        1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (
-                                1 << AppParser.T__46) | (1 << AppParser.LOWERCASELETTER) | (
-                                1 << AppParser.UPPERCASELETTER))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__15) | (1 << AppParser.T__22) | (1 << AppParser.T__26) | (1 << AppParser.T__27) | (1 << AppParser.T__38) | (1 << AppParser.T__40) | (1 << AppParser.T__46) | (1 << AppParser.LOWERCASELETTER) | (1 << AppParser.UPPERCASELETTER))) != 0)):
                     break
 
         except RecognitionException as re:
@@ -3273,77 +3499,85 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class FunctionArgsContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def functionArgument(self, i: int = None):
+        def functionArgument(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.FunctionArgumentContext)
             else:
-                return self.getTypedRuleContext(AppParser.FunctionArgumentContext, i)
+                return self.getTypedRuleContext(AppParser.FunctionArgumentContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_functionArgs
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFunctionArgs"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionArgs" ):
                 listener.enterFunctionArgs(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFunctionArgs"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionArgs" ):
                 listener.exitFunctionArgs(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFunctionArgs"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionArgs" ):
                 return visitor.visitFunctionArgs(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def functionArgs(self):
 
         localctx = AppParser.FunctionArgsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 56, self.RULE_functionArgs)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 528
             self.functionArgument()
             self.state = 539
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input, 88, self._ctx)
-            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
-                if _alt == 1:
+            _alt = self._interp.adaptivePredict(self._input,88,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
                     self.state = 530
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
-                    if _la == AppParser.WS:
+                    if _la==AppParser.WS:
                         self.state = 529
                         self.whiteSpace()
+
 
                     self.state = 532
                     self.match(AppParser.T__11)
                     self.state = 534
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
-                    if _la == AppParser.WS:
+                    if _la==AppParser.WS:
                         self.state = 533
                         self.whiteSpace()
 
+
                     self.state = 536
-                    self.functionArgument()
+                    self.functionArgument() 
                 self.state = 541
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input, 88, self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,88,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -3353,58 +3587,65 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class FunctionParamsContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def variableName(self, i: int = None):
+        def variableName(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.VariableNameContext)
             else:
-                return self.getTypedRuleContext(AppParser.VariableNameContext, i)
+                return self.getTypedRuleContext(AppParser.VariableNameContext,i)
 
-        def arithmeticalExpression(self, i: int = None):
+
+        def arithmeticalExpression(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ArithmeticalExpressionContext)
             else:
-                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, i)
+                return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,i)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_functionParams
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFunctionParams"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionParams" ):
                 listener.enterFunctionParams(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFunctionParams"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionParams" ):
                 listener.exitFunctionParams(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFunctionParams"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionParams" ):
                 return visitor.visitFunctionParams(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def functionParams(self):
 
         localctx = AppParser.FunctionParamsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 58, self.RULE_functionParams)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 544
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 89, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,89,self._ctx)
             if la_ == 1:
                 self.state = 542
                 self.variableName()
@@ -3415,30 +3656,33 @@ class AppParser(Parser):
                 self.arithmeticalExpression(0)
                 pass
 
+
             self.state = 559
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input, 93, self._ctx)
-            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
-                if _alt == 1:
+            _alt = self._interp.adaptivePredict(self._input,93,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
                     self.state = 547
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
-                    if _la == AppParser.WS:
+                    if _la==AppParser.WS:
                         self.state = 546
                         self.whiteSpace()
+
 
                     self.state = 549
                     self.match(AppParser.T__11)
                     self.state = 551
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
-                    if _la == AppParser.WS:
+                    if _la==AppParser.WS:
                         self.state = 550
                         self.whiteSpace()
 
+
                     self.state = 555
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input, 92, self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input,92,self._ctx)
                     if la_ == 1:
                         self.state = 553
                         self.variableName()
@@ -3449,9 +3693,10 @@ class AppParser(Parser):
                         self.arithmeticalExpression(0)
                         pass
 
+             
                 self.state = 561
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input, 93, self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,93,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -3461,40 +3706,47 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class FunctionArgumentContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.type_ = None  # VariableTypeContext
-            self.name_ = None  # VariableNameContext
+            self.type_ = None # VariableTypeContext
+            self.name_ = None # VariableNameContext
 
         def whiteSpace(self):
-            return self.getTypedRuleContext(AppParser.WhiteSpaceContext, 0)
+            return self.getTypedRuleContext(AppParser.WhiteSpaceContext,0)
+
 
         def variableType(self):
-            return self.getTypedRuleContext(AppParser.VariableTypeContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableTypeContext,0)
+
 
         def variableName(self):
-            return self.getTypedRuleContext(AppParser.VariableNameContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableNameContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_functionArgument
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterFunctionArgument"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionArgument" ):
                 listener.enterFunctionArgument(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitFunctionArgument"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionArgument" ):
                 listener.exitFunctionArgument(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitFunctionArgument"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionArgument" ):
                 return visitor.visitFunctionArgument(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def functionArgument(self):
 
@@ -3516,45 +3768,51 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class Return_statementContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.expr = None  # ArithmeticalExpressionContext
+            self.expr = None # ArithmeticalExpressionContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def arithmeticalExpression(self):
-            return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext, 0)
+            return self.getTypedRuleContext(AppParser.ArithmeticalExpressionContext,0)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_return_statement
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterReturn_statement"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterReturn_statement" ):
                 listener.enterReturn_statement(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitReturn_statement"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitReturn_statement" ):
                 listener.exitReturn_statement(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitReturn_statement"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitReturn_statement" ):
                 return visitor.visitReturn_statement(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def return_statement(self):
 
         localctx = AppParser.Return_statementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 62, self.RULE_return_statement)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 566
@@ -3566,9 +3824,10 @@ class AppParser(Parser):
             self.state = 570
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 569
                 self.whiteSpace()
+
 
             self.state = 572
             self.match(AppParser.T__0)
@@ -3580,29 +3839,34 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class CommentContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
+
 
         def getRuleIndex(self):
             return AppParser.RULE_comment
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterComment"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterComment" ):
                 listener.enterComment(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitComment"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitComment" ):
                 listener.exitComment(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitComment"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitComment" ):
                 return visitor.visitComment(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def comment(self):
 
@@ -3614,14 +3878,14 @@ class AppParser(Parser):
             self.match(AppParser.T__46)
             self.state = 578
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input, 95, self._ctx)
-            while _alt != 1 and _alt != ATN.INVALID_ALT_NUMBER:
-                if _alt == 1 + 1:
+            _alt = self._interp.adaptivePredict(self._input,95,self._ctx)
+            while _alt!=1 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1+1:
                     self.state = 575
-                    self.matchWildcard()
+                    self.matchWildcard() 
                 self.state = 580
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input, 95, self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,95,self._ctx)
 
             self.state = 581
             self.match(AppParser.T__47)
@@ -3633,32 +3897,33 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ScopeNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def UPPERCASELETTER(self, i: int = None):
+        def UPPERCASELETTER(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.UPPERCASELETTER)
             else:
                 return self.getToken(AppParser.UPPERCASELETTER, i)
 
-        def LOWERCASELETTER(self, i: int = None):
+        def LOWERCASELETTER(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.LOWERCASELETTER)
             else:
                 return self.getToken(AppParser.LOWERCASELETTER, i)
 
-        def NONZERODIGIT(self, i: int = None):
+        def NONZERODIGIT(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.NONZERODIGIT)
             else:
                 return self.getToken(AppParser.NONZERODIGIT, i)
 
-        def ZERO(self, i: int = None):
+        def ZERO(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.ZERO)
             else:
@@ -3667,25 +3932,28 @@ class AppParser(Parser):
         def getRuleIndex(self):
             return AppParser.RULE_scopeName
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterScopeName"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterScopeName" ):
                 listener.enterScopeName(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitScopeName"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitScopeName" ):
                 listener.exitScopeName(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitScopeName"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitScopeName" ):
                 return visitor.visitScopeName(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def scopeName(self):
 
         localctx = AppParser.ScopeNameContext(self, self._ctx, self.state)
         self.enterRule(localctx, 66, self.RULE_scopeName)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 583
@@ -3693,16 +3961,10 @@ class AppParser(Parser):
             self.state = 587
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while ((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & (
-                    (1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (
-                    1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (
-                            1 << (AppParser.ZERO - 7)))) != 0):
+            while ((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & ((1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (1 << (AppParser.ZERO - 7)))) != 0):
                 self.state = 584
                 _la = self._input.LA(1)
-                if not (((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & (
-                        (1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (
-                        1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (
-                                1 << (AppParser.ZERO - 7)))) != 0)):
+                if not(((((_la - 7)) & ~0x3f) == 0 and ((1 << (_la - 7)) & ((1 << (AppParser.T__6 - 7)) | (1 << (AppParser.LOWERCASELETTER - 7)) | (1 << (AppParser.UPPERCASELETTER - 7)) | (1 << (AppParser.NONZERODIGIT - 7)) | (1 << (AppParser.ZERO - 7)))) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
@@ -3719,44 +3981,49 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ScopeSequenceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def scopeName(self, i: int = None):
+        def scopeName(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ScopeNameContext)
             else:
-                return self.getTypedRuleContext(AppParser.ScopeNameContext, i)
+                return self.getTypedRuleContext(AppParser.ScopeNameContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_scopeSequence
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterScopeSequence"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterScopeSequence" ):
                 listener.enterScopeSequence(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitScopeSequence"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitScopeSequence" ):
                 listener.exitScopeSequence(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitScopeSequence"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitScopeSequence" ):
                 return visitor.visitScopeSequence(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def scopeSequence(self):
 
         localctx = AppParser.ScopeSequenceContext(self, self._ctx, self.state)
         self.enterRule(localctx, 68, self.RULE_scopeSequence)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 593
+            self.state = 593 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -3764,10 +4031,10 @@ class AppParser(Parser):
                 self.scopeName()
                 self.state = 591
                 self.match(AppParser.T__48)
-                self.state = 595
+                self.state = 595 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la == AppParser.UPPERCASELETTER):
+                if not (_la==AppParser.UPPERCASELETTER):
                     break
 
         except RecognitionException as re:
@@ -3778,57 +4045,65 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class ScopeDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.name = None  # ScopeNameContext
+            self.name = None # ScopeNameContext
 
         def scopeName(self):
-            return self.getTypedRuleContext(AppParser.ScopeNameContext, 0)
+            return self.getTypedRuleContext(AppParser.ScopeNameContext,0)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
 
-        def scopeDeclaration(self, i: int = None):
+
+        def scopeDeclaration(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.ScopeDeclarationContext)
             else:
-                return self.getTypedRuleContext(AppParser.ScopeDeclarationContext, i)
+                return self.getTypedRuleContext(AppParser.ScopeDeclarationContext,i)
 
-        def declaration(self, i: int = None):
+
+        def declaration(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.DeclarationContext)
             else:
-                return self.getTypedRuleContext(AppParser.DeclarationContext, i)
+                return self.getTypedRuleContext(AppParser.DeclarationContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_scopeDeclaration
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterScopeDeclaration"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterScopeDeclaration" ):
                 listener.enterScopeDeclaration(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitScopeDeclaration"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitScopeDeclaration" ):
                 listener.exitScopeDeclaration(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitScopeDeclaration"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitScopeDeclaration" ):
                 return visitor.visitScopeDeclaration(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def scopeDeclaration(self):
 
         localctx = AppParser.ScopeDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 70, self.RULE_scopeDeclaration)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 597
@@ -3836,20 +4111,22 @@ class AppParser(Parser):
             self.state = 599
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 598
                 self.whiteSpace()
+
 
             self.state = 601
             self.match(AppParser.T__49)
             self.state = 603
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 602
                 self.whiteSpace()
 
-            self.state = 607
+
+            self.state = 607 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -3867,27 +4144,29 @@ class AppParser(Parser):
                 else:
                     raise NoViableAltException(self)
 
-                self.state = 609
+                self.state = 609 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la == AppParser.T__22 or _la == AppParser.UPPERCASELETTER):
+                if not (_la==AppParser.T__22 or _la==AppParser.UPPERCASELETTER):
                     break
 
             self.state = 612
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 611
                 self.whiteSpace()
+
 
             self.state = 614
             self.match(AppParser.T__50)
             self.state = 616
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 615
                 self.whiteSpace()
+
 
             self.state = 618
             self.match(AppParser.T__0)
@@ -3899,14 +4178,15 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class WhiteSpaceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def WS(self, i: int = None):
+        def WS(self, i:int=None):
             if i is None:
                 return self.getTokens(AppParser.WS)
             else:
@@ -3915,19 +4195,22 @@ class AppParser(Parser):
         def getRuleIndex(self):
             return AppParser.RULE_whiteSpace
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterWhiteSpace"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterWhiteSpace" ):
                 listener.enterWhiteSpace(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitWhiteSpace"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitWhiteSpace" ):
                 listener.exitWhiteSpace(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitWhiteSpace"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitWhiteSpace" ):
                 return visitor.visitWhiteSpace(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def whiteSpace(self):
 
@@ -3935,19 +4218,19 @@ class AppParser(Parser):
         self.enterRule(localctx, 72, self.RULE_whiteSpace)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 621
+            self.state = 621 
             self._errHandler.sync(self)
             _alt = 1
-            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt == 1:
                     self.state = 620
                     self.match(AppParser.WS)
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 623
+                self.state = 623 
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input, 104, self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,104,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -3957,57 +4240,64 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class GetAngleContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.name_1 = None  # VariableNameContext
-            self.object_1 = None  # Object_typeContext
-            self.name_2 = None  # VariableNameContext
-            self.object_2 = None  # Object_typeContext
+            self.name_1 = None # VariableNameContext
+            self.object_1 = None # Object_typeContext
+            self.name_2 = None # VariableNameContext
+            self.object_2 = None # Object_typeContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
 
-        def variableName(self, i: int = None):
+
+        def variableName(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.VariableNameContext)
             else:
-                return self.getTypedRuleContext(AppParser.VariableNameContext, i)
+                return self.getTypedRuleContext(AppParser.VariableNameContext,i)
 
-        def object_type(self, i: int = None):
+
+        def object_type(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.Object_typeContext)
             else:
-                return self.getTypedRuleContext(AppParser.Object_typeContext, i)
+                return self.getTypedRuleContext(AppParser.Object_typeContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_getAngle
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterGetAngle"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterGetAngle" ):
                 listener.enterGetAngle(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitGetAngle"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitGetAngle" ):
                 listener.exitGetAngle(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitGetAngle"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitGetAngle" ):
                 return visitor.visitGetAngle(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def getAngle(self):
 
         localctx = AppParser.GetAngleContext(self, self._ctx, self.state)
         self.enterRule(localctx, 74, self.RULE_getAngle)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 625
@@ -4015,9 +4305,10 @@ class AppParser(Parser):
             self.state = 627
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 626
                 self.whiteSpace()
+
 
             self.state = 631
             self._errHandler.sync(self)
@@ -4036,18 +4327,20 @@ class AppParser(Parser):
             self.state = 634
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 633
                 self.whiteSpace()
+
 
             self.state = 636
             self.match(AppParser.T__11)
             self.state = 638
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 637
                 self.whiteSpace()
+
 
             self.state = 642
             self._errHandler.sync(self)
@@ -4065,7 +4358,7 @@ class AppParser(Parser):
 
             self.state = 645
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 110, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,110,self._ctx)
             if la_ == 1:
                 self.state = 644
                 self.whiteSpace()
@@ -4079,46 +4372,52 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class GetCoordinateContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.axis = None  # Token
-            self.name_ = None  # VariableNameContext
+            self.axis = None # Token
+            self.name_ = None # VariableNameContext
 
         def variableName(self):
-            return self.getTypedRuleContext(AppParser.VariableNameContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableNameContext,0)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_getCoordinate
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterGetCoordinate"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterGetCoordinate" ):
                 listener.enterGetCoordinate(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitGetCoordinate"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitGetCoordinate" ):
                 listener.exitGetCoordinate(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitGetCoordinate"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitGetCoordinate" ):
                 return visitor.visitGetCoordinate(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def getCoordinate(self):
 
         localctx = AppParser.GetCoordinateContext(self, self._ctx, self.state)
         self.enterRule(localctx, 76, self.RULE_getCoordinate)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 647
@@ -4126,14 +4425,15 @@ class AppParser(Parser):
             self.state = 649
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 648
                 self.whiteSpace()
+
 
             self.state = 651
             localctx.axis = self._input.LT(1)
             _la = self._input.LA(1)
-            if not (_la == AppParser.T__53 or _la == AppParser.T__54):
+            if not(_la==AppParser.T__53 or _la==AppParser.T__54):
                 localctx.axis = self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -4141,24 +4441,26 @@ class AppParser(Parser):
             self.state = 653
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 652
                 self.whiteSpace()
+
 
             self.state = 655
             self.match(AppParser.T__55)
             self.state = 657
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 656
                 self.whiteSpace()
+
 
             self.state = 659
             localctx.name_ = self.variableName()
             self.state = 661
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 114, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,114,self._ctx)
             if la_ == 1:
                 self.state = 660
                 self.whiteSpace()
@@ -4172,57 +4474,64 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class GetDistanceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.name_1 = None  # VariableNameContext
-            self.object_1 = None  # Object_typeContext
-            self.name_2 = None  # VariableNameContext
-            self.object_2 = None  # Object_typeContext
+            self.name_1 = None # VariableNameContext
+            self.object_1 = None # Object_typeContext
+            self.name_2 = None # VariableNameContext
+            self.object_2 = None # Object_typeContext
 
-        def whiteSpace(self, i: int = None):
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
 
-        def variableName(self, i: int = None):
+
+        def variableName(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.VariableNameContext)
             else:
-                return self.getTypedRuleContext(AppParser.VariableNameContext, i)
+                return self.getTypedRuleContext(AppParser.VariableNameContext,i)
 
-        def object_type(self, i: int = None):
+
+        def object_type(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.Object_typeContext)
             else:
-                return self.getTypedRuleContext(AppParser.Object_typeContext, i)
+                return self.getTypedRuleContext(AppParser.Object_typeContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_getDistance
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterGetDistance"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterGetDistance" ):
                 listener.enterGetDistance(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitGetDistance"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitGetDistance" ):
                 listener.exitGetDistance(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitGetDistance"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitGetDistance" ):
                 return visitor.visitGetDistance(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def getDistance(self):
 
         localctx = AppParser.GetDistanceContext(self, self._ctx, self.state)
         self.enterRule(localctx, 78, self.RULE_getDistance)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 663
@@ -4230,9 +4539,10 @@ class AppParser(Parser):
             self.state = 665
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 664
                 self.whiteSpace()
+
 
             self.state = 669
             self._errHandler.sync(self)
@@ -4251,18 +4561,20 @@ class AppParser(Parser):
             self.state = 672
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 671
                 self.whiteSpace()
+
 
             self.state = 674
             self.match(AppParser.T__11)
             self.state = 676
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 675
                 self.whiteSpace()
+
 
             self.state = 680
             self._errHandler.sync(self)
@@ -4280,7 +4592,7 @@ class AppParser(Parser):
 
             self.state = 683
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 120, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,120,self._ctx)
             if la_ == 1:
                 self.state = 682
                 self.whiteSpace()
@@ -4294,46 +4606,52 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
+
     class GetVelocityContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.axis = None  # Token
-            self.name_ = None  # VariableNameContext
+            self.axis = None # Token
+            self.name_ = None # VariableNameContext
 
         def variableName(self):
-            return self.getTypedRuleContext(AppParser.VariableNameContext, 0)
+            return self.getTypedRuleContext(AppParser.VariableNameContext,0)
 
-        def whiteSpace(self, i: int = None):
+
+        def whiteSpace(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(AppParser.WhiteSpaceContext)
             else:
-                return self.getTypedRuleContext(AppParser.WhiteSpaceContext, i)
+                return self.getTypedRuleContext(AppParser.WhiteSpaceContext,i)
+
 
         def getRuleIndex(self):
             return AppParser.RULE_getVelocity
 
-        def enterRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "enterGetVelocity"):
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterGetVelocity" ):
                 listener.enterGetVelocity(self)
 
-        def exitRule(self, listener: ParseTreeListener):
-            if hasattr(listener, "exitGetVelocity"):
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitGetVelocity" ):
                 listener.exitGetVelocity(self)
 
-        def accept(self, visitor: ParseTreeVisitor):
-            if hasattr(visitor, "visitGetVelocity"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitGetVelocity" ):
                 return visitor.visitGetVelocity(self)
             else:
                 return visitor.visitChildren(self)
+
+
+
 
     def getVelocity(self):
 
         localctx = AppParser.GetVelocityContext(self, self._ctx, self.state)
         self.enterRule(localctx, 80, self.RULE_getVelocity)
-        self._la = 0  # Token type
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 685
@@ -4341,15 +4659,15 @@ class AppParser(Parser):
             self.state = 687
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 686
                 self.whiteSpace()
+
 
             self.state = 689
             localctx.axis = self._input.LT(1)
             _la = self._input.LA(1)
-            if not ((((_la) & ~0x3f) == 0 and (
-                    (1 << _la) & ((1 << AppParser.T__53) | (1 << AppParser.T__54) | (1 << AppParser.T__58))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << AppParser.T__53) | (1 << AppParser.T__54) | (1 << AppParser.T__58))) != 0)):
                 localctx.axis = self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -4357,24 +4675,26 @@ class AppParser(Parser):
             self.state = 691
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 690
                 self.whiteSpace()
+
 
             self.state = 693
             self.match(AppParser.T__55)
             self.state = 695
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == AppParser.WS:
+            if _la==AppParser.WS:
                 self.state = 694
                 self.whiteSpace()
+
 
             self.state = 697
             localctx.name_ = self.variableName()
             self.state = 699
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input, 124, self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,124,self._ctx)
             if la_ == 1:
                 self.state = 698
                 self.whiteSpace()
@@ -4388,7 +4708,9 @@ class AppParser(Parser):
             self.exitRule()
         return localctx
 
-    def sempred(self, localctx: RuleContext, ruleIndex: int, predIndex: int):
+
+
+    def sempred(self, localctx:RuleContext, ruleIndex:int, predIndex:int):
         if self._predicates == None:
             self._predicates = dict()
         self._predicates[11] = self.arithmeticalExpression_sempred
@@ -4398,6 +4720,11 @@ class AppParser(Parser):
         else:
             return pred(localctx, predIndex)
 
-    def arithmeticalExpression_sempred(self, localctx: ArithmeticalExpressionContext, predIndex: int):
-        if predIndex == 0:
-            return self.precpred(self._ctx, 12)
+    def arithmeticalExpression_sempred(self, localctx:ArithmeticalExpressionContext, predIndex:int):
+            if predIndex == 0:
+                return self.precpred(self._ctx, 12)
+         
+
+
+
+
