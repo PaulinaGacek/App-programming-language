@@ -18,7 +18,7 @@
     pip install --upgrade setuptools
     sudo apt-get install python3-tk
     pip install wheel
-    pip install antlr4-python3-runtime=4.9.2
+    pip install antlr4-python3-runtime==4.9.2
     pip install pygame
     pip install wxpython
     pip install turtle
