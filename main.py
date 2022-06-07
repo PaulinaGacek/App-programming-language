@@ -1,6 +1,7 @@
 import sys
 from antlr4 import *
 from language_tools.AppLexer import AppLexer
+from language_tools.AppParser import AppParser
 from language_tools.AppVisitor import *
 from language_tools.AppErrorListener import *
 from programm.Programm import Programm
@@ -42,7 +43,6 @@ def interprateInput(data):
 
     PyturtleHandler.win.update()
 
-
 DIR = "examples/"
 
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     PyturtleHandler.instantiate_board()
 
-    if len(sys.argv) == 1:  # no arguments
+    if len(sys.argv) == 1: # no arguments
         while True:
             data = InputStream(input(">>> "))
             interprateInput(data)
