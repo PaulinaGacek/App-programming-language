@@ -28,11 +28,9 @@ class CollisionHandler:
             for key, value in balls_dict.items():
                 balls_copy.pop(key)  # don't check collision with itself
                 if self.is_vertical_wall_collision(value):
-                    print("vertical collision")
                     value.dy *= -1
                 if self.is_horizontall_wall_collision(value):
                     value.dx *= -1
-                    print("horizontal collision")
 
                 for value_ in balls_copy.values():
                     if self.is_balls_collision_in_next_tick(value, value_):

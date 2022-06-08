@@ -151,7 +151,7 @@ class AppVisitor(AppParseTreeVisitor):
             if type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
                 var = Programm.getVaribaleFromProperScope(name)
-                if var.type == Type.INT or var.type == Type.TIME or var.type == Type.FLOAT:
+                if var is not None and var.type == Type.INT or var.type == Type.TIME or var.type == Type.FLOAT:
                     return var.value
                 else:
                     return var.value, var.value2

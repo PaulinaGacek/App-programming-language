@@ -150,7 +150,8 @@ class Programm:
                 return Programm.local_scopes[size-1-i].get(name)
         if Programm.variables.get(name) is not None:
             return Programm.variables.get(name)
-        return UndefinedVariableReferenceError(name)
+
+        raise UndefinedVariableReferenceError(name)
     
     '''
     Returns stack id of the most upper scope where variable was found. 
