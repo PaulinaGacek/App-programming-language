@@ -7,6 +7,7 @@ import time
 
 
 class Programm:
+    debug = False
 
     '''
     Keeps global variables, mapps variable name to the variable object
@@ -275,16 +276,19 @@ class Programm:
             Programm.local_scopes.append(local_variables)
  
         Programm.current_scope = Programm.scope_history.top()
-        print("New variable scope was added, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
+        if Programm.debug:
+            print("New variable scope was added, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def deleteTopVariableScope():
-        Programm.displayVariables()
+        if Programm.debug:
+            Programm.displayVariables()
         # Programm.local_scopes.remove(Programm.local_scopes[Programm.scope_history.top()])
         if type(Programm.scope_history.top()) is int:
             Programm.local_scopes[Programm.scope_history.top()].clear()
         Programm.scope_history.pop()
-        print("Top scope was deleted, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
+        if Programm.debug:
+            print("Top scope was deleted, local_scopes_len: {}, scope_history_len: {}, scope_top: {}".format(len(Programm.local_scopes),Programm.scope_history.getSize(), Programm.scope_history.top()))
     
     @staticmethod
     def addNewNamedVariableScope(name: str, previos_scopes):
@@ -314,3 +318,8 @@ class Programm:
             Programm.updateObjectsPositionsInVariableSet()
             time.sleep(PyturtleHandler.TIME_DELAY)
             PyturtleHandler.win.update()
+    
+    @staticmethod
+    def enable_debug():
+        Programm.debug = True
+        print("------ DEBUG ------")

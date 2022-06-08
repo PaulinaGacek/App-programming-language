@@ -37,9 +37,9 @@ def interprateInput(data):
     # evaluator
     visitor = AppVisitor()
     output = visitor.visit(tree)
-
-    Programm.displayVariables()
-    Programm.dispay_functions()
+    if Programm.debug:
+        Programm.displayVariables()
+        Programm.dispay_functions()
 
     PyturtleHandler.win.update()
 
@@ -56,5 +56,7 @@ if __name__ == "__main__":
             interprateInput(data)
     elif len(sys.argv) > 1:
         file = DIR + sys.argv[1]
+        if len(sys.argv) > 2 and sys.argv[2] == 'debug':
+            Programm.enable_debug()
         data = FileStream(file, encoding='utf-8')
         interprateInput(data)

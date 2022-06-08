@@ -140,7 +140,8 @@ class AppVisitor(AppParseTreeVisitor):
             AppVisitor.forces.clear()
 
             if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
-                PyturtleHandler.display_queues_len()
+                if Programm.debug:
+                    PyturtleHandler.display_queues_len()
                 Programm.display_visualisation(PyturtleHandler.get_max_queue_len())
 
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
@@ -268,7 +269,8 @@ class AppVisitor(AppParseTreeVisitor):
             scope_name = self.visit(ctx.name_.scope_seq)
             name = re.sub(scope_name, "", name)       
             scope_name = re.sub("::$", "", scope_name)
-            print("Scope name:", scope_name, " --> name:", name)
+            if Programm.debug:
+                print("Scope name:", scope_name, " --> name:", name)
             Programm.defineExistingVariable(name, value, scope=scope_name)
         else:
             if type(value) is tuple:
@@ -316,7 +318,6 @@ class AppVisitor(AppParseTreeVisitor):
             var2 = Programm.getVaribaleFromProperScope(name2)
             type2 = var2.type
             val2 = var2.value
-        # print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
 
         if not Programm.areTypesComparable(type1, type2, name1, name2):
             raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
@@ -376,7 +377,8 @@ class AppVisitor(AppParseTreeVisitor):
         PyturtleHandler.add_forces(AppVisitor.forces)
         AppVisitor.forces.clear()
         if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
-            PyturtleHandler.display_queues_len()
+            if Programm.debug:
+                PyturtleHandler.display_queues_len()
             Programm.display_visualisation(PyturtleHandler.get_max_queue_len())
 
     def visitParallelBody(self, ctx: AppParser.ParallelBodyContext):
@@ -421,7 +423,8 @@ class AppVisitor(AppParseTreeVisitor):
         # adding all params to scope
         for declared, given in zip(declared_types, given_arguments):
             Programm.defineNewVariable(declared[0], given[1].type, given[1].value, given[1].value2, scope=Programm.scope_history.top())
-        Programm.displayVariables()
+        if Programm.debug:
+            Programm.displayVariables()
         self.visit(Programm.getFunction(name).body_ctx)
 
         return_val = None
@@ -627,8 +630,6 @@ class AppVisitor(AppParseTreeVisitor):
     def arithmeticalOperationForce(self, ctx: AppParser.ArithmeticalExpressionContext):
         l_angle, l_power = self.visit(ctx.left)
         r_angle, r_power = self.visit(ctx.right)
-        print(f"Operation on forces left:[{l_angle},{l_power}], right:[{r_angle},{r_power}]")
-
         op = ctx.op.text
         not_allowed = ['*', '/']
 
