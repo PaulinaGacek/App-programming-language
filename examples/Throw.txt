@@ -1,0 +1,7 @@
+/* rzut ukośny */
+DEFINE OBJECT o AS (20,20);
+DEFINE FORCE g AS [270, 10];
+PARALLEL
+    APPLY [45,130] TO o FOR 1;
+    APPLY g TO o FOR 100;
+ENDPARALLEL;
