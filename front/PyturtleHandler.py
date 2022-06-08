@@ -16,8 +16,8 @@ class Force:
 
 
 class PyturtleHandler:
-    HEIGHT = 400
-    WIDTH = 400
+    HEIGHT = 800
+    WIDTH = 800
     RADIUS = 10
     TIME_DELAY = 0  # in secs
     MAX_RADIUS = 100
