@@ -7,8 +7,8 @@
 - Aneta Postrożny
 ---
 ### Contents:
-1. [Language description](#1.-Language-description)
-2. [Motivations](#2.-Motivations)
+1. [Language description](#1.-language-description)
+2. [Motivations](#2.-motivations)
 3. []()
 ---
 ## 1. Language description
