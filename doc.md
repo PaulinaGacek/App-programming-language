@@ -16,7 +16,7 @@
 ## Language description
 APP is a simple imperative language modeled on Logo language, where object is controlled by the forces 
 applied to it. The language will allow you to create many objects that will collide with each other in 
-a perfectly elastic manner.
+a elastic collisions.
 
 ## Motivation
 We wanted to create language that would allow the user to create physical simulations in a simple and 
