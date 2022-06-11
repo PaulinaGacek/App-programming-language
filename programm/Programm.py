@@ -8,6 +8,7 @@ import time
 
 class Programm:
     debug = False
+    vm_conversion = False
 
     '''
     Keeps global variables, mapps variable name to the variable object
@@ -323,3 +324,7 @@ class Programm:
     def enable_debug():
         Programm.debug = True
         print("------ DEBUG ------")
+    
+    @staticmethod
+    def enable_vm():
+        Programm.vm_conversion = True

@@ -56,7 +56,12 @@ if __name__ == "__main__":
             interprateInput(data)
     elif len(sys.argv) > 1:
         file = DIR + sys.argv[1]
-        if len(sys.argv) > 2 and sys.argv[2] == 'debug':
-            Programm.enable_debug()
+        for idx in range(2, len(sys.argv)):
+            if sys.argv[idx] == '-debug' or sys.argv[idx] == '-d':
+                Programm.enable_debug()
+            elif sys.argv[idx] == '-vm':
+                Programm.enable_vm()
+            else:
+                raise Exception("Improper flag")
         data = FileStream(file, encoding='utf-8')
         interprateInput(data)
