@@ -1,4 +1,4 @@
-/* rzut ukośny */
+/* rzut ukosny */
 DEFINE OBJECT o AS (20,20);
 DEFINE FORCE g AS [270, 10];
 PARALLEL

@@ -12,6 +12,8 @@
 1. [Language description](#language-description)
 2. [Motivation](#motivation)
 3. [Initial goals and what we have achieved](#initial-goals-and-what-we-have-achieved)
+4. [Build-in functions](#build-in-functions)
+5. [Some code examples](#some-code-examples)
 ---
 ## Language description
 APP is a simple imperative language modeled on Logo language, where object is controlled by the forces 
@@ -117,3 +119,63 @@ PARALLEL
 	...
 ENDPARALLEL;
 ```
+### _Recursion_ 
+
+### _Scopes_
+
+---
+## Build-in functions
+During the process of creating various simulations using our language, we managed to come up with some useful functions 
+that we believe will make it easier for the user to use our language. So they have been implemented and are available as
+build-in functions.
+
+
+### _ANGLE BETWEEN_
+It is a function that returns angle between two objects.
+```antlrv4
+ANGLE BETWEEN object1, object2;
+```
+- example of usage:
+```antlrv4
+DEFINE OBJECT o1 AS (400,600);
+DEFINE OBJECT o2 AS (400,400);
+DEFINE FLOAT angle AS ANGLE BETWEEN o1, o2;
+```
+
+### _COORDINATE_
+It is a function that returns coordinates of object. You have to specify axis you want to get.
+```antlrv4
+COORDINATE axis=('X'|'Y') OF object;
+```
+- example of usage:
+```antlrv4
+DEFINE OBJECT o AS (400,600);
+DEFINE FLOAT coordinate AS COORDINATE X OF o;
+```
+
+### _DISTANCE BETWEEN_
+It is a function that returns distance between two objects.
+
+```antlrv4
+DISTANCE BETWEEN object1, object2;
+```
+- example of usage:
+```antlrv4
+DEFINE OBJECT o1 AS (400,600);
+DEFINE OBJECT o2 AS (400,400);
+DEFINE FLOAT distance AS DISTANCE BETWEEN o1, o2;
+```
+
+### _VELOCITY_
+It is a function that returns velocity of object.
+You have to specify axis you want to get.
+```antlrv4
+VELOCITY axis=('X'|'Y'|'VALUE') OF object;
+```
+- example of usage:
+```antlrv4
+DEFINE OBJECT o AS (400,600);
+DEFINE FLOAT velocity AS VELOCITY X OF o;
+```
+---
+## Some code examples 
