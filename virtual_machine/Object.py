@@ -1,11 +1,11 @@
 from enum import Enum, IntEnum
 
 class VariableType(Enum):
-    INT = 1
-    TIME = 2
-    FLOAT = 3
-    FORCE = 4
-    OBJECT = 5
+    INT = 1 # 1 cell
+    TIME = 2 # 1 cell
+    FLOAT = 3 # 1 cell
+    FORCE = 4 # 2 cells
+    OBJECT = 5 # 4 cells - x,y,mass,size
 
 class VariableValue:
     def __init__(self, type: VariableType, value) -> None:
@@ -16,6 +16,7 @@ class Operation(IntEnum):
     HALT = 0
     ICONST = 1 # INT
     FLCONST = 2 # FLOAT
-    OCONST = 3 # OBJECT
-    TCONST = 4 # TIME
+    TCONST = 3 # TIME
+    OCONST = 4 # OBJECT
     FOCONST = 5 # FORCE
+    DISPLAY = 6 # DISPLAY SCREEN
