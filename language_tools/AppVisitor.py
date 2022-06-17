@@ -1,6 +1,4 @@
-import math
 import numpy as np
-from antlr4 import *
 from language_tools.AppParseTreeVisitor import AppParseTreeVisitor
 from programm.Programm import Programm
 from programm.Variable import *
@@ -144,7 +142,6 @@ class AppVisitor(AppParseTreeVisitor):
                 Programm.display_visualisation(PyturtleHandler.get_max_queue_len())
 
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
-
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
         if NR_OF_CHILDREN == 1:  # variable name or value
 
@@ -181,7 +178,7 @@ class AppVisitor(AppParseTreeVisitor):
             elif type2 == "Force_typeContext":
                 artm_type = Type.FORCE
             elif type2 == "FunctionCallContext":
-                name = self.visit(self.getNodesChild(ctx.right, 0).f_name) # function name
+                name = self.visit(self.getNodesChild(ctx.right, 0).f_name)  # function name
                 artm_type = Programm.getFunction(name).return_type
             else:
                 artm_type = 'ARITM_EXPR'
@@ -214,7 +211,7 @@ class AppVisitor(AppParseTreeVisitor):
 
         if type_ == 'INT' or type_ == 'TIME':
             value = self.visit(ctx.value_)
-            if type(value) is not int and  type(value) is not float:
+            if type(value) is not int and type(value) is not float:
                 raise Error("Bad casting: {}".format(type(value).__name__))
             if type(value) is float:
                 value = int(value)
@@ -255,9 +252,7 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, size, scope=Programm.scope_history.top())
 
-            
             PyturtleHandler.add_new_object(name, value1, value2, mass=mass, size=size)
-
 
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
 
@@ -289,7 +284,6 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             if ctx.else_stat is not None:
                 self.visit(ctx.else_stat)
-                
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
@@ -495,11 +489,11 @@ class AppVisitor(AppParseTreeVisitor):
                 if type(self.visit(child)) is not tuple:
                     val = self.visit(child)
                     type_ = TypeUtils.detectTypeFromValue(val)
-                    var= Variable(name, type_, val)
+                    var = Variable(name, type_, val)
                 else:
                     val, val2 = self.visit(child)
-                    type_ = TypeUtils.detectTypeFromValue((val,val2))
-                    var= Variable(name, type_, val, val2)
+                    type_ = TypeUtils.detectTypeFromValue((val, val2))
+                    var = Variable(name, type_, val, val2)
 
                 given_arguments.append((name, var))
         return given_arguments
@@ -669,5 +663,6 @@ class AppVisitor(AppParseTreeVisitor):
     def visitSizeDefinition(self, ctx: AppParser.SizeDefinitionContext):
         value = self.visit(ctx.value_)
         return int(value)
+
 
 del AppParser
