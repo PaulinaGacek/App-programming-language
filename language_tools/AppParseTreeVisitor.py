@@ -1,6 +1,5 @@
 from antlr4 import *
 
-
 class AppParseTreeVisitor(ParseTreeVisitor):
     '''
     https://github.com/datacamp/antlr-ast/blob/master/antlr_ast/ast.py

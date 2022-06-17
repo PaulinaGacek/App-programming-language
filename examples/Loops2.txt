@@ -12,5 +12,5 @@ LOOP (counter < 1000)
     SET f3 AS 10000;
     SET f3 AS f3/f2/f2;
     APPLY [f,f3] TO o FOR 1;
-    SET counter AS counter + 1; 
+    SET counter AS counter + 1;
 ENDLOOP;

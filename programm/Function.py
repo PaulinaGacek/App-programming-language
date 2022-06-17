@@ -1,21 +1,20 @@
 from programm.Variable import *
 
-
 class Function:
 
-    def __init__(self, name: str, return_type: Type = None, return_stat=None, return_ctx=None, body_ctx=None):
+    def __init__(self, name: str, return_type: Type = None, return_stat = None, return_ctx = None, body_ctx = None):
         self.name = name
-        self.params = []  # tuple (variable names, Variables())
-        self.actions = []  # actions which function makes
+        self.params = [] #tuple (variable names, Variables())
+        self.actions = [] # actions which function makes
         self.return_type = return_type
         self.return_statement = return_stat
-        self.return_ctx = return_ctx  # node to return statemaent
-        self.body_ctx = body_ctx  # node to function body
+        self.return_ctx = return_ctx # node to return statemaent
+        self.body_ctx = body_ctx # node to function body
     
-    def display_details(self):
+    def displayDetails(self):
         variable_names = ""
         for item in self.params:
-            variable_names += "{" + item[1].name + ", " + item[1].getTypeString() + "}, "
+            variable_names += "{" +item[1].name + ", " + item[1].getTypeString() +"}, "
         body = ""
         for action in self.actions:
             body += "\t" + action + "\n"
@@ -24,8 +23,8 @@ class Function:
             output += "\nreturns: " + str(self.return_type) + " -> " + str(self.return_statement)
         return output
     
-    def get_body(self) -> str:
+    def getBody(self) -> str:
         body = ""
         for action in self.actions:
-            body += " " + action + " "
+            body += " "+ action + " "
         return body

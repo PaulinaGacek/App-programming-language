@@ -1,6 +1,7 @@
 import sys
 from antlr4 import *
 from language_tools.AppLexer import AppLexer
+from language_tools.AppParser import AppParser
 from language_tools.AppVisitor import *
 from language_tools.AppErrorListener import *
 from programm.Programm import Programm
@@ -36,12 +37,11 @@ def interprateInput(data):
     # evaluator
     visitor = AppVisitor()
     output = visitor.visit(tree)
-
-    Programm.displayVariables()
-    Programm.dispay_functions()
+    if Programm.debug:
+        Programm.displayVariables()
+        Programm.dispay_functions()
 
     PyturtleHandler.win.update()
-
 
 DIR = "examples/"
 
@@ -50,11 +50,18 @@ if __name__ == "__main__":
 
     PyturtleHandler.instantiate_board()
 
-    if len(sys.argv) == 1:  # no arguments
+    if len(sys.argv) == 1: # no arguments
         while True:
             data = InputStream(input(">>> "))
             interprateInput(data)
     elif len(sys.argv) > 1:
         file = DIR + sys.argv[1]
+        for idx in range(2, len(sys.argv)):
+            if sys.argv[idx] == '-debug' or sys.argv[idx] == '-d':
+                Programm.enable_debug()
+            elif sys.argv[idx] == '-vm':
+                Programm.enable_vm()
+            else:
+                raise Exception("Improper flag")
         data = FileStream(file, encoding='utf-8')
         interprateInput(data)

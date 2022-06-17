@@ -1,11 +1,11 @@
 from programm.TypeUtils import *
-
+from utils.Error import *
 
 class Variable:
 
-    def __init__(self, name: str, type_: Type, value: int, value2=None):
+    def __init__(self, name: str, type: Type, value: int, value2=None):
         self.name = name
-        self.type = type_
+        self.type = type
         self.value = value
         self.value2 = value2
     

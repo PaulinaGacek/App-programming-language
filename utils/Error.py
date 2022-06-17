@@ -16,7 +16,6 @@ class VariableRedefinitionError(Exception):
     def __str__(self):
         return self.message
 
-
 class FunctionRedefinitionError(Exception):
     """ Raised when user tries to declare again existing function
     
@@ -33,7 +32,6 @@ class FunctionRedefinitionError(Exception):
 
     def __str__(self):
         return self.message
-
 
 class UndefinedVariableReferenceError(Exception):
     """ Raised when user tries to define not existing variable
@@ -100,7 +98,6 @@ class NegativeOrZeroRadius(Exception):
     def __str__(self):
         return self.message
 
-
 class WrongObjectsCoordinates(Exception):
     """ Raised when Object is to be created with negative coordinates or coordinates which
         implies being out of board
@@ -113,7 +110,7 @@ class WrongObjectsCoordinates(Exception):
 
     def __init__(self, name: str, x: int, y: int, message=None):
         if message is None:
-            self.message = "Wrong coordinates {},{} for object {}".format(x, y, name)
+            self.message = "Wrong coordinates {},{} for object {}".format(x,y,name)
         super().__init__(self.message)
 
     def __str__(self):
@@ -123,7 +120,7 @@ class WrongObjectsCoordinates(Exception):
 class ObjectCannotBeDrawn(Exception):
     def __init__(self, name: str, x: int, y: int, message=None):
         if message is None:
-            self.message = "Object {} cannot be drawn at ({},{})".format(name, x, y)
+            self.message = "Object {} cannot be drawn at ({},{})".format(name,x,y)
         super().__init__(self.message)
 
     def __str__(self):
@@ -167,7 +164,6 @@ class UnallowedCasting(Exception):
     def __str__(self):
         return self.message
 
-
 class OperatorNotDefininedForType(Exception):
 
     def __init__(self, operator, type, message=None):
@@ -177,7 +173,6 @@ class OperatorNotDefininedForType(Exception):
 
     def __str__(self):
         return self.message
-
 
 class FunctionHasToReturnSomething(Exception):
 
