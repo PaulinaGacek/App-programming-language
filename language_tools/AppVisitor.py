@@ -263,7 +263,6 @@ class AppVisitor(AppParseTreeVisitor):
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
 
         name = self.visit(ctx.name_)
-        var = Programm.getVaribaleFromProperScope(name)
         value = self.visit(ctx.value_)
         if ctx.name_.scope_seq is not None:
             scope_name = self.visit(ctx.name_.scope_seq)
@@ -295,10 +294,9 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
-        name1, val1, type1 = None, None, None
+        name1, type1 = None, None
         if ctx.left_expr is not None:
             name1 = ctx.left_expr.getText()
-            val1 = self.visit(ctx.left_expr)
             type1 = type(self.getNodesChild(ctx.left_expr, 0)).__name__
         else:
             name1 = self.visit(ctx.left_var)
@@ -306,25 +304,19 @@ class AppVisitor(AppParseTreeVisitor):
                 if Programm.getVariable(name1) is None:
                     raise UndefinedVariableReferenceError(name1)
             type1 = Programm.getVariable(name1).type
-            val1 = Programm.getVariable(name1).value
 
-        name2, val2, type2 = None, None, None
+        name2, type2 = None, None
         if ctx.right_expr is not None:
             name2 = ctx.right_expr.getText()
-            val2 = self.visit(ctx.right_expr)
             type2 = type(self.getNodesChild(ctx.right_expr, 0)).__name__
         else:
             name2 = self.visit(ctx.right_var)
             var2 = Programm.getVaribaleFromProperScope(name2)
             type2 = var2.type
-            val2 = var2.value
 
-        if not Programm.areTypesComparable(type1, type2, name1, name2):
-            raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
-                                   Programm.getTypeFromNodeType(type2, name2))
         cond_type = None
-        var1 = Programm.getVaribaleFromProperScope(name1)
         if type1 == "VariableNameContext":
+            var1 = Programm.getVaribaleFromProperScope(name1)
             cond_type = var1.type
         elif type1 == "IntegerContext":
             cond_type = Type.INT
@@ -341,6 +333,10 @@ class AppVisitor(AppParseTreeVisitor):
         if cond_type == Type.INT or cond_type == Type.TIME:
             l = self.visit(ctx.left_expr)
             r = self.visit(ctx.right_expr)
+        
+        if not Programm.areTypesComparable(type1, type2, name1, name2):
+            raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
+                                   Programm.getTypeFromNodeType(type2, name2))
 
         op = ctx.op.text
         operation = {

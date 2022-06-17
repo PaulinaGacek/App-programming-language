@@ -8,6 +8,7 @@ import time
 
 class Programm:
     debug = False
+    vm_conversion = False
 
     '''
     Keeps global variables, mapps variable name to the variable object
@@ -151,8 +152,8 @@ class Programm:
                 return Programm.local_scopes[size-1-i].get(name)
         if Programm.variables.get(name) is not None:
             return Programm.variables.get(name)
-
-        raise UndefinedVariableReferenceError(name)
+        else:
+            raise UndefinedVariableReferenceError(name)
     
     '''
     Returns stack id of the most upper scope where variable was found. 
@@ -323,3 +324,7 @@ class Programm:
     def enable_debug():
         Programm.debug = True
         print("------ DEBUG ------")
+    
+    @staticmethod
+    def enable_vm():
+        Programm.vm_conversion = True
