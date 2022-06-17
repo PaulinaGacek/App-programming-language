@@ -8,6 +8,7 @@ else:
     from typing.io import TextIO
 
 
+
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2B")
@@ -191,7 +192,7 @@ class AppLexer(Lexer):
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
-    decisionsToDFA = [DFA(ds, i) for i, ds in enumerate(atn.decisionToState)]
+    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
 
     T__0 = 1
     T__1 = 2
@@ -258,43 +259,45 @@ class AppLexer(Lexer):
     NONZERODIGIT = 63
     ZERO = 64
 
-    channelNames = [u"DEFAULT_TOKEN_CHANNEL", u"HIDDEN"]
+    channelNames = [ u"DEFAULT_TOKEN_CHANNEL", u"HIDDEN" ]
 
-    modeNames = ["DEFAULT_MODE"]
+    modeNames = [ "DEFAULT_MODE" ]
 
-    literalNames = ["<INVALID>",
-                    "';'", "'TIME'", "'INT'", "'FORCE'", "'OBJECT'", "'FLOAT'",
-                    "'_'", "'-'", "'.'", "':'", "'['", "','", "']'", "'('", "')'",
-                    "'APPLY'", "'TO'", "'FOR'", "'DELAY'", "'+'", "'/'", "'*'",
-                    "'DEFINE'", "'AS'", "'WITH MASS'", "'WITH SIZE'", "'SET'", "'IF'",
-                    "'THEN'", "'ENDIF'", "'=='", "'>'", "'<'", "'>='", "'<='", "'!='",
-                    "'ELIF'", "'ELSE'", "'PARALLEL'", "'ENDPARALLEL'", "'LOOP'",
-                    "'ENDLOOP'", "'DEFINE FUNCTION'", "'->'", "'ENDFUNCTION'", "'RETURN'",
-                    "'/*'", "'*/'", "'::'", "'{'", "'}'", "'ANGLE BETWEEN'", "'COORDINATE'",
-                    "'X'", "'Y'", "'OF'", "'DISTANCE BETWEEN'", "'VELOCITY'", "'VALUE'",
-                    "'0'"]
+    literalNames = [ "<INVALID>",
+            "';'", "'TIME'", "'INT'", "'FORCE'", "'OBJECT'", "'FLOAT'", 
+            "'_'", "'-'", "'.'", "':'", "'['", "','", "']'", "'('", "')'", 
+            "'APPLY'", "'TO'", "'FOR'", "'DELAY'", "'+'", "'/'", "'*'", 
+            "'DEFINE'", "'AS'", "'WITH MASS'", "'WITH SIZE'", "'SET'", "'IF'", 
+            "'THEN'", "'ENDIF'", "'=='", "'>'", "'<'", "'>='", "'<='", "'!='", 
+            "'ELIF'", "'ELSE'", "'PARALLEL'", "'ENDPARALLEL'", "'LOOP'", 
+            "'ENDLOOP'", "'DEFINE FUNCTION'", "'->'", "'ENDFUNCTION'", "'RETURN'", 
+            "'/*'", "'*/'", "'::'", "'{'", "'}'", "'ANGLE BETWEEN'", "'COORDINATE'", 
+            "'X'", "'Y'", "'OF'", "'DISTANCE BETWEEN'", "'VELOCITY'", "'VALUE'", 
+            "'0'" ]
 
-    symbolicNames = ["<INVALID>",
-                     "WS", "LOWERCASELETTER", "UPPERCASELETTER", "NONZERODIGIT",
-                     "ZERO"]
+    symbolicNames = [ "<INVALID>",
+            "WS", "LOWERCASELETTER", "UPPERCASELETTER", "NONZERODIGIT", 
+            "ZERO" ]
 
-    ruleNames = ["T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6",
-                 "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13",
-                 "T__14", "T__15", "T__16", "T__17", "T__18", "T__19",
-                 "T__20", "T__21", "T__22", "T__23", "T__24", "T__25",
-                 "T__26", "T__27", "T__28", "T__29", "T__30", "T__31",
-                 "T__32", "T__33", "T__34", "T__35", "T__36", "T__37",
-                 "T__38", "T__39", "T__40", "T__41", "T__42", "T__43",
-                 "T__44", "T__45", "T__46", "T__47", "T__48", "T__49",
-                 "T__50", "T__51", "T__52", "T__53", "T__54", "T__55",
-                 "T__56", "T__57", "T__58", "WS", "LOWERCASELETTER", "UPPERCASELETTER",
-                 "NONZERODIGIT", "ZERO"]
+    ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", 
+                  "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13", 
+                  "T__14", "T__15", "T__16", "T__17", "T__18", "T__19", 
+                  "T__20", "T__21", "T__22", "T__23", "T__24", "T__25", 
+                  "T__26", "T__27", "T__28", "T__29", "T__30", "T__31", 
+                  "T__32", "T__33", "T__34", "T__35", "T__36", "T__37", 
+                  "T__38", "T__39", "T__40", "T__41", "T__42", "T__43", 
+                  "T__44", "T__45", "T__46", "T__47", "T__48", "T__49", 
+                  "T__50", "T__51", "T__52", "T__53", "T__54", "T__55", 
+                  "T__56", "T__57", "T__58", "WS", "LOWERCASELETTER", "UPPERCASELETTER", 
+                  "NONZERODIGIT", "ZERO" ]
 
     grammarFileName = "App.g4"
 
-    def __init__(self, input=None, output: TextIO = sys.stdout):
+    def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)
         self.checkVersion("4.9.2")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None
+
+

@@ -3,7 +3,6 @@ import math
 from front.Ball import Ball
 from front.CollisionsHandler import CollisionHandler
 
-
 class Force:
     def __init__(self, angle: int, power: int, ticks: int, delay: int = 0):
         if angle < 0:
@@ -12,13 +11,11 @@ class Force:
         self.power = power
         self.ticks = ticks
         self.delay = delay
-        # print("New force with angle {}, power {}, ticks {}, delay {}".format(self.angle, power, ticks, delay))
-        # add checking if values are not negative
 
 
 class PyturtleHandler:
-    HEIGHT = 400
-    WIDTH = 400
+    HEIGHT = 800
+    WIDTH = 800
     RADIUS = 10
     TIME_DELAY = 0  # in secs
     MAX_RADIUS = 100
@@ -27,7 +24,7 @@ class PyturtleHandler:
     win = None
     color = (205, 205, 205)
 
-    balls = {}  # maps name to the Ball()
+    balls = {}  # mapps name to the Ball()
 
     @staticmethod
     def set_height(height):
@@ -79,12 +76,10 @@ class PyturtleHandler:
 
             if not PyturtleHandler.is_pixel_available(int(x1), int(y1)) \
                     or not PyturtleHandler.is_pixel_available(int(x1), int(y2)):
-                print("Pixel: ({},{}) not available".format(x1, int(y1)))
                 return False
 
             if not PyturtleHandler.is_pixel_available(x2, int(y3)) \
                     or not PyturtleHandler.is_pixel_available(int(x2), int(y4)):
-                print("Pixel: ({},{}) not available".format(x2, int(y3)))
                 return False
 
         return True

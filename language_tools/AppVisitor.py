@@ -1,4 +1,6 @@
+import math
 import numpy as np
+from antlr4 import *
 from language_tools.AppParseTreeVisitor import AppParseTreeVisitor
 from programm.Programm import Programm
 from programm.Variable import *
@@ -138,17 +140,19 @@ class AppVisitor(AppParseTreeVisitor):
             AppVisitor.forces.clear()
 
             if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
-                PyturtleHandler.display_queues_len()
+                if Programm.debug:
+                    PyturtleHandler.display_queues_len()
                 Programm.display_visualisation(PyturtleHandler.get_max_queue_len())
 
     def visitArithmeticalExpression(self, ctx: AppParser.ArithmeticalExpressionContext):
+
         NR_OF_CHILDREN = self.getNrOfChildren(ctx)
         if NR_OF_CHILDREN == 1:  # variable name or value
 
             if type(self.getNodesChild(ctx, 0)).__name__ == "VariableNameContext":
                 name = self.visitChildren(ctx)
                 var = Programm.getVaribaleFromProperScope(name)
-                if var.type == Type.INT or var.type == Type.TIME or var.type == Type.FLOAT:
+                if var is not None and var.type == Type.INT or var.type == Type.TIME or var.type == Type.FLOAT:
                     return var.value
                 else:
                     return var.value, var.value2
@@ -178,7 +182,7 @@ class AppVisitor(AppParseTreeVisitor):
             elif type2 == "Force_typeContext":
                 artm_type = Type.FORCE
             elif type2 == "FunctionCallContext":
-                name = self.visit(self.getNodesChild(ctx.right, 0).f_name)  # function name
+                name = self.visit(self.getNodesChild(ctx.right, 0).f_name) # function name
                 artm_type = Programm.getFunction(name).return_type
             else:
                 artm_type = 'ARITM_EXPR'
@@ -211,7 +215,7 @@ class AppVisitor(AppParseTreeVisitor):
 
         if type_ == 'INT' or type_ == 'TIME':
             value = self.visit(ctx.value_)
-            if type(value) is not int and type(value) is not float:
+            if type(value) is not int and  type(value) is not float:
                 raise Error("Bad casting: {}".format(type(value).__name__))
             if type(value) is float:
                 value = int(value)
@@ -252,18 +256,20 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, size, scope=Programm.scope_history.top())
 
+            
             PyturtleHandler.add_new_object(name, value1, value2, mass=mass, size=size)
+
 
     def visitDefinition(self, ctx: AppParser.DefinitionContext):
 
         name = self.visit(ctx.name_)
-        var = Programm.getVaribaleFromProperScope(name)
         value = self.visit(ctx.value_)
         if ctx.name_.scope_seq is not None:
             scope_name = self.visit(ctx.name_.scope_seq)
             name = re.sub(scope_name, "", name)       
             scope_name = re.sub("::$", "", scope_name)
-            print("Scope name:", scope_name, " --> name:", name)
+            if Programm.debug:
+                print("Scope name:", scope_name, " --> name:", name)
             Programm.defineExistingVariable(name, value, scope=scope_name)
         else:
             if type(value) is tuple:
@@ -284,13 +290,13 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             if ctx.else_stat is not None:
                 self.visit(ctx.else_stat)
+                
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
-        name1, val1, type1 = None, None, None
+        name1, type1 = None, None
         if ctx.left_expr is not None:
             name1 = ctx.left_expr.getText()
-            val1 = self.visit(ctx.left_expr)
             type1 = type(self.getNodesChild(ctx.left_expr, 0)).__name__
         else:
             name1 = self.visit(ctx.left_var)
@@ -298,26 +304,19 @@ class AppVisitor(AppParseTreeVisitor):
                 if Programm.getVariable(name1) is None:
                     raise UndefinedVariableReferenceError(name1)
             type1 = Programm.getVariable(name1).type
-            val1 = Programm.getVariable(name1).value
 
-        name2, val2, type2 = None, None, None
+        name2, type2 = None, None
         if ctx.right_expr is not None:
             name2 = ctx.right_expr.getText()
-            val2 = self.visit(ctx.right_expr)
             type2 = type(self.getNodesChild(ctx.right_expr, 0)).__name__
         else:
             name2 = self.visit(ctx.right_var)
             var2 = Programm.getVaribaleFromProperScope(name2)
             type2 = var2.type
-            val2 = var2.value
-        # print("Name2: {}, type2: {}, val2: {}".format(name2, type2, val2))
 
-        if not Programm.areTypesComparable(type1, type2, name1, name2):
-            raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
-                                   Programm.getTypeFromNodeType(type2, name2))
         cond_type = None
-        var1 = Programm.getVaribaleFromProperScope(name1)
         if type1 == "VariableNameContext":
+            var1 = Programm.getVaribaleFromProperScope(name1)
             cond_type = var1.type
         elif type1 == "IntegerContext":
             cond_type = Type.INT
@@ -334,6 +333,10 @@ class AppVisitor(AppParseTreeVisitor):
         if cond_type == Type.INT or cond_type == Type.TIME:
             l = self.visit(ctx.left_expr)
             r = self.visit(ctx.right_expr)
+        
+        if not Programm.areTypesComparable(type1, type2, name1, name2):
+            raise UnallowedCasting(Programm.getTypeFromNodeType(type1, name1),
+                                   Programm.getTypeFromNodeType(type2, name2))
 
         op = ctx.op.text
         operation = {
@@ -370,7 +373,8 @@ class AppVisitor(AppParseTreeVisitor):
         PyturtleHandler.add_forces(AppVisitor.forces)
         AppVisitor.forces.clear()
         if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
-            PyturtleHandler.display_queues_len()
+            if Programm.debug:
+                PyturtleHandler.display_queues_len()
             Programm.display_visualisation(PyturtleHandler.get_max_queue_len())
 
     def visitParallelBody(self, ctx: AppParser.ParallelBodyContext):
@@ -415,7 +419,8 @@ class AppVisitor(AppParseTreeVisitor):
         # adding all params to scope
         for declared, given in zip(declared_types, given_arguments):
             Programm.defineNewVariable(declared[0], given[1].type, given[1].value, given[1].value2, scope=Programm.scope_history.top())
-        Programm.displayVariables()
+        if Programm.debug:
+            Programm.displayVariables()
         self.visit(Programm.getFunction(name).body_ctx)
 
         return_val = None
@@ -489,11 +494,11 @@ class AppVisitor(AppParseTreeVisitor):
                 if type(self.visit(child)) is not tuple:
                     val = self.visit(child)
                     type_ = TypeUtils.detectTypeFromValue(val)
-                    var = Variable(name, type_, val)
+                    var= Variable(name, type_, val)
                 else:
                     val, val2 = self.visit(child)
-                    type_ = TypeUtils.detectTypeFromValue((val, val2))
-                    var = Variable(name, type_, val, val2)
+                    type_ = TypeUtils.detectTypeFromValue((val,val2))
+                    var= Variable(name, type_, val, val2)
 
                 given_arguments.append((name, var))
         return given_arguments
@@ -621,8 +626,6 @@ class AppVisitor(AppParseTreeVisitor):
     def arithmeticalOperationForce(self, ctx: AppParser.ArithmeticalExpressionContext):
         l_angle, l_power = self.visit(ctx.left)
         r_angle, r_power = self.visit(ctx.right)
-        print(f"Operation on forces left:[{l_angle},{l_power}], right:[{r_angle},{r_power}]")
-
         op = ctx.op.text
         not_allowed = ['*', '/']
 
@@ -663,6 +666,5 @@ class AppVisitor(AppParseTreeVisitor):
     def visitSizeDefinition(self, ctx: AppParser.SizeDefinitionContext):
         value = self.visit(ctx.value_)
         return int(value)
-
 
 del AppParser

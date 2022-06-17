@@ -1,0 +1,11 @@
+DEFINE OBJECT o AS (100,200);
+DEFINE INT counter AS 0;
+DEFINE FLOAT angle AS ANGLE BETWEEN o, (200,100);
+LOOP (counter < 250)
+    PARALLEL
+        APPLY [270,0.7] TO o FOR 1;
+        APPLY [angle,1.9] TO o FOR 1;
+    ENDPARALLEL;
+SET counter AS counter + 1;
+SET angle AS ANGLE BETWEEN o, (200,200);
+ENDLOOP;

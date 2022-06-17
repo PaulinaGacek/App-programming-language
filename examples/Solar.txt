@@ -1,26 +1,27 @@
-DEFINE OBJECT object1 AS (400,600);
-DEFINE OBJECT object2 AS (400,400);
-DEFINE OBJECT object3 AS (396,650);
-DEFINE FLOAT deg1 AS ANGLE BETWEEN object1, object2;
-DEFINE FLOAT dist1 AS DISTANCE BETWEEN object1, object2;
+DEFINE OBJECT earth AS (400,600);
+DEFINE OBJECT sun AS (400,400);
+DEFINE OBJECT moon AS (396,650);
+DEFINE FLOAT deg_earth_sun AS ANGLE BETWEEN earth, sun;
+DEFINE FLOAT dist_earth_sun AS DISTANCE BETWEEN earth, sun;
 DEFINE FLOAT gm1 AS 360;
-DEFINE FLOAT deg2 AS ANGLE BETWEEN object3, object1;
-DEFINE FLOAT dist2 AS DISTANCE BETWEEN object3, object1;
+DEFINE FLOAT deg_moon_earth AS ANGLE BETWEEN moon, earth;
+DEFINE FLOAT dist_moon_earth AS DISTANCE BETWEEN moon, earth;
 DEFINE FLOAT gm2 AS 7500;
 DEFINE INT counter AS 0;
-APPLY [0,10] TO object3 FOR 1;
-APPLY [0,1] TO object1 FOR 1;
-LOOP (counter < 1100)
-SET deg1 AS ANGLE BETWEEN object1, object2;
-SET dist1 AS DISTANCE BETWEEN object1, object2;
-SET gm1 AS 40;
-SET gm1 AS gm1/dist1/dist1;
-SET deg2 AS ANGLE BETWEEN object3, object1;
-SET dist2 AS DISTANCE BETWEEN object3, object1;
-SET gm2 AS 880;
-SET gm2 AS gm2/dist2/dist2;
-PARALLEL
-APPLY [deg1,gm1] TO object1 FOR 1;
-APPLY [deg2,gm2] TO object3 FOR 1;
-ENDPARALLEL;
-SET counter AS counter + 1; ENDLOOP;
+APPLY [0,10] TO moon FOR 1;
+APPLY [0,1] TO earth FOR 1;
+LOOP (counter < 1000)
+    SET deg_earth_sun AS ANGLE BETWEEN earth, sun;
+    SET dist_earth_sun AS DISTANCE BETWEEN earth, sun;
+    SET gm1 AS 40;
+    SET gm1 AS gm1/dist_earth_sun/dist_earth_sun;
+    SET deg_moon_earth AS ANGLE BETWEEN moon, earth;
+    SET dist_moon_earth AS DISTANCE BETWEEN moon, earth;
+    SET gm2 AS 880;
+    SET gm2 AS gm2/dist_moon_earth/dist_moon_earth;
+    PARALLEL
+        APPLY [deg_earth_sun,gm1] TO earth FOR 1;
+        APPLY [deg_moon_earth,gm2] TO moon FOR 1;
+    ENDPARALLEL;
+    SET counter AS counter + 1; 
+ENDLOOP;
