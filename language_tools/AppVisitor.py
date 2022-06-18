@@ -99,7 +99,7 @@ class AppVisitor(AppParseTreeVisitor):
     def visitApplyForce(self, ctx: AppParser.ApplyForceContext):
 
         object_name = self.visit(ctx.object_)
-        if Programm.getVariable(object_name) is None or Programm.getVariable(object_name).value is None:
+        if Programm.getVaribaleFromProperScope(object_name) is None:
             raise UndefinedVariableReferenceError(object_name)
 
         angle = None
