@@ -17,9 +17,12 @@
     source venv/bin/activate
     pip install --upgrade setuptools
     sudo apt-get install python3-tk
+    sudo apt install python3-wxgtk4.0
+
     pip install wheel
-    pip install antlr4-python3-runtime
+    pip install antlr4-python3-runtime==4.9.2
     pip install pygame
+    pip install libgtk-3-dev
     pip install wxpython
     pip install turtle
    ```

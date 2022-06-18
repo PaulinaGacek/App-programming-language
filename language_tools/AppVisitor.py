@@ -578,11 +578,11 @@ class AppVisitor(AppParseTreeVisitor):
         else:
             return 2137
     
-    def visitSinus(self, ctx: AppParser.SinusContext):
-        pass
+    def visitSinus(self, ctx:AppParser.SinusContext):
+        return self.visitChildren(ctx)
 
-    def visitCosinus(self, ctx: AppParser.CosinusContext):
-        pass
+    def visitCosinus(self, ctx:AppParser.CosinusContext):
+        return self.visitChildren(ctx)
 
     def visitReturn_statement(self, ctx: AppParser.Return_statementContext):
         if AppVisitor.inside_function_dec:
