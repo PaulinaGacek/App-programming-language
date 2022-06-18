@@ -1,0 +1,23 @@
+DEFINE FUNCTION funkcja(INT dist, FLOAT velocity, INT iterations) AS
+    DEFINE INT init_pos AS dist + 400;
+    DEFINE OBJECT o AS (400,init_pos) WITH MASS 1;
+    DEFINE OBJECT o2 AS (400,400) WITH MASS 1;
+    DEFINE FLOAT initial_force AS velocity*5;
+    DEFINE FLOAT angle AS ANGLE BETWEEN o, o2;
+    DEFINE FLOAT distance AS DISTANCE BETWEEN o, o2;
+    DEFINE FLOAT gravity_const AS 1000;
+    DEFINE FLOAT gravity_force AS gravity_const/distance/distance;
+    DEFINE INT counter AS 0;
+    APPLY [0,initial_force] TO o FOR 1;
+    DEFINE FLOAT velocity_object AS VELOCITY VALUE OF o;
+    LOOP (counter < iterations)
+        SET angle AS ANGLE BETWEEN o, o2;
+        SET distance AS DISTANCE BETWEEN o, o2;
+        SET gravity_force AS gravity_const/distance/distance;
+        SET velocity_object AS VELOCITY VALUE OF o;
+        APPLY [angle,gravity_force] TO o FOR 1;
+        SET counter AS counter + 1;
+    ENDLOOP;
+ENDFUNCTION;
+
+funkcja(100,2.0,1);
