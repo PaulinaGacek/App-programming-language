@@ -577,6 +577,12 @@ class AppVisitor(AppParseTreeVisitor):
             return math.sqrt(ball.dx**2 + ball.dy**2)
         else:
             return 2137
+    
+    def visitSinus(self, ctx: AppParser.SinusContext):
+        pass
+
+    def visitCosinus(self, ctx: AppParser.CosinusContext):
+        pass
 
     def visitReturn_statement(self, ctx: AppParser.Return_statementContext):
         if AppVisitor.inside_function_dec:

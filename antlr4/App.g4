@@ -69,6 +69,8 @@ arithmeticalExpression
 	| getCoordinate
 	| getDistance
 	| getVelocity
+	| cosinus
+	| sinus
     ;
 
 declaration
@@ -173,6 +175,10 @@ getDistance
 
 getVelocity
 	: 'VELOCITY' whiteSpace? axis=('X'|'Y'|'VALUE') whiteSpace? 'OF' whiteSpace? name_=variableName whiteSpace?;
+
+sinus: 'SIN(' whiteSpace? value_=arithmeticalExpression whiteSpace? ')';
+
+cosinus: 'COS(' whiteSpace? value_=arithmeticalExpression whiteSpace? ')';
 
 WS
 	: '\n'
