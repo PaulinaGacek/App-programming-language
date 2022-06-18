@@ -13,6 +13,7 @@ sys.path.append(a)
 from Object import *
 from instruction import *
 from utils.Error import *
+from utils.Stack import *
 from front.PyturtleHandler import PyturtleHandler
 
 class VM:
@@ -21,6 +22,7 @@ class VM:
         self.instructions = []
         self.constans = []
         self.stack = []
+        self.real_stack = Stack()
         self.code = open(filename, 'r')
 
         self.instruction_pointer = i_pointer
@@ -62,6 +64,7 @@ class VM:
                 else:
                     int_val = float(commands[1])
                     self.stack.append(int_val)
+                    self.real_stack.push(int_val)
                     self.stack_pointer += 1
 
             elif command_type == Instruction.OCONST:
@@ -71,6 +74,7 @@ class VM:
                     for i in range (1,5):
                         int_val = float(commands[i])
                         self.stack.append(int_val)
+                        self.real_stack.push(int_val)
                         self.stack_pointer += 1
             
             elif command_type == Instruction.FOCONST:
@@ -80,6 +84,7 @@ class VM:
                     for i in range (1,3):
                         int_val = float(commands[i])
                         self.stack.append(int_val)
+                        self.real_stack.push(int_val)
                         self.stack_pointer += 1
             
             elif command_type == Instruction.DISPLAY:
@@ -93,6 +98,7 @@ class VM:
                 value = self.stack[self.stack_pointer]
                 self.constans[idx] = float(value)
                 self.stack.remove(value)
+                self.real_stack.pop()
                 self.stack_pointer -= 1
 
             elif command_type == Instruction.GSTOREO:
@@ -103,6 +109,7 @@ class VM:
                     value = self.stack[self.stack_pointer]
                     self.constans[idx+3-i] = float(value)
                     self.stack.remove(value)
+                    self.real_stack.pop()
                     self.stack_pointer -= 1
             
             elif command_type == Instruction.GSTOREF:
@@ -113,12 +120,14 @@ class VM:
                     value = self.stack[self.stack_pointer]
                     self.constans[idx+1-i] = float(value)
                     self.stack.remove(value)
+                    self.real_stack.pop()
                     self.stack_pointer -= 1
             
             elif command_type == Instruction.GLOADI:
                 idx = int(commands[1])
                 value = self.constans[idx] 
                 self.stack.append(value)
+                self.real_stack.push(int_val)
                 self.stack_pointer += 1
             
             elif command_type == Instruction.GLOADO:
@@ -126,6 +135,7 @@ class VM:
                 for i in range (0,4):
                     value = self.constans[idx+i] 
                     self.stack.append(value)
+                    self.real_stack.push(int_val)
                     self.stack_pointer += 1
             
             elif command_type == Instruction.GLOADF:
@@ -133,24 +143,30 @@ class VM:
                 for i in range (0,2):
                     value = self.constans[idx+i] 
                     self.stack.append(value)
+                    self.real_stack.push(int_val)
                     self.stack_pointer += 1
             
             elif command_type == Instruction.GDRAW_OBJECT:
-                if len(commands) < 2:
-                    raise Exception("Value was not provided for object drawing")
-                idx = int(commands[1])
+                # attributes get from stack
+                idx = int(commands[1]) # mem address
                 name = "obj_"+str(idx)
-                x = self.constans[idx]
-                y = self.constans[idx + 1]
-                mass = self.constans[idx+2]
-                size = self.constans[idx+3]
+                size = self.real_stack.pop()
+                mass = self.real_stack.pop()
+                y = self.real_stack.pop()
+                x = self.real_stack.pop()
                 
                 if not PyturtleHandler.can_object_be_drawn(x, y, int(size)):
                     raise ObjectCannotBeDrawn(name, x, y)
                 PyturtleHandler.add_new_object(name, x, y,mass, int(size))
 
+            elif command_type == Instruction.APPLY_FORCE:
+                idx_obj = int(commands[1]) # mem address
+                idx_force = int(commands[2]) # mem address
+                idx_time = int(commands[3]) # mem address
+                
             else:
                 raise Exception("Unknown operation code: " + commands[0])
             
             print("Constants: ", self.constans)
             print("Stack: ", self.stack)
+            print("Real stack", self.real_stack.stack)

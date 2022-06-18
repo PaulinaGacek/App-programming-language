@@ -6,11 +6,11 @@ from language_tools.AppVisitor import *
 from language_tools.AppErrorListener import *
 from programm.Programm import Programm
 from front.PyturtleHandler import PyturtleHandler
+from virtual_machine.VMVisitor import VMVisitor
 
 
 def interprateInput(data):
     # lexer
-    AppVisitor.current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
     lexer = AppLexer(data)
     stream = CommonTokenStream(lexer)
     # parser
@@ -22,26 +22,33 @@ def interprateInput(data):
         print(e)
         return
 
-    # evaluator
-    visitor = AppVisitor()
-    output = visitor.visit(tree)
+    if not Programm.vm_conversion:
+        # evaluator
+        AppVisitor.current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
+        visitor = AppVisitor()
+        output = visitor.visit(tree)
 
-    AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
-    data = InputStream(data.__str__())
-    # lexer
-    lexer = AppLexer(data)
-    stream = CommonTokenStream(lexer)
-    # parser
-    parser = AppParser(stream)
-    tree = parser.primaryExpression()
-    # evaluator
-    visitor = AppVisitor()
-    output = visitor.visit(tree)
-    if Programm.debug:
-        Programm.displayVariables()
-        Programm.dispay_functions()
+        data = InputStream(data.__str__())
+        # lexer
+        lexer = AppLexer(data)
+        stream = CommonTokenStream(lexer)
+        # parser
+        parser = AppParser(stream)
+        tree = parser.primaryExpression()
 
-    PyturtleHandler.win.update()
+        # evaluator
+        AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
+        visitor = AppVisitor()
+        output = visitor.visit(tree)
+
+        if Programm.debug:
+            Programm.displayVariables()
+            Programm.dispay_functions()
+
+        PyturtleHandler.win.update()
+    else:
+        visitor = VMVisitor()
+        output = visitor.visit(tree)
 
 DIR = "examples/"
 

@@ -17,3 +17,6 @@ class Stack:
     
     def getSize(self):
         return len(self.stack)
+    
+    def display(self):
+        print(self.stack)

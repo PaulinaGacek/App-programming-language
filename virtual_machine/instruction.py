@@ -16,3 +16,4 @@ class Instruction(IntEnum):
     GLOADF = 12 # LOAD GLOBAL FORCE
 
     GDRAW_OBJECT = 13 # DRAW OBJECT - POINTER TO MEM
+    GAPPLY_FORCE = 14
