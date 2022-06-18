@@ -11,7 +11,7 @@ if __name__ == "__main__":
         filename = DIR + sys.argv[1]
         print("File name: " + filename)
         try:
-            vm = VM(filename, -1, 1024)
+            vm = VM(filename, -1, 1024, 100)
             vm.cpu()
         except FileNotFoundError:
             print("No such file")

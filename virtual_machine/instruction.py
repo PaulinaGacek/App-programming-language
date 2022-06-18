@@ -17,3 +17,15 @@ class Instruction(IntEnum):
 
     GDRAW_OBJECT = 13 # DRAW OBJECT - POINTER TO MEM
     GAPPLY_FORCE = 14
+
+    JMP = 15 # JUMP
+    JMP_TRUE = 16 # JUMP IF TRUE
+    JMP_FALSE = 17 # JUMP IF FALSE
+    POP = 18 # POP FROM STACK
+
+    ADD_I = 19
+    SUB_I = 20
+    DIV_I = 21
+    MULT_I = 22
+    ADD_FO = 23
+    SUB_FO = 24
