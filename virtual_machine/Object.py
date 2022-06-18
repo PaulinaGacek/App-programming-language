@@ -11,15 +11,3 @@ class VariableValue:
     def __init__(self, type: VariableType, value) -> None:
         self.type = type
         self.value = value
-
-class Operation(IntEnum):
-    HALT = 0
-    ICONST = 1 # INT
-    FLCONST = 2 # FLOAT
-    TCONST = 3 # TIME
-    OCONST = 4 # OBJECT
-    FOCONST = 5 # FORCE
-    DISPLAY = 6 # DISPLAY SCREEN
-    GSTOREI = 7 # STORE GLOBAL INT,TIME OR FLOAT
-    GSTOREO = 8 # STORE GLOBAL OBJECT
-    GSTOREF = 9 # STORE GLOBAL FORCE

@@ -255,7 +255,6 @@ class AppVisitor(AppParseTreeVisitor):
 
             Programm.defineNewVariable(name, TypeUtils.strToType(
                 type_), value1, value2, size, scope=Programm.scope_history.top())
-
             
             PyturtleHandler.add_new_object(name, value1, value2, mass=mass, size=size)
 
