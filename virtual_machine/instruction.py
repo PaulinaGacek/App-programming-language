@@ -8,6 +8,7 @@ class Instruction(IntEnum):
     OCONST = 4 # OBJECT
     FOCONST = 5 # FORCE
     DISPLAY = 6 # DISPLAY SCREEN
+
     GSTOREI = 7 # STORE GLOBAL INT, TIME OR FLOAT
     GSTOREO = 8 # STORE GLOBAL OBJECT
     GSTOREF = 9 # STORE GLOBAL FORCE
@@ -27,5 +28,12 @@ class Instruction(IntEnum):
     SUB_I = 20
     DIV_I = 21
     MULT_I = 22
-    ADD_FO = 23
-    SUB_FO = 24
+    EQ_I = 23
+    LT_I = 24
+    GT_I = 25
+    LT_EQ = 26 # LESS THAN OR EQUAL
+    GT_EQ = 27 # GREATER THAN OR EQUAL
+
+    LLOAD_I = 28 # LOAD LOCAL INT, TIME, FLOAT
+    LLOAD_O = 29 # LOAD LOCAL OBJECT
+    LLOAD_F = 30 # LOAD LOCAL FORCE

@@ -1,4 +1,3 @@
-from asyncio import constants
 import sys
 import os
 myDir = os.getcwd()
@@ -170,7 +169,51 @@ class VM:
                 b = self.stack.pop()
                 a = self.stack.pop()
                 self.stack.push(a/b)
-                
+            
+            elif command_type == Instruction.EQ_I:
+                b = self.stack.pop()
+                a = self.stack.pop()
+                if a==b:
+                    self.stack.push(1)
+                else:
+                    self.stack.push(0)
+
+            elif command_type == Instruction.LT_I:
+                b = self.stack.pop()
+                a = self.stack.pop()
+                if a<b:
+                    self.stack.push(1)
+                else:
+                    self.stack.push(0)
+            
+            elif command_type == Instruction.LT_EQ:
+                b = self.stack.pop()
+                a = self.stack.pop()
+                if a<=b:
+                    self.stack.push(1)
+                else:
+                    self.stack.push(0)
+            
+            elif command_type == Instruction.GT_I:
+                b = self.stack.pop()
+                a = self.stack.pop()
+                if a>b:
+                    self.stack.push(1)
+                else:
+                    self.stack.push(0)
+            
+            elif command_type == Instruction.GT_EQ:
+                b = self.stack.pop()
+                a = self.stack.pop()
+                if a>=b:
+                    self.stack.push(1)
+                else:
+                    self.stack.push(0)
+            
+            elif command_type == Instruction.LLOAD_I:
+                idx = int(commands[1]) % self.memory
+                self.stack.push(self.stack.stack[idx+self.frame_pointer])
+            
             else:
                 raise Exception("Unknown operation code: " + commands[0])
             

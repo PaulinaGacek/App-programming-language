@@ -21,21 +21,20 @@ def interprateInput(data):
     except Exception as e:
         print(e)
         return
+    
+    AppVisitor.current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
+    visitor = AppVisitor()
+    output = visitor.visit(tree)
+
+    data = InputStream(data.__str__())
+    # lexer
+    lexer = AppLexer(data)
+    stream = CommonTokenStream(lexer)
+    # parser
+    parser = AppParser(stream)
+    tree = parser.primaryExpression()
 
     if not Programm.vm_conversion:
-        # evaluator
-        AppVisitor.current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
-        visitor = AppVisitor()
-        output = visitor.visit(tree)
-
-        data = InputStream(data.__str__())
-        # lexer
-        lexer = AppLexer(data)
-        stream = CommonTokenStream(lexer)
-        # parser
-        parser = AppParser(stream)
-        tree = parser.primaryExpression()
-
         # evaluator
         AppVisitor.current_state = AppVisitorState.CODE_EXECUTING
         visitor = AppVisitor()
