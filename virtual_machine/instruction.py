@@ -40,3 +40,13 @@ class Instruction(IntEnum):
 
     PARALLEL_START = 31 # OPENS PARALLEL BLOCK
     PARALLEL_END = 32 # CLOSES PARALLEL BLOCK
+
+    PUSH_TRUE = 33 # PUSH 1
+    PUSH_FALSE = 34 # PUSH 0
+
+    AND = 35
+    OR = 36
+    XOR = 37
+
+    CALL = 38
+    RET = 39

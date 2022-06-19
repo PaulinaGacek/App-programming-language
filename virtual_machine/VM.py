@@ -226,6 +226,50 @@ class VM:
                 Animations.inside_parallel=False
                 Animations.animate()
             
+            elif command_type == Instruction.PUSH_TRUE:
+                self.stack.push(1)
+            
+            elif command_type == Instruction.PUSH_FALSE:
+                self.stack.push(0)
+            
+            elif command_type == Instruction.AND:
+                if self.stack.pop()>0 and self.stack.pop()>0:
+                    self.stack.push(1)
+                else:
+                    self.stack.push(0)
+            
+            elif command_type == Instruction.OR:
+                if self.stack.pop()==0 and self.stack.pop()==0:
+                    self.stack.push(0)
+                else:
+                    self.stack.push(1)
+            
+            elif command_type == Instruction.XOR:
+                if self.stack.pop()==0 and self.stack.pop()!=0:
+                    self.stack.push(1)
+                elif self.stack.pop()!=0 and self.stack.pop()==0:
+                    self.stack.push(1)
+                else:
+                    self.stack.push(0)
+            
+            elif command_type == Instruction.CALL:
+                addr = int(commands[1])
+                nargs = int(commands[2])
+                self.stack.push(nargs)
+                self.stack.push(self.frame_pointer)
+                self.stack.push(self.instruction_pointer)
+                self.frame_pointer = self.stack.getTopId()
+                self.instruction_pointer = addr
+            
+            elif command_type == Instruction.RET:
+                rvalue = self.stack.pop()
+                self.stack_pointer = self.frame_pointer
+                self.instruction_pointer = self.stack.pop()
+                self.frame_pointer = self.stack.pop()
+                nargs = self.stack.pop()
+                self.stack_pointer -= nargs
+                self.stack.push(rvalue)
+            
             else:
                 raise Exception("Unknown operation code: " + commands[0])
             

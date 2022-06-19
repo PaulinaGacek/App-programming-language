@@ -20,3 +20,6 @@ class Stack:
     
     def display(self):
         print(self.stack)
+    
+    def getTopId(self):
+        return len(self.stack)-1
