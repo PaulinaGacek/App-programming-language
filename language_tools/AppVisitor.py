@@ -28,9 +28,6 @@ class AppVisitor(AppParseTreeVisitor):
     current_state = AppVisitorState.FUNC_DECLARATION_CHECKING
     inside_function_dec = False
     inside_parallel = False
-    forces = {}  # mapps object name to forces applied to it str-> List[Force]
-    current_named_scope = []
-    NR_OF_FRAMES = 29.10
 
     def visitPrimaryExpression(self, ctx: AppParser.PrimaryExpressionContext):
 
@@ -89,7 +86,7 @@ class AppVisitor(AppParseTreeVisitor):
         for i in range(0, len(tab)):
             tab[i] = int(tab[i])
 
-        time_ = (3600 * tab[0] + 60 * tab[1] + tab[2]) * self.NR_OF_FRAMES
+        time_ = (3600 * tab[0] + 60 * tab[1] + tab[2]) * Programm.NR_OF_FRAMES
 
         if time_ - int(time_) >= 0.5:
             return math.ceil(time_)
@@ -130,14 +127,14 @@ class AppVisitor(AppParseTreeVisitor):
 
         force_ = Force(angle, power, time_val, delay)
 
-        if AppVisitor.forces.get(object_name) is None:
-            AppVisitor.forces[object_name] = [force_]
+        if Programm.forces.get(object_name) is None:
+            Programm.forces[object_name] = [force_]
         else:
-            AppVisitor.forces[object_name].append(force_)
+            Programm.forces[object_name].append(force_)
 
         if not AppVisitor.inside_parallel:  # not in parallel block
-            PyturtleHandler.add_forces(AppVisitor.forces)
-            AppVisitor.forces.clear()
+            PyturtleHandler.add_forces(Programm.forces)
+            Programm.forces.clear()
 
             if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
                 if Programm.debug:
@@ -369,8 +366,8 @@ class AppVisitor(AppParseTreeVisitor):
         AppVisitor.inside_parallel = True
         self.visit(ctx.par_body)
         AppVisitor.inside_parallel = False
-        PyturtleHandler.add_forces(AppVisitor.forces)
-        AppVisitor.forces.clear()
+        PyturtleHandler.add_forces(Programm.forces)
+        Programm.forces.clear()
         if len(PyturtleHandler.balls.keys()) > 0 and PyturtleHandler.get_max_queue_len() > 0:
             if Programm.debug:
                 PyturtleHandler.display_queues_len()
@@ -516,11 +513,11 @@ class AppVisitor(AppParseTreeVisitor):
 
     def visitScopeDeclaration(self, ctx: AppParser.ScopeDeclarationContext):
         name = self.getNodesChild(ctx, 0).getText()
-        self.current_named_scope.append(name)
-        Programm.addNewNamedVariableScope(name, self.current_named_scope)
+        Programm.current_named_scope.append(name)
+        Programm.addNewNamedVariableScope(name, Programm.current_named_scope)
         self.visitChildren(ctx)
         Programm.deleteTopVariableScope()
-        self.current_named_scope.remove(name)
+        Programm.current_named_scope.remove(name)
 
     def visitGetAngle(self, ctx: AppParser.GetAngleContext):
         x1, y1, x2, y2 = self.getDistancecoords(ctx)

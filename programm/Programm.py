@@ -19,9 +19,12 @@ class Programm:
     scope_history = Stack()  # empty stack of following scopes
     functions = {}  # maps name to Function()
     current_scope = None
+    forces = {}  # mapps object name to forces applied to it str-> List[Force]
+    current_named_scope = []
 
     named_scopes = {}
     scope_name_to_idx = {} # mapps scope's name to its idx
+    NR_OF_FRAMES = 29.10
     '''
     Handles declaration with definition, e.g. DEFINE TIME zmienna AS 100;
     Creates variable and puts it into variables dict or raises exception
