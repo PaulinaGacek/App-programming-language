@@ -182,6 +182,10 @@ class Programm:
     
         if type1 == "VariableNameContext" and type2 == "VariableNameContext":
             if Programm.getVaribaleFromProperScope(name1).type != Programm.getVaribaleFromProperScope(name2).type:
+                if Programm.getVaribaleFromProperScope(name1).type == Type.FLOAT and Programm.getVaribaleFromProperScope(name2).type == Type.INT:
+                    return True
+                if Programm.getVaribaleFromProperScope(name1).type == Type.INT and Programm.getVaribaleFromProperScope(name2).type == Type.FLOAT:
+                    return True
                 return False
             return True
         
