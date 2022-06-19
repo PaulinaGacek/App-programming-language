@@ -1,0 +1,15 @@
+DEFINE OBJECT o AS (400,200);
+DEFINE FLOAT amplitude AS 200;
+DEFINE FLOAT x AS 0.0;
+DEFINE FLOAT k AS 4.0;
+DEFINE FLOAT omega AS 4.0;
+DEFINE INT t AS 0;
+DEFINE FLOAT power AS 0.0;
+DEFINE FLOAT cos AS 0.0;
+LOOP (t < 250)
+    SET cos AS COS(omega * t);
+    SET x AS amplitude * cos;
+    SET power AS x * k;
+    APPLY [0,power] TO o FOR 1;
+    SET t AS t + 1;
+ENDLOOP;

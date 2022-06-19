@@ -33,7 +33,7 @@ given sequence of forces to the object.
 The set of keywords of the APP language:
 
 `SET`, `AS`, `DEFINE`, `IF`, `ELIF`, `ELSE`, `THEN`, `ENDIF`, `LOOP`, `ENDLOOP`, `FOR` ,`PARALELL`, `ENDPARALELL`, `WITH`,
-`FUNCTION`, `ENDFUNCTION`
+`FUNCTION`, `ENDFUNCTION`, `SIN`, `COS`
 
 and all variable types.
 ###  _Variable types_
@@ -80,8 +80,8 @@ ensure user with the freedom to use our language:
 - `sinus` (SIN)
 - `cosinus`(COS)
 
-We were able to implement most of this part of the plan, `sinus` and `cosinus` were left in the realm of language 
-development plans. As well as respecting parentheses in the order of operations.
+We were able to implement most of this part of the plan, respecting parentheses in the order of operations were left in the realm of language 
+development plans.
 ### _Conditional statements_
 We wanted to provide the user with access to the classic `IF` conditional statement. 
 In order to achieve this goal, we had to provide comparison operations for the full convenience of using 
