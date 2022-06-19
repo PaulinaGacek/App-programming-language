@@ -28,6 +28,7 @@ class VM:
         self.frame_pointer = -1
         self.memory = memory
         self.object_counter = 0
+        self.variables = {} #idx to name
         
         self.stacklimit = stack_limit
         while True:
@@ -120,15 +121,20 @@ class VM:
                 mass = self.stack.pop()
                 y = self.stack.pop()
                 x = self.stack.pop()
+
+                self.variables[idx] = name
                 
                 if not PyturtleHandler.can_object_be_drawn(x, y, int(size)):
                     raise ObjectCannotBeDrawn(name, x, y)
                 PyturtleHandler.add_new_object(name, x, y,mass, int(size))
 
             elif command_type == Instruction.GAPPLY_FORCE:
-                idx_obj = int(commands[1]) # mem address
-                idx_force = int(commands[2]) # mem address
-                idx_time = int(commands[3]) # mem address
+                time = self.stack.pop()
+                idx_obj = self.stack.pop()
+                force_power = self.stack.pop()
+                force_ang = self.stack.pop()
+                var_name = self.variables[idx]
+                
             
             elif command_type == Instruction.JMP:
                 if len(commands) < 2:
