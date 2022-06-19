@@ -12,22 +12,19 @@ sys.path.append(a)
 from Object import *
 from instruction import *
 from utils.Error import *
-from utils.Stack import *
+from stack import *
 from front.PyturtleHandler import PyturtleHandler
 from animations import *
 
 class VM:
 
     def __init__(self, filename, i_pointer: int, stack_limit: int, memory: int) -> None:
-        self.instruction_lines = []
         self.instructions = []
         self.constans = [0] * memory
-        self.stack = Stack()
+        self.stack = Stack_PR(20)
         self.code = open(filename, 'r')
 
-        self.line_pointer = i_pointer
         self.instruction_pointer = -1
-        self.stack_pointer = -1
         self.frame_pointer = -1
         self.memory = memory
         self.object_counter = 0
@@ -37,7 +34,6 @@ class VM:
         while True:
             line = self.code.readline()
             if line:
-                self.instruction_lines.append(line)
                 for string in line.split():
                     self.instructions.append(float(string))
             else:
@@ -146,23 +142,23 @@ class VM:
             elif command_type == Instruction.PARALLEL_END:
                 Animations.inside_parallel=False
                 Animations.animate()
-            '''
+            
             elif command_type == Instruction.JMP:
-                if len(commands) < 2:
-                    raise Exception("Value was not provided for jump")
-                self.line_pointer = int(commands[1]) - 1
+                self.instruction_pointer+=1
+                idx =  int(self.instructions[self.instruction_pointer])
+                self.instruction_pointer = idx-1
             
             elif command_type == Instruction.JMP_TRUE:
-                if len(commands) < 2:
-                    raise Exception("Value was not provided for jump")
                 if self.stack.pop() > 0: # true
-                    self.line_pointer = int(commands[1]) - 1
+                    self.instruction_pointer+=1
+                    idx =  int(self.instructions[self.instruction_pointer])
+                    self.instruction_pointer = idx-1
             
             elif command_type == Instruction.JMP_FALSE:
-                if len(commands) < 2:
-                    raise Exception("Value was not provided for jump")
                 if self.stack.pop() == 0: # false
-                    self.line_pointer = int(commands[1]) - 1
+                    self.instruction_pointer+=1
+                    idx =  int(self.instructions[self.instruction_pointer])
+                    self.instruction_pointer = idx-1
             
             elif command_type == Instruction.POP:
                 self.stack.pop()
@@ -228,11 +224,10 @@ class VM:
                     self.stack.push(0)
             
             elif command_type == Instruction.LLOAD_I:
-                idx = int(commands[1]) % self.memory
+                self.instruction_pointer+=1
+                idx = int(self.instructions[self.instruction_pointer]) % self.memory
                 self.stack.push(self.stack.stack[idx+self.frame_pointer])
-            '''
             
-            '''
             elif command_type == Instruction.PUSH_TRUE:
                 self.stack.push(1)
             
@@ -260,24 +255,26 @@ class VM:
                     self.stack.push(0)
             
             elif command_type == Instruction.CALL:
-                addr = int(commands[1])
-                nargs = int(commands[2])
+                self.instruction_pointer+=1
+                addr = int(self.instructions[self.instruction_pointer])
+                self.instruction_pointer+=1
+                nargs = int(self.instructions[self.instruction_pointer])
                 self.stack.push(nargs)
                 self.stack.push(self.frame_pointer)
                 self.stack.push(self.line_pointer)
-                self.frame_pointer = self.stack.getTopId()
-                self.line_pointer = addr
+                self.frame_pointer = self.stack.pointer
+                self.instruction_pointer = addr
             
             elif command_type == Instruction.RET:
                 rvalue = self.stack.pop()
-                self.stack_pointer = self.frame_pointer
+                self.stack.pointer = self.frame_pointer
                 self.line_pointer = self.stack.pop()
                 self.frame_pointer = self.stack.pop()
                 nargs = self.stack.pop()
-                self.stack_pointer -= nargs
+                self.stack.pointer -= nargs
                 self.stack.push(rvalue)
             else:
-                raise Exception("Unknown operation code: " + commands[0])
-            '''
+                raise Exception("Unknown operation code: " + int(self.instructions[self.instruction_pointer]))
+
             print("Constants: ", self.constans)
-            print("Stack", self.stack.stack)
+            print("Stack", self.stack.stack[:self.stack.pointer])
