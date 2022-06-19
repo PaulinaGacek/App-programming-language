@@ -14,6 +14,7 @@ from instruction import *
 from utils.Error import *
 from utils.Stack import *
 from front.PyturtleHandler import PyturtleHandler
+from animations import *
 
 class VM:
 
@@ -51,7 +52,7 @@ class VM:
                 print("END")
                 break
             commands = self.instructions[self.instruction_pointer].split()
-            print(commands)
+            print(Instruction(int(commands[0])), commands[1:])
 
             # decode
             command_type = int(commands[0])
@@ -117,24 +118,22 @@ class VM:
                 idx = int(commands[1]) # mem address
                 name = "obj_" + str(idx) + "_" + str(self.object_counter)
                 self.object_counter+=1
-                size = self.stack.pop()
-                mass = self.stack.pop()
-                y = self.stack.pop()
-                x = self.stack.pop()
+                size = int(self.stack.pop())
+                mass = int(self.stack.pop())
+                y = int(self.stack.pop())
+                x = int(self.stack.pop())
 
                 self.variables[idx] = name
-                
-                if not PyturtleHandler.can_object_be_drawn(x, y, int(size)):
-                    raise ObjectCannotBeDrawn(name, x, y)
-                PyturtleHandler.add_new_object(name, x, y,mass, int(size))
+                Animations.draw_object(name, x,y,size,mass)
 
             elif command_type == Instruction.GAPPLY_FORCE:
-                time = self.stack.pop()
-                idx_obj = self.stack.pop()
-                force_power = self.stack.pop()
+                time = int(self.stack.pop())
+                force_power = int(self.stack.pop())
                 force_ang = self.stack.pop()
+                idx = int(self.stack.pop())
                 var_name = self.variables[idx]
                 
+                Animations.apply_force(var_name, force_ang, force_power, time)
             
             elif command_type == Instruction.JMP:
                 if len(commands) < 2:
@@ -219,6 +218,13 @@ class VM:
             elif command_type == Instruction.LLOAD_I:
                 idx = int(commands[1]) % self.memory
                 self.stack.push(self.stack.stack[idx+self.frame_pointer])
+            
+            elif command_type == Instruction.PARALLEL_START:
+                Animations.inside_parallel=True
+            
+            elif command_type == Instruction.PARALLEL_END:
+                Animations.inside_parallel=False
+                Animations.animate()
             
             else:
                 raise Exception("Unknown operation code: " + commands[0])
