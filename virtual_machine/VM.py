@@ -19,12 +19,14 @@ from animations import *
 class VM:
 
     def __init__(self, filename, i_pointer: int, stack_limit: int, memory: int) -> None:
+        self.instruction_lines = []
         self.instructions = []
         self.constans = [0] * memory
         self.stack = Stack()
         self.code = open(filename, 'r')
 
-        self.instruction_pointer = i_pointer
+        self.line_pointer = i_pointer
+        self.instruction_pointer = -1
         self.stack_pointer = -1
         self.frame_pointer = -1
         self.memory = memory
@@ -35,7 +37,9 @@ class VM:
         while True:
             line = self.code.readline()
             if line:
-                self.instructions.append(line)
+                self.instruction_lines.append(line)
+                for string in line.split():
+                    self.instructions.append(float(string))
             else:
                 break
         self.code.close()
@@ -51,34 +55,27 @@ class VM:
             if self.instruction_pointer >= len(self.instructions):
                 print("END")
                 break
-            commands = self.instructions[self.instruction_pointer].split()
-            print(Instruction(int(commands[0])), commands[1:])
+            print(Instruction(int(self.instructions[self.instruction_pointer])))
 
             # decode
-            command_type = int(commands[0])
+            command_type = int(self.instructions[self.instruction_pointer])
             if command_type == Instruction.HALT:
                 return
             
             #### VARIABLES #####
             elif command_type == Instruction.ICONST or command_type == Instruction.FLCONST or command_type == Instruction.TCONST:
-                if len(commands) < 2:
-                    raise Exception("Value was not provided for const")
-                else:
-                    self.stack.push(float(commands[1]))
+                self.instruction_pointer+=1
+                self.stack.push(self.instructions[self.instruction_pointer])
 
             elif command_type == Instruction.OCONST:
-                if len(commands) < 4:
-                    raise Exception("Value was not provided for object const")
-                else: # x,y,mass,size
-                    for i in range (1,5):
-                        self.stack.push(float(commands[i]))
+                for i in range (1,5):
+                    self.instruction_pointer+=1
+                    self.stack.push(self.instructions[self.instruction_pointer])
             
             elif command_type == Instruction.FOCONST:
-                if len(commands) < 2:
-                    raise Exception("Value was not provided for force const")
-                else: # angle-force
-                    for i in range (1,3):
-                        self.stack.push(float(commands[i]))
+                for i in range (1,3):
+                    self.instruction_pointer+=1
+                    self.stack.push(self.instructions[self.instruction_pointer])
             
             elif command_type == Instruction.DISPLAY:
                 if PyturtleHandler.win is None:
@@ -86,36 +83,44 @@ class VM:
             
             elif command_type == Instruction.GSTOREI:
                 # store variable in given address
-                idx = int(commands[1]) % self.memory
+                self.instruction_pointer+=1
+                idx = int(self.instructions[self.instruction_pointer]) % self.memory
                 self.constans[idx] = float(self.stack.pop())
 
             elif command_type == Instruction.GSTOREO:
-                idx = int(commands[1]) % self.memory
+                self.instruction_pointer+=1
+                idx = int(self.instructions[self.instruction_pointer]) % self.memory
                 for i in range (0,4):
                     self.constans[idx+3-i] = float(self.stack.pop())
             
             elif command_type == Instruction.GSTOREF:
-                idx = int(commands[1]) % self.memory
+                self.instruction_pointer+=1
+                idx = int(self.instructions[self.instruction_pointer]) % self.memory
+                print(idx)
                 for i in range (0,2):
                     self.constans[idx+1-i] = float(self.stack.pop())
             
             elif command_type == Instruction.GLOADI:
-                idx = int(commands[1]) % self.memory
+                self.instruction_pointer+=1
+                idx = int(self.instructions[self.instruction_pointer]) % self.memory
                 self.stack.push(self.constans[idx])
             
             elif command_type == Instruction.GLOADO:
-                idx = int(commands[1])
+                self.instruction_pointer+=1
+                idx = int(self.instructions[self.instruction_pointer])
                 for i in range (0,4):
                     self.stack.push(self.constans[idx+i])
             
             elif command_type == Instruction.GLOADF:
-                idx = int(commands[1])
+                self.instruction_pointer+=1
+                idx = int(self.instructions[self.instruction_pointer])
                 for i in range (0,2):
                     self.stack.push(self.constans[idx+i])
             
             elif command_type == Instruction.GDRAW_OBJECT:
                 # attributes get from stack
-                idx = int(commands[1]) # mem address
+                self.instruction_pointer+=1
+                idx =  int(self.instructions[self.instruction_pointer]) # mem address
                 name = "obj_" + str(idx) + "_" + str(self.object_counter)
                 self.object_counter+=1
                 size = int(self.stack.pop())
@@ -135,22 +140,29 @@ class VM:
                 
                 Animations.apply_force(var_name, force_ang, force_power, time)
             
+            elif command_type == Instruction.PARALLEL_START:
+                Animations.inside_parallel=True
+            
+            elif command_type == Instruction.PARALLEL_END:
+                Animations.inside_parallel=False
+                Animations.animate()
+            '''
             elif command_type == Instruction.JMP:
                 if len(commands) < 2:
                     raise Exception("Value was not provided for jump")
-                self.instruction_pointer = int(commands[1]) - 1
+                self.line_pointer = int(commands[1]) - 1
             
             elif command_type == Instruction.JMP_TRUE:
                 if len(commands) < 2:
                     raise Exception("Value was not provided for jump")
                 if self.stack.pop() > 0: # true
-                    self.instruction_pointer = int(commands[1]) - 1
+                    self.line_pointer = int(commands[1]) - 1
             
             elif command_type == Instruction.JMP_FALSE:
                 if len(commands) < 2:
                     raise Exception("Value was not provided for jump")
                 if self.stack.pop() == 0: # false
-                    self.instruction_pointer = int(commands[1]) - 1
+                    self.line_pointer = int(commands[1]) - 1
             
             elif command_type == Instruction.POP:
                 self.stack.pop()
@@ -218,14 +230,9 @@ class VM:
             elif command_type == Instruction.LLOAD_I:
                 idx = int(commands[1]) % self.memory
                 self.stack.push(self.stack.stack[idx+self.frame_pointer])
+            '''
             
-            elif command_type == Instruction.PARALLEL_START:
-                Animations.inside_parallel=True
-            
-            elif command_type == Instruction.PARALLEL_END:
-                Animations.inside_parallel=False
-                Animations.animate()
-            
+            '''
             elif command_type == Instruction.PUSH_TRUE:
                 self.stack.push(1)
             
@@ -257,21 +264,20 @@ class VM:
                 nargs = int(commands[2])
                 self.stack.push(nargs)
                 self.stack.push(self.frame_pointer)
-                self.stack.push(self.instruction_pointer)
+                self.stack.push(self.line_pointer)
                 self.frame_pointer = self.stack.getTopId()
-                self.instruction_pointer = addr
+                self.line_pointer = addr
             
             elif command_type == Instruction.RET:
                 rvalue = self.stack.pop()
                 self.stack_pointer = self.frame_pointer
-                self.instruction_pointer = self.stack.pop()
+                self.line_pointer = self.stack.pop()
                 self.frame_pointer = self.stack.pop()
                 nargs = self.stack.pop()
                 self.stack_pointer -= nargs
                 self.stack.push(rvalue)
-            
             else:
                 raise Exception("Unknown operation code: " + commands[0])
-            
+            '''
             print("Constants: ", self.constans)
             print("Stack", self.stack.stack)
