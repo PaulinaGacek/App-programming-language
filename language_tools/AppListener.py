@@ -377,5 +377,23 @@ class AppListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by AppParser#sinus.
+    def enterSinus(self, ctx:AppParser.SinusContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#sinus.
+    def exitSinus(self, ctx:AppParser.SinusContext):
+        pass
+
+
+    # Enter a parse tree produced by AppParser#cosinus.
+    def enterCosinus(self, ctx:AppParser.CosinusContext):
+        pass
+
+    # Exit a parse tree produced by AppParser#cosinus.
+    def exitCosinus(self, ctx:AppParser.CosinusContext):
+        pass
+
+
 
 del AppParser

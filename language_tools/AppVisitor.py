@@ -533,13 +533,10 @@ class AppVisitor(AppParseTreeVisitor):
         text_value = ctx.axis.text
         name = self.visit(ctx.name_)
         curr_object = None
-        if Programm.getVariable(name, Programm.current_scope) is None:
-            if Programm.getVariable(name) is None: 
-                raise UndefinedVariableReferenceError(name)
-            else:
-                curr_object = Programm.getVariable(name)
+        if Programm.getVaribaleFromProperScope(name) is None:
+            raise UndefinedVariableReferenceError(name)
         else:
-            curr_object = Programm.getVariable(name, Programm.current_scope)
+            curr_object = Programm.getVaribaleFromProperScope(name)
 
         if curr_object.type != Type.OBJECT:
             raise TypeError("Variable is not an object")
@@ -562,13 +559,10 @@ class AppVisitor(AppParseTreeVisitor):
         text_value = ctx.axis.text
         name = self.visit(ctx.name_)
         curr_object = None
-        if Programm.getVariable(name, Programm.current_scope) is None:
-            if Programm.getVariable(name) is None: 
-                raise UndefinedVariableReferenceError(name)
-            else:
-                curr_object = Programm.getVariable(name)
+        if Programm.getVaribaleFromProperScope(name) is None:
+            raise UndefinedVariableReferenceError(name)
         else:
-            curr_object = Programm.getVariable(name, Programm.current_scope)
+            curr_object = Programm.getVaribaleFromProperScope(name)
 
         if curr_object.type != Type.OBJECT:
             raise TypeError("Variable is not an object")
@@ -582,6 +576,14 @@ class AppVisitor(AppParseTreeVisitor):
             return math.sqrt(ball.dx**2 + ball.dy**2)
         else:
             return 2137
+    
+    def visitSinus(self, ctx:AppParser.SinusContext):
+        value = self.visit(ctx.value_)
+        return math.sin(math.radians(value))
+
+    def visitCosinus(self, ctx:AppParser.CosinusContext):
+        value = self.visit(ctx.value_)
+        return math.cos(math.radians(value))
 
     def visitReturn_statement(self, ctx: AppParser.Return_statementContext):
         if AppVisitor.inside_function_dec:
@@ -595,13 +597,10 @@ class AppVisitor(AppParseTreeVisitor):
             y1 = object1[1]
         else:
             name1 = self.visit(ctx.name_1)
-            if Programm.getVariable(name1, Programm.current_scope) is None: 
-                if Programm.getVariable(name1) is None: 
-                    raise UndefinedVariableReferenceError(name1)
-                else:
-                    object1 = Programm.getVariable(name1)
+            if Programm.getVaribaleFromProperScope(name1) is None: 
+                raise UndefinedVariableReferenceError(name1)
             else:
-                object1 = Programm.getVariable(name1, Programm.current_scope)
+                object1 = Programm.getVaribaleFromProperScope(name1)
             x1 = object1.value
             y1 = object1.value2
         if ctx.name_2 is None:
@@ -610,13 +609,10 @@ class AppVisitor(AppParseTreeVisitor):
             y2 = object2[1]
         else:
             name2 = self.visit(ctx.name_2)
-            if Programm.getVariable(name2, Programm.current_scope) is None:
-                if Programm.getVariable(name2) is None:
-                    raise UndefinedVariableReferenceError(name2)
-                else:
-                    object2 = Programm.getVariable(name2)
+            if Programm.getVaribaleFromProperScope(name2) is None:
+                raise UndefinedVariableReferenceError(name2)
             else:
-                object2 = Programm.getVariable(name2, Programm.current_scope)
+                object2 = Programm.getVaribaleFromProperScope(name2)
             x2 = object2.value
             y2 = object2.value2
 
