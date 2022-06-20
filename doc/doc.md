@@ -16,7 +16,7 @@
 5. [Some code examples](#some-code-examples)
 ---
 ## Language description
-APP is a simple imperative language modeled on Logo language, where object is controlled by the forces 
+APP is a simple imperative language modeled on Logo language, where object represented by the ball is controlled by the forces 
 applied to it. The language will allow you to create many objects that will collide with each other in 
 a elastic collisions.
 
@@ -25,7 +25,7 @@ We wanted to create language that would allow the user to create physical simula
 intuitive way.
 
 It's especially useful for people who want to visualize their physics
-tasks to better understand how forces affects on object and also predict the result they will get after applying the 
+tasks to better understand how forces affect on objects and also to predict the result they will get after applying the 
 given sequence of forces to the object.
 
 ## Initial goals and what we have achieved
@@ -42,37 +42,33 @@ We wanted to provide five types of variables which was:
 - `FLOAT`
 - `TIME` - a type representing time in format `hh:mm:ss` or as an integer corresponding to the number of seconds 
 - `OBJECT` - a type representing an object controlled by forces, optionally its `MASS` and `SIZE` can be defined by using `WITH` keyword
-- `FORCE` - type representing a force, to define it, specify the force and the angle at which it is applied to the object. Type format: `[angle,power], ` 
+- `FORCE` - type representing a force, to define it, specify the force and the angle at which it is applied to the object. Type format: `[angle,power]` 
 
 We were able to successfully realize this point of our plan.
 ### _Acceptable variable / function names_
 - names can only contain uppercase and lowercase letters, numbers and `_`
-- name have to start with a lowercase letter
+- names have to start with a lowercase letter
 
 ### _Variable declaration and definition_
-To define or declare variable user have to use the structure below.
-- declaration:
+To define or declare variable user has to use the structure below.
+- declaration with definition:
 ```
-DEFINE <TYPE> <NAME>;
+DEFINE <TYPE> <NAME> AS <VALUE>;
 ```
 - definition:
 ```
 SET <NAME> AS <VALUE>;
 ```
-- declaration with definition:
-```
-DEFINE <TYPE> <NAME> AS <VALUE>;
-```
 - example of usage:
 ```
 DEFINE OBJECT o AS (40,40) WITH SIZE 40; 
-DEFINE FORCE f1;
-SET f1 AS [0, 300];
 DEFINE FORCE f2 AS [0, 300];
+SET f2 AS [0.5, 30];
+
 ```
 ### _Arithmetical operations_
-We wanted to provide basic arithmetical operations that are crucial to 
-ensure user with the freedom to use our language:
+We provided basic arithmetical operations that are crucial to 
+provide user with the freedom to use our language:
 - `addition` (+)
 - `subtraction` (-)
 - `multiplication` (*)
@@ -80,8 +76,8 @@ ensure user with the freedom to use our language:
 - `sinus` (SIN)
 - `cosinus`(COS)
 
-We were able to implement most of this part of the plan, respecting parentheses in the order of operations were left in the realm of language 
-development plans.
+We wanted to add brackets to our language as well but for now it is the plan for the future.
+
 ### _Conditional statements_
 We wanted to provide the user with access to the classic `IF` conditional statement. 
 In order to achieve this goal, we had to provide comparison operations for the full convenience of using 
@@ -122,7 +118,7 @@ In the realm of language development plans we also left a logical operations suc
 Another essential thing for our language was `LOOP`.
 
 ```
-LOOP(<OPTIONAL DEFINITION>; <CONDITION>; <ACTION>)
+LOOP(<CONDITIONAL STATEMENT>)
 	...
 ENDLOOP:
 ```
@@ -196,12 +192,12 @@ DEFINE OBJECT o AS (400,600);
 APPLY [0,10] TO o FOR 1;
 ```
 ### _Paralleling of forces_
-In most physical phenomena, there is usually not only one force acting on the body at the same time.
+In most physical phenomena, usually there are many forces acting on the object at the same time.
 
 To meet this challenge, we have created the `PARALLEL` block in our language.
 
-All application of force actions contained in one `PARALLEL` block start at the same time and last for their proper duration.
-No instructions outside of the `PARALLEL` block are executed until all instructions in the block have been ended.
+All applications of force actions contained in one `PARALLEL` block start at the same time and last for their proper duration.
+Instructions not placed in `PARALLEL` block are executed sequentially.
 ```
 PARALLEL
 	...
@@ -263,7 +259,7 @@ MyNestedScope2{ DEFINE TIME zmienna2 AS 0;};
 SET MyScope::zmienna2 AS 100;
 ```
 ### _Comments_
-As in other languages, in APP user has the option of using comments that can be created using the structure below. 
+As in other languages, in APP user has the possibility of using comments that can be created using the structure below. 
 ```
 /* ... */
 ```
@@ -273,10 +269,9 @@ As in other languages, in APP user has the option of using comments that can be 
 DEFINE TIME t AS 213; 
 ```
 ---
-## Build-in functions
-During the process of creating various simulations using our language, we managed to come up with some useful functions 
-that we believe will make it easier for the user to use our language. So they have been implemented and are available as
-build-in functions.
+## Additional features
+During the process of creating various simulations using our language, we managed to come up with some useful functionalities
+that we believe will make it easier for the user to use our language.
 
 
 ### _ANGLE BETWEEN_
@@ -294,7 +289,7 @@ DEFINE FLOAT angle AS ANGLE BETWEEN o1, o2;
 ### _COORDINATE_
 It is a function that returns coordinates of object. You have to specify axis you want to get.
 ```
-COORDINATE axis=('X'|'Y') OF <object>;
+COORDINATE axis=['X'|'Y'] OF <object>;
 ```
 - example of usage:
 ```
@@ -328,77 +323,7 @@ DEFINE FLOAT velocity AS VELOCITY X OF o;
 ```
 ---
 ## Some code examples
-### _Kepler's laws of planetary motion_
 
-- ***First law***
-```
-DEFINE OBJECT o1 AS (400,600);
-DEFINE OBJECT o2 AS (400,400);
-DEFINE FLOAT alfa AS ANGLE BETWEEN o1, o2;
-DEFINE FLOAT d AS DISTANCE BETWEEN o1, o2;
-DEFINE FLOAT f AS 20000;
-DEFINE INT counter AS 0;
-APPLY [0,10] TO o1 FOR 1;
-LOOP (counter < 1000)
-    SET alfa AS ANGLE BETWEEN o1, o2;
-    SET d AS DISTANCE BETWEEN o1, o2;
-    SET f AS 3990;
-    SET f AS f/d/d;
-    APPLY [alfa,f] TO o1 FOR 1;
-    SET counter AS counter + 1; 
-ENDLOOP;
-```
-- ***Second law***
-```
-DEFINE OBJECT o1 AS (400,500);
-DEFINE OBJECT o2 AS (400,400);
-DEFINE FLOAT alfa AS ANGLE BETWEEN o1, (400,400);
-DEFINE FLOAT d AS DISTANCE BETWEEN o1, o2;
-DEFINE FLOAT f AS 10000;
-DEFINE INT counter AS 0;
-APPLY [0,20] TO o1 FOR 1;
-APPLY [45,2] TO o2 FOR 1;
-LOOP (counter < 1000)
-    SET alfa AS ANGLE BETWEEN o1, o2;
-    SET d AS DISTANCE BETWEEN o1, o2;
-    SET f AS 10000;
-    SET f AS f3/d/d;
-    APPLY [alfa,f] TO o1 FOR 1;
-    SET counter AS counter + 1; 
-ENDLOOP;
-```
-- ***Third law***
-```
-DEFINE OBJECT o AS (400,500);
-DEFINE OBJECT o2 AS (400,400);
-DEFINE OBJECT o3 AS (400,600);
-DEFINE FLOAT f AS ANGLE BETWEEN o, o2;
-DEFINE FLOAT f2 AS DISTANCE BETWEEN o, o2;
-DEFINE FLOAT f3 AS 20000;
-DEFINE FLOAT f4 AS ANGLE BETWEEN o3, o2;
-DEFINE FLOAT f5 AS DISTANCE BETWEEN o3, o2;
-DEFINE FLOAT f6 AS 40000;
-DEFINE INT counter AS 0;
-PARALLEL
-    APPLY [0,30] TO o FOR 1;
-    APPLY [0,30] TO o3 FOR 1;
-ENDPARALLEL;
-LOOP (counter < 1000)
-    SET f AS ANGLE BETWEEN o, o2;
-    SET f2 AS DISTANCE BETWEEN o, o2;
-    SET f3 AS 20000;
-    SET f3 AS f3/f2/f2;
-    SET f4 AS ANGLE BETWEEN o3, o2;
-    SET f5 AS DISTANCE BETWEEN o3, o2;
-    SET f6 AS 40000;
-    SET f6 AS f6/f5/f5;
-    PARALLEL
-        APPLY [f,f3] TO o FOR 1;
-        APPLY [f4,f6] TO o3 FOR 1;
-    ENDPARALLEL;
-    SET counter AS counter + 1; 
-ENDLOOP;
-```
 ### _Solar system_
 ```
 DEFINE OBJECT o AS (400,600);
@@ -428,4 +353,27 @@ LOOP (counter < 1000)
     ENDPARALLEL;
     SET counter AS counter + 1; 
 ENDLOOP;
+```
+
+### _Throw_
+```
+DEFINE OBJECT o AS (20,20);
+DEFINE FORCE g AS [270, 10];
+PARALLEL
+    APPLY [45,130] TO o FOR 1;
+    APPLY g TO o FOR 100;
+ENDPARALLEL;
+```
+### _Factorial_
+```
+DEFINE INT number AS 4;
+DEFINE FUNCTION silnia(INT n)-> INT AS 
+DEFINE INT wynik AS 0; 
+IF(n <= 1) 
+    THEN SET wynik AS 1; ENDIF; 
+IF (n > 1) 
+    THEN SET wynik AS silnia(n-1) * n; ENDIF; 
+RETURN wynik; 
+ENDFUNCTION; 
+DEFINE INT silnia3 AS silnia(number);
 ```
