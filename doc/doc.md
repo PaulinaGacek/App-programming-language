@@ -12,7 +12,7 @@
 1. [Language description](#language-description)
 2. [Motivation](#motivation)
 3. [Initial goals and what we have achieved](#initial-goals-and-what-we-have-achieved)
-4. [Build-in functions](#build-in-functions)
+4. [Additional features](#additional-features)
 5. [Some code examples](#some-code-examples)
 ---
 ## Language description
