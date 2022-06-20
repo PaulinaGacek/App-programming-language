@@ -336,3 +336,4 @@ class Programm:
     @staticmethod
     def enable_vm():
         Programm.vm_conversion = True
+    
