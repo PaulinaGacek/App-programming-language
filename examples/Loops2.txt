@@ -1,16 +1,20 @@
-DEFINE OBJECT o AS (400,500);
-DEFINE OBJECT o2 AS (400,400);
-DEFINE FLOAT f AS ANGLE BETWEEN o, (400,400);
-DEFINE FLOAT f2 AS DISTANCE BETWEEN o, o2;
-DEFINE FLOAT f3 AS 10000;
+DEFINE FLOAT velocity AS 2.0;
+DEFINE INT iterations AS 1000;
+DEFINE OBJECT orbiting AS (400,500) WITH MASS 1;
+DEFINE OBJECT orbited AS (400,400) WITH MASS 1;
+DEFINE FLOAT initial_force AS velocity*5;
+DEFINE FLOAT angle AS ANGLE BETWEEN orbiting, orbited;
+DEFINE FLOAT distance AS DISTANCE BETWEEN orbiting, orbited;
+DEFINE FLOAT gravity_const AS velocity*velocity*516;
+DEFINE FLOAT gravity_force AS gravity_const/distance/distance;
 DEFINE INT counter AS 0;
-APPLY [0,20] TO o FOR 1;
-APPLY [45,2] TO o2 FOR 1;
-LOOP (counter < 1000)
-    SET f AS ANGLE BETWEEN o, o2;
-    SET f2 AS DISTANCE BETWEEN o, o2;
-    SET f3 AS 10000;
-    SET f3 AS f3/f2/f2;
-    APPLY [f,f3] TO o FOR 1;
+APPLY [0,initial_force] TO orbiting FOR 1;
+APPLY [45,1] TO orbited FOR 1;
+LOOP (counter < iterations)
+    SET angle AS ANGLE BETWEEN orbiting, orbited;
+    SET distance AS DISTANCE BETWEEN orbiting, orbited;
+    SET gravity_force AS gravity_const/distance/distance;
+    SET velocity_object AS VELOCITY VALUE OF orbiting;
+    APPLY [angle,gravity_force] TO orbiting FOR 1;
     SET counter AS counter + 1;
 ENDLOOP;

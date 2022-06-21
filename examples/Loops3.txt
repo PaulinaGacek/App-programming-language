@@ -1,28 +1,34 @@
-DEFINE OBJECT o AS (400,500);
-DEFINE OBJECT o2 AS (400,400);
-DEFINE OBJECT o3 AS (400,600);
-DEFINE FLOAT f AS ANGLE BETWEEN o, o2;
-DEFINE FLOAT f2 AS DISTANCE BETWEEN o, o2;
-DEFINE FLOAT f3 AS 20000;
-DEFINE FLOAT f4 AS ANGLE BETWEEN o3, o2;
-DEFINE FLOAT f5 AS DISTANCE BETWEEN o3, o2;
-DEFINE FLOAT f6 AS 40000;
+DEFINE FLOAT velocity AS 2.0;
+DEFINE FLOAT velocity2 AS 3.0;
+DEFINE INT iterations AS 1000;
+DEFINE OBJECT orbiting AS (400,500) WITH MASS 1;
+DEFINE OBJECT orbiting2 AS (400,600) WITH MASS 1;
+DEFINE OBJECT orbited AS (400,400) WITH MASS 1;
+DEFINE FLOAT initial_force AS velocity*5;
+DEFINE FLOAT initial_force2 AS velocity2*5;
+DEFINE FLOAT angle AS ANGLE BETWEEN orbiting, orbited;
+DEFINE FLOAT angle2 AS ANGLE BETWEEN orbiting2, orbited;
+DEFINE FLOAT distance AS DISTANCE BETWEEN orbiting, orbited;
+DEFINE FLOAT distance2 AS DISTANCE BETWEEN orbiting2, orbited;
+DEFINE FLOAT gravity_const AS velocity*velocity*516;
+DEFINE FLOAT gravity_const2 AS velocity2*velocity2*1000;
+DEFINE FLOAT gravity_force AS gravity_const/distance/distance;
+DEFINE FLOAT gravity_force2 AS gravity_const2/distance2/distance2;
 DEFINE INT counter AS 0;
 PARALLEL
-APPLY [0,30] TO o FOR 1;
-APPLY [0,30] TO o3 FOR 1;
+APPLY [0,initial_force] TO orbiting FOR 1;
+APPLY [0,initial_force2] TO orbiting2 FOR 1;
 ENDPARALLEL;
-LOOP (counter < 1000)
-SET f AS ANGLE BETWEEN o, o2;
-SET f2 AS DISTANCE BETWEEN o, o2;
-SET f3 AS 20000;
-SET f3 AS f3/f2/f2;
-SET f4 AS ANGLE BETWEEN o3, o2;
-SET f5 AS DISTANCE BETWEEN o3, o2;
-SET f6 AS 40000;
-SET f6 AS f6/f5/f5;
-PARALLEL
-APPLY [f,f3] TO o FOR 1;
-APPLY [f4,f6] TO o3 FOR 1;
-ENDPARALLEL;
-SET counter AS counter + 1; ENDLOOP;
+LOOP (counter < iterations)
+    SET angle AS ANGLE BETWEEN orbiting, orbited;
+    SET angle2 AS ANGLE BETWEEN orbiting2, orbited;
+    SET distance AS DISTANCE BETWEEN orbiting, orbited;
+    SET distance2 AS DISTANCE BETWEEN orbiting2, orbited;
+    SET gravity_force AS gravity_const/distance/distance;
+    SET gravity_force2 AS gravity_const2/distance2/distance2;
+    PARALLEL
+    APPLY [angle,gravity_force] TO orbiting FOR 1;
+    APPLY [angle2,gravity_force2] TO orbiting2 FOR 1;
+    ENDPARALLEL;
+    SET counter AS counter + 1;
+ENDLOOP;
