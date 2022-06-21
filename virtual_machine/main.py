@@ -13,7 +13,7 @@ if __name__ == "__main__":
         try:
             FACTORIAL = 22
             THROW = 0
-            vm = VM(filename, FACTORIAL, 1024, 30)
+            vm = VM(filename, THROW, 1024, 30)
             vm.cpu()
         except FileNotFoundError:
             print("No such file")

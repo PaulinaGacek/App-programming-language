@@ -281,12 +281,19 @@ class AppVisitor(AppParseTreeVisitor):
             Programm.addNewVariableScope()
             self.visit(ctx.con_body)
             Programm.deleteTopVariableScope()
-        elif ctx.elif_stat is not None and self.visit(ctx.elif_stat.cond):
-            self.visit(ctx.elif_stat)
         else:
-            if ctx.else_stat is not None:
-                self.visit(ctx.else_stat)
-                
+            elif_true = False
+            for child in ctx.children:
+                if type(child).__name__ == "ElifStatementContext":
+                    if self.visit(child.cond):
+                        Programm.addNewVariableScope()
+                        self.visit(child.con_body)
+                        Programm.deleteTopVariableScope()
+                        elif_true = True
+                        break
+            if not elif_true:
+                if ctx.else_stat is not None:
+                    self.visit(ctx.else_stat)
 
     def visitCondition(self, ctx: AppParser.ConditionContext):
 
