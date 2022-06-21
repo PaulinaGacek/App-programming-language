@@ -8,7 +8,7 @@ import time
 
 
 class Programm:
-    debug = True
+    debug = False
     vm_conversion = False
 
     '''
